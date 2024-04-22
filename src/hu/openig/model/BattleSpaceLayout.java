@@ -8,8 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Location;
-
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +15,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
+
+import hu.openig.core.*;
 
 /**
  * A spacewar layout.
@@ -89,8 +88,12 @@ public class BattleSpaceLayout {
      * Return an ordered list by descending X and ascending Y locations.
      * @return the order
      */
-    public List<Map.Entry<Location, ResearchSubCategory>> order() {
-        List<Map.Entry<Location, ResearchSubCategory>> result = new ArrayList<>(map.entrySet());
+    public List<Pair<Location, ResearchSubCategory>> order() {
+        List<Pair<Location, ResearchSubCategory>> result = new ArrayList<>(map.size());
+
+        for (Map.Entry<Location, ResearchSubCategory> me : map.entrySet()) {
+            result.add(Pair.of(me.getKey(), me.getValue()));
+        }
 
         double gx = 0;
         double gy = 0;
@@ -107,20 +110,20 @@ public class BattleSpaceLayout {
             distances.put(loc, (int)(World.dist(gx, gy, loc.x + 0.5, loc.y + 0.5) * 100));
             angles.put(loc, (int)Math.abs((Math.atan2(loc.y - gy + 0.5, loc.x - gx + 0.5) * 180)));
         }
-        Collections.sort(result, new Comparator<Map.Entry<Location, ResearchSubCategory>>() {
+        Collections.sort(result, new Comparator<Pair<Location, ResearchSubCategory>>() {
             @Override
-            public int compare(Entry<Location, ResearchSubCategory> o1,
-                    Entry<Location, ResearchSubCategory> o2) {
-                int dist1 = distances.get(o1.getKey());
-                int dist2 = distances.get(o2.getKey());
+            public int compare(Pair<Location, ResearchSubCategory> o1,
+                    Pair<Location, ResearchSubCategory> o2) {
+                int dist1 = distances.get(o1.first);
+                int dist2 = distances.get(o2.first);
                 if (dist1 < dist2) {
                     return -1;
                 } else
                 if (dist1 > dist2) {
                     return 1;
                 } else {
-                    int angle1 = angles.get(o1.getKey());
-                    int angle2 = angles.get(o2.getKey());
+                    int angle1 = angles.get(o1.first);
+                    int angle2 = angles.get(o2.first);
                     if (angle1 < angle2) {
                         return -1;
                     } else

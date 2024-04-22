@@ -2686,7 +2686,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param maxGroups the maximum number of fighter groups to create with splitting
      * @param splitFighters if set to false no splitting is done, the fighters units are copied as is to the output list
      * */
-    private void applyFighterGrouping(List<SpacewarStructure> baseFighterList, LinkedList<SpacewarStructure> outFighterList, int maxGroups, boolean splitFighters) {
+    private static void applyFighterGrouping(List<SpacewarStructure> baseFighterList, LinkedList<SpacewarStructure> outFighterList, int maxGroups, boolean splitFighters) {
         if (baseFighterList.isEmpty()) {
             return;
         }
@@ -2766,12 +2766,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         if (offsetX != 0) {
             layout.addOffsetToPositions(offsetX);
         }
-        List<Map.Entry<Location, ResearchSubCategory>> olist = layout.order();
+        List<Pair<Location, ResearchSubCategory>> olist = layout.order();
 
         //fill all the battleship slots
-        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
-            Location p = e.getKey();
-            if (e.getValue() == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+        for (Pair<Location, ResearchSubCategory> e : olist) {
+            Location p = e.first;
+            if (e.second == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
                 if (!battleships.isEmpty()) {
                     SpacewarStructure sws = battleships.getFirst();
                     if (structureFits(sws, p)) {
@@ -2785,9 +2785,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             }
         }
         //fill all the cruiser slots
-        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
-            Location p = e.getKey();
-            if (e.getValue() == ResearchSubCategory.SPACESHIPS_CRUISERS) { //fighter spot
+        for (Pair<Location, ResearchSubCategory> e : olist) {
+            Location p = e.first;
+            if (e.second == ResearchSubCategory.SPACESHIPS_CRUISERS) { //fighter spot
                 if (!cruisers.isEmpty()) {
                     SpacewarStructure sws = cruisers.getFirst();
                     if (structureFits(sws, p)) {
@@ -2801,9 +2801,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             }
         }
         //fill all the fighter slots
-        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
-            Location p = e.getKey();
-            if (e.getValue() == ResearchSubCategory.SPACESHIPS_FIGHTERS) { //fighter spot
+        for (Pair<Location, ResearchSubCategory> e : olist) {
+            Location p = e.first;
+            if (e.second == ResearchSubCategory.SPACESHIPS_FIGHTERS) { //fighter spot
                 if (!fighters.isEmpty()) {
                     SpacewarStructure sws = fighters.getFirst();
                     if (structureFits(sws, p)) {
@@ -2820,9 +2820,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         // take the remaining ships and place them near the slots
         // battleships have guaranteed positions as such those are skipped in this phase
         while (!fighters.isEmpty() || !cruisers.isEmpty()) {
-            for (Map.Entry<Location, ResearchSubCategory> e : olist) {
-                Location p = e.getKey();
-                if (e.getValue() == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+            for (Pair<Location, ResearchSubCategory> e : olist) {
+                Location p = e.first;
+                if (e.second == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
                     if (!fighters.isEmpty()) {
                         SpacewarStructure sws = fighters.getFirst();
                         if (fitNearby(sws, p.x, p.y)) {

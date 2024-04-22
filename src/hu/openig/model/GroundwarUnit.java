@@ -113,9 +113,11 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
     public Location attackMoveLocation() {
         return attackMove;
     }
+    @Override
     public Location nextMove() {
         return nextMove;
     }
+    @Override
     public Location nextRotate() {
         return nextRotate;
     }
@@ -153,10 +155,12 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
         return Math.hypot(x - loc.x, y - loc.y);
     }
     /** @return true if the unit is moving. */
+    @Override
     public boolean isMoving() {
         return nextMove != null || !path.isEmpty();
     }
     /** @return true if the unit is in between cells. */
+    @Override
     public boolean inMotion()  {
         return (x % 1 != 0) || (y % 1 != 0);
     }

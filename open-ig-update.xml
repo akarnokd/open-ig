@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<update version='1.0'>
+  <module id='Launcher' version='0.45'>
+    <general url='https://github.com/akarnokd/open-ig/wiki/Launcher'>
+      <desc lang='hu'>
+				Az Open Imperium Galactica indító programja, amely automatikusan letölti
+				a különféle modulok fájljait telepítés, frissítés vagy javítás céljából.</desc>
+      <desc lang='en'>
+				The launcher for the Open Imperium Galactica which can download various module files
+				for install, upgrade or repair purposes.</desc>
+    </general>
+    <notes url='https://github.com/akarnokd/open-ig/wiki/Launcher_Notes'>
+      <desc lang='hu'>Váltás GitHub-ra.</desc>
+      <desc lang='en'>Migration to GitHub.</desc>
+      <desc lang='de'>Migration to GitHub.</desc>
+      <desc lang='fr'>Migration to GitHub.</desc>
+      <desc lang='ru'>Migration to GitHub.</desc>
+      <desc lang='es'>Migration to GitHub.</desc>
+    </notes>
+    <execute file='open-ig-launcher.jar' memory='64'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar' sha1='BA3C42B0C79F7879B80444F6D60116DBC4F09398'>
+      <desc lang='hu'>Az indító fő fájlja</desc>
+      <desc lang='en'>The launcher&#39;s main file</desc>
+    </file>
+  </module>
+  <module id='Game' version='0.95.243'>
+    <general url='https://github.com/akarnokd/open-ig'>
+      <desc lang='hu'>
+				Az Open Imperium Galactica játék.
+			</desc>
+      <desc lang='en'>
+				The Open Imperium Galactica game.
+			</desc>
+    </general>
+    <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
+    <notes url='http://open-ig-dev.blogspot.hu'>
+      <desc lang='hu'>Hibajavítások</desc>
+      <desc lang='en'>Bugfixes</desc>
+      <desc lang='de'>Bugfixes</desc>
+      <desc lang='fr'>Bugfixes</desc>
+      <desc lang='ru'>Bugfixes</desc>
+      <desc lang='es'>Bugfixes</desc>
+    </notes>
+    <release-details>
+      <entry version='0.95.243' date='2024-04-18'>
+        <item category='Balance' issues='1130'>Added surface exceptions to building on a race-by-race basis. (By @hemoridos)</item>
+        <item category='UI' issues='1131'>Add scrollbars to more options panels. (By @hemoridos)</item>
+        <item category='Spacewar' issues='1127'>Defeating the virus carriers in M14 in auto-battle mode now progresses the missions as expected.</item>
+        <item category='Groundwar,AI' issues='1121,1128'>Improved ground unit pathing when unit orders change. (By @hemoridos)</item>
+        <item category='Spacewar' issues='1126'>Implemented grid based positioning and layout handling in space battles. Preparation for grid-based space pathfinding mode such as the original game did. (By @hemoridos)</item>
+      </entry>
+      <entry version='0.95.242' date='2023-12-11'>
+        <item category='Groundwar' issues='1102'>Improved the pathfinding in groundwar when moving vehicles in groups. (By @hemoridos)</item>
+        <item category='Groundwar,UI' issues='1103'>Smoother vehicle and projectile movements in groundwar in 1x or 2x speeds. (By @hemoridos)</item>
+        <item category='Skirmish'>Skirmish alien buildings (that didn&#39;t exist in the original and reused human images) now have custom-made images. (By @Péter Kovács)</item>
+        <item category='UI' issues='1106'>Auto-upgrading fleet will now attempt to fill vehicle slots from all available inventory, not just the best. (By @hemoridos)</item>
+        <item category='UI' issues='1107'>Improved colony screen panning when switching between planets and added panning limits. (By @hemoridos)</item>
+        <item category='Groundwar,Spacewar' issues='1112'>Losing 4 or more battles (space, ground) during ranks 1 and 2 will now result in game over.</item>
+      </entry>
+      <entry version='0.95.241' date='2023-11-03'>
+        <item category='UI' issues='1086,1087'>Improve fleet arrows on the Starmap screen. (By @hemoridos)</item>
+        <item category='UI' issues='1093'>Double clicking on enemy units no longer selects all enemy units of the same type. (By @hemoridos)</item>
+        <item category='Subtitle' issues='1090'>Fix the Hungarian subtitle for when checking the status of Centronom. (By @hemoridos)</item>
+        <item category='Subtitle' issues='1094'>Added missing Hungarian subtitles to some story cutscenes. (By @hemoridos)</item>
+        <item category='AI' issues='1092'>The AI should no longer repeatedly demolish and rebuild power plants when worker shortages are present. (By @hemoridos)</item>
+        <item category='Diplomacy' issues='1096'>Accepting an alliance no longer decreases the relation if it was already higher than 91%. (By @hemoridos)</item>
+        <item category='Groundwar,AI' issues='1088'>The AI will no longer deploy its units on top of player-placed units. (By @hemoridos)</item>
+        <item category='Spacewar,UI' issues='1095'>Winning spacewar with active player missiles no longer results in the game thinking the player lost the battle. (By @hemoridos)</item>
+        <item category='Spacewar,Balance' issues='1097'>Weapons now have some target and delay randomization applied to them as well as pixel-level collision detection. Fixes some monotony, sound and hit detection issues. (By @hemoridos)</item>
+      </entry>
+      <entry version='0.95.240' date='2023-07-31'>
+        <item category='Labels' issues='1079'>Fixed the upgrade description of the Water Vaporator; it increases population growth, not living space amount.</item>
+      </entry>
+      <entry version='0.95.239' date='2023-07-24'>
+        <item category='UI'>Added missing German labels that caused a warning-crash.</item>
+      </entry>
+      <entry version='0.95.238' date='2023-06-18'>
+        <item category='Balance' issues='1057,1078'>Capturing a planet will grant the building techs to the winner again. The previous restriction was logically inconsistent and could be bypassed reloading a save anyway.</item>
+      </entry>
+      <entry version='0.95.237' date='2023-04-08'>
+        <item category='UI' issues='1075'>Fix a crash in the equipment screen when pressing the Del button.</item>
+      </entry>
+      <entry version='0.95.236' date='2023-02-02'>
+        <item category='UI' issues='1053'>Holding Shift while clicking on the Add/Del/Sell buttons add/remove/sell 10 items at once.</item>
+        <item category='Saves' issues='991'>Loading a save with a particular corruption (owned planet without race info) no longer causes crashes.</item>
+      </entry>
+      <entry version='0.95.235' date='2023-02-01'>
+        <item category='Stability' issues='1073'>The game should no longer crash if a target planet &quot;disappeared&quot; when targeted by colonization.</item>
+        <item category='Game Logic' issues='1073'>The colonizers should no longer move choppily towards a colonization target.</item>
+        <item category='Saves' issues='1073'>The game should now properly reload each player&#39;s known visible/named planet set.</item>
+      </entry>
+      <entry version='0.95.234' date='2023-02-01'>
+        <item category='Groundwar,Grapics' issues='1070'>Vehicles no longer appear as if they are behind/obscured by a surface feature that was paved over.</item>
+      </entry>
+      <entry version='0.95.233' date='2023-02-01'>
+        <item category='UI' issues='1068'>Fortification losses are now correctly accounted to you or the enemy, depending on whose planet it was.</item>
+      </entry>
+      <entry version='0.95.232' date='2022-02-15'>
+        <item category='Balance' issues='1057'>Remove unfinished buildings when winning an Auto-Battle.</item>
+        <item category='Balance' issues='1057'>Unfinished buildings are no longer considered for technology capturing.</item>
+        <item category='Balance' issues='1057'>Buildings with research level above the current world level will no longer be awarded to the player when capturing an alien planet.</item>
+        <item category='Balance' issues='1058'>Do not allow the black market to sell items above the player level</item>
+        <item category='Balance' issues='1056'>Relationship deterioration specified via the custom balance settings will now only apply in rank Admiral (level 4) and above.</item>
+        <item category='Other' issues='1054'>File access will no longer crash if there is a directory with the expected filename among the saves/resources.</item>
+        <item category='UI' issues='1052'>The diplomacy screen should no longer crash when viewing certain messages in certain situations.</item>
+      </entry>
+      <entry version='0.95.231' date='2022-02-07'>
+        <item category='Achievements'>Fixed a crash when playing a skirmish game without Dargslans.</item>
+        <item category='Skirmish' issues='1051'>Fixed the skirmish game &quot;Human vs. AI&quot; referencing non-existent technology in its battle definition.</item>
+      </entry>
+      <entry version='0.95.230' date='2022-02-05'>
+        <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the &quot;A pirate in need&quot; achievement.</item>
+        <item category='Achievements,UI'>Awarding the &quot;Newbie&quot; achievement no longer overlaps with the first time showing of the Objectives panel.</item>
+      </entry>
+      <entry version='0.95.229' date='2022-02-04'>
+        <item category='UI'>Fix the achievement screen not showing the last item when scrolled to the bottom.</item>
+        <item category='UI' issues='1047'>When holding SHIFT while clicking -10 and +10 buttons on the Production Screen, the production amount is changed by -100 and +100 respectively.</item>
+        <item category='UI'>Holding CTRL and SHIFT while clicking on a production line&#39;s left/right amount change button on the Production Screen now adjusts the amount by 100.</item>
+        <item category='UI'>Added tooltips to the Custom Balance Settings screen&#39;s buttons indicating using SHIFT will speed up the amount changes.</item>
+        <item category='UI'>Tooltips that would show below a control and would clip outside the game window now properly shows above the control.</item>
+        <item category='UI' issues='1048'>Fixed a crash and lack of UI indicator when buying a station on the black market and the delivery target does not have the required military spaceport there.</item>
+      </entry>
+      <entry version='0.95.228' date='2022-02-03'>
+        <item category='Achievements,UI'>Update the achievement system to be able to track and display progress of many achievements.</item>
+        <item category='UI' issues='1045'>Clicking on a message on the Bridge while a message is being played no longer plays multiple messages at the same time.</item>
+      </entry>
+      <entry version='0.95.227' date='2022-02-03'>
+        <item category='UI'>The Equipment screen now counts the hitpoints and damage output of stations in the summation.</item>
+        <item category='AI,Campaign'>AI colonization limit changes due to entering Level 4 (Admiral) are now saved and loaded correctly. Note: the game can only fix older saves which are already in Level 5 (Grand Admiral).</item>
+        <item category='Labels'>Fix minor typo in galaxy statistics.</item>
+      </entry>
+      <entry version='0.95.226' date='2022-02-02'>
+        <item category='Achievements' issues='1040'>Fix &quot;E.T. Exists&quot; awarded too eagerly after the last fix.</item>
+        <item category='AI,Balance'>The AI will now pave planets.</item>
+        <item category='UI'>The Equipment screen will now update correctly if the AI adds a station to the current planet.</item>
+        <item category='AI,Balance'>The AI will now remove excess vehicles and houses from planets.</item>
+        <item category='AI'>The AI will no longer repeatedly stop and resume moving colonization fleets.</item>
+        <item category='AI'>The AI will now properly undeploy Rocket Sled 1s when upgrading the ground forces.</item>
+      </entry>
+      <entry version='0.95.225' date='2022-02-02'>
+        <item category='Achievements' issues='1040'>Fix &quot;E.T. Exists&quot; not awarded if the aliens detected the player first.</item>
+        <item category='Achievements' issues='1040'>Fix &quot;Nobel Prize&quot; awarded too early because of counting the Thorin.</item>
+        <item category='AI' issues='1041'>The AI will now properly unequip obsolete rockets from space stations before equipping newer rocket types.</item>
+        <item category='AI' issues='1041'>The AI will no longer overfill the rockets on space stations beyond the intended capacity.</item>
+        <item category='AI' issues='1041'>The AI will no longer deploy tanks, fleets or stations if the target planet has changed owner.</item>
+        <item category='AI' issues='1041'>The AI will now properly upgrade the vehicle mixture on planets and will not overfill them.</item>
+        <item category='AI' issues='1041'>The AI will no longer remove obsolete vehicles before their replacements are available for deployment.</item>
+      </entry>
+      <entry version='0.95.224' date='2022-02-01'>
+        <item category='UI' issues='1038'>Added missing label for when the colonists have nowhere to go when abandoning a colony.</item>
+        <item category='UI' issues='1038'>Fixed the logic that checks if alien colonists can be resettled to another planet within the current empire.</item>
+      </entry>
+      <entry version='0.95.223' date='2022-02-01'>
+        <item category='UI' issues='1037'>Buying ships from the black market now adds them to the player&#39;s nearby fleet instead of anybody&#39;s fleet.</item>
+        <item category='UI' issues='1037'>Selecting an equipment slot that is located at the bottom of a ship is now possible if the game window is small.</item>
+        <item category='UI'>The selected equipment slot info no longer remains on screen when switching to split/transfer mode.</item>
+        <item category='UI'>The selected equipment is no longer shown in large form when switching between fleets or ending join/transfer.</item>
+        <item category='UI'>Relocating aliens to their native empire now distributes them among all their planets (instead of one less).</item>
+      </entry>
+      <entry version='0.95.222' date='2022-01-30'>
+        <item category='UI'>Added an UI toolbelt with buttons for the pavement and other features in this patch</item>
+        <item category='UI'>New feature: Ability to move colonists between planets (at a cost).</item>
+        <item category='UI'>New feature: Ability to abandon a colony (at a cost).</item>
+      </entry>
+      <entry version='0.95.221' date='2022-01-29'>
+        <item category='Balance'>New feature: pave over larger surface features so they become buildable/passable. Use the key P to enable this mode. UI to come later.</item>
+      </entry>
+      <entry version='0.95.220' date='2022-01-28'>
+        <item category='Balance'>New screen: Custom Balance Settings. Accessible via the Campaign screen or via CTRL+6 from ingame. It allows buffing aliens and modifying how morale is calculated.</item>
+      </entry>
+      <entry version='0.95.219' date='2021-11-25'>
+        <item category='Missions' issues='1007'>Fixed Mission 17 - Destroy Prototype, where the Garthog ships would exit the wrong side of the screen when the battle happened over a friendly planet.</item>
+        <item category='UI' issues='1035'>Fixed the database screen with stuck ship title overlapping the alien descriptions upon screen switching back and forth.</item>
+        <item category='UI'>Fixed the database screen label errors when playing a Skirmish game and looking at the alien races.</item>
+        <item category='UI'>Fixed the test video/screen overlapping with message playback triggered from the statusbar&#39;s Message indicator.</item>
+        <item category='UI'>Fixed the test screen remaining open when loading an earlier save.</item>
+      </entry>
+      <entry version='0.95.218' date='2021-05-03'>
+        <item category='Missions' issues='1032'>In Mission 12 - San Sterling Virus, Traders traveling towards San Sterling will now get the blinking red border too.</item>
+        <item category='Performance'>Fixed performance regression in rendering partially hidden vehicles.</item>
+        <item category='General'>Improved compatibility with newer Java versions.</item>
+      </entry>
+      <entry version='0.95.217' date='2021-05-01'>
+        <item category='Map Editor' issues='1031'>Fixed the map editor not properly saving 1x1 tiles.</item>
+      </entry>
+      <entry version='0.95.216' date='2021-01-01'>
+        <item category='Campaign' issues='1016'>Fixed Mission 6 (Defend Achilles) not succeeding if the Garthogs flee with their fleet still having ground attack capability.</item>
+      </entry>
+      <entry version='0.95.215' date='2020-08-17'>
+        <item category='Groundwar' issues='1013'>Added default defensive deployment locations for planets without buildings.</item>
+        <item category='Groundwar' issues='730'>Fixed an issue with AI deploying to unreachable locations via deployment exclusions.</item>
+      </entry>
+      <entry version='0.95.214' date='2020-04-02'>
+        <item category='Campaign'>Fixed an issue with planets becoming non-operational upon level-up in the campaign.</item>
+      </entry>
+      <entry version='0.95.213' date='2020-02-22'>
+        <item category='UI'>Adding fighters to a planet with maxed out vehicles via the Add button now works correctly.</item>
+      </entry>
+      <entry version='0.95.212' date='2020-01-13'>
+        <item category='Labels' issues='1021'>Added some missing German labels causing an error dialog to pop up.</item>
+        <item category='Skirmish'>Fixed a potential issue with assigning initial planets to players.</item>
+      </entry>
+      <entry version='0.95.211' date='2018-08-18'>
+        <item category='UI' issues='1001'>Colony screen behavior were not using the zoom factor.</item>
+        <item category='UI' issues='1008'>Skip deployment if there are no tanks to deploy.</item>
+        <item category='Labels' issues='1009'>Text corrections.</item>
+        <item category='Campaign'>Fix the duplicate planet Exterior 19</item>
+      </entry>
+      <entry version='0.95.210' date='2016-07-19'>
+        <item category='AI' issues='924'>Fixed Trader AI overriding the script-designated chat back to the default chat.</item>
+        <item category='Labels' issues='987'>Fixed some parametric russian labels.</item>
+        <item category='Labels'>Added missing Hungarian labels about the settings screen.</item>
+        <item category='UI' issues='986'>The button Start Battle is now only visible if all vehicles have been deployed.</item>
+        <item category='UI'>Fixed the trade screen&#39;s bounding box.</item>
+        <item category='UI'>Fixed the tooltip on the building upgrade panel remaining visible after clicking on the upgrade star.</item>
+        <item category='AI'>AI no longer does research before level 3.</item>
+        <item category='Balance'>AI on easy no longer deploys tanks to the planet&#39;s capacity but only 2/3.</item>
+      </entry>
+      <entry version='0.95.209' date='2016-06-12'>
+        <item category='Missions' issues='974'>Fix the Escort Prototype mission not failing if the prototype gets destroyed but its escort survives.</item>
+        <item category='UI' issues='979'>Framerate statistics is not turned off by default. Use CTRL+F to toggle it.</item>
+      </entry>
+      <entry version='0.95.208' date='2016-05-24'>
+        <item category='AI'>Fix AI ignoring colony needs in certain energy conditions.</item>
+      </entry>
+      <entry version='0.95.207' date='2016-05-23'>
+        <item category='AI'>AI no longer builds cheap buildings (housing, food factory) in case there is an energy shortage.</item>
+        <item category='UI'>Fix for research screen loosing the current technology when a research completes.</item>
+        <item category='UI'>In ground battle, the start battle button now shows only if all vehicles have been deployed.</item>
+      </entry>
+      <entry version='0.95.206' date='2016-01-26'>
+        <item category='UI'>Walking around the ship now uses custom mouse cursors. Thanks @p-smith!</item>
+        <item category='UI'>Scaled spacewar screen now properly displays mouse cursor over objects. Thanks @Zalewa</item>
+      </entry>
+      <entry version='0.95.205' date='2015-03-25'>
+        <item issues='920'>Fixed error in case the user and the auto-build removed a building at the same time.</item>
+        <item issues='921' category='Simulation'>Fixed tax and population calculation resulting in NaN to prevent proper planet death and causing other calculations to go haywire.</item>
+        <item issues='922' category='UI'>Fixed the continue button to be properly enabled/disabled after profile change.</item>
+      </entry>
+      <entry version='0.95.204' date='2015-03-16'>
+        <item>Updated links to point to the project&#39;s new location: https://github.com/akarnokd/open-ig</item>
+      </entry>
+      <entry version='0.95.203' date='2014-12-17'>
+        <item issues='913' category='Trade'>Fixed planet selection box not working. The box lists all player planets and depending on the item type, it may display &quot;No room&quot; for spaceports and &quot;No mil. spaceport&quot; for ships and fighters.</item>
+      </entry>
+      <entry version='0.95.202' date='2014-11-24'>
+        <item issues='910'>Fixed wrong subtitle text in the Hungarian win video.</item>
+        <item issues='905'>Fixed the +++ button not filling up the available vehicle count with vehicles.</item>
+        <item>AI ships no longer stay in one place if the player attacked a planet the enemy fleet is next to.</item>
+      </entry>
+      <entry version='0.95.201' date='2014-11-07'>
+        <item issues='902'>Fixed crash due invalid diplomatic relation entries caused by Mission 4.</item>
+        <item category='Crash'>Fixed NPE caused by losing mouse status information due desktop switch/UAC.</item>
+        <item category='AI'>AI will build ground cannons without unnecessary delays.</item>
+        <item category='AI'>AI will upgrade static defenses without unnecessary delays.</item>
+        <item category='Groundwar'>Fixed unit movement sometimes not correctly rotated into the movement direction.</item>
+        <item category='Balance'>Increased ground cannon damage against fighters.</item>
+      </entry>
+      <entry version='0.95.200' date='2014-11-07'>
+        <item>Fixed crash in Mission 4 (two pirates).</item>
+        <item>Added hp-skirmish attribute to battle.xml settings under space-entities/tech to allow specifying the hitpoints of the entry in skirmish games.</item>
+        <item>Added space-skirmish attribute to battle.xml settings under buildins/hitpoints to allow specifying the hitpoints of a building in skirmish games.</item>
+        <item>Halved the hitpoints of Space station 2, Space station 3, Plasma projector, Particle Projector and Meson projector in the campaign. For example, 3 Space station 3s with 5 Meson Projectors and a Hypershield will whitstand a full strength Dargslan attack by a margin of 25%, i.e., 2 structures will survive the encounter generally while the attacker is mostly destroyed.</item>
+        <item category='AI'>Fixed AI sending ill-equipped fleets to attack.</item>
+        <item category='Campaign'>Fixed some skirmish ships to be available to alien races during the campaign.</item>
+      </entry>
+      <entry version='0.95.199' date='2014-11-05'>
+        <item category='Spacewar'>Fixed Trader AI causing some problems with 3-way space battles (crash, wrong chat).</item>
+        <item category='AI'>Increased the initial money of aliens to 100,000 cr in the campaign to to better jump-start their economy.</item>
+        <item category='AI'>AI no longer produces items on level 1 in the campaign.</item>
+        <item category='Cheats'>Switching to other races in the campaign stops the main mission timers (helps greatly when debugging).</item>
+        <item category='Cheats'>CTRL+SHIFT+W destroys all enemy structures in spacewar (except Trader ships).</item>
+        <item category='AI'>Fixed ordering of planets with issues (somehow, it was reversed and the AI operated on the planet with the best conditions, not the worst one).</item>
+        <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
+      </entry>
+    </release-details>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.243.jar' sha1='DA51C5EA4823D66414123026F6E9BB4C82C6B831'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240418a2.zip' sha1='C014B9A12EFC25E9648776776723F95C6B7ADC2D'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240418a.zip' sha1='AE680ECA2D9BF4005E0E842DA2ADF18A2753A4AC'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-03-0.8.zip' sha1='e7f033232d93673f2459411258e2238617efca2b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-04-0.8.zip' sha1='339cb2ee77d5358502f2cb6a35e3386eddf89403'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-05-0.8.zip' sha1='001802695355cf583d1ffc8efdad1fb457500c6a'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-06-0.8.zip' sha1='6f70f5be4c87ea7a6d2156671ae60d9db3473c2b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-07-0.8.zip' sha1='ec20d9ad5384a875227da256b5144297ba9a5345'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-08-0.8.zip' sha1='8e677013194ba8820fbc56f7d758e7bd87ffcd4f'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-09-0.8.zip' sha1='8dec04b14317439796d262a1eb4de66857f0cb6d'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-10-0.8.zip' sha1='c6966a5239b34b235764f0c94cb4d0caab88238f'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe' size='39428719' language='hu'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b' size='38058005'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907' size='3302023' language='de'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-fr-20121022.zip' sha1='574c3c4c52937c10553f519da9428338e55cb51a' size='3310322' language='fr'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-ru-20121022.zip' sha1='bde1bfd60776fb0d8270f3898ff15a5a262ca22a' size='3106835' language='ru'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-en-20120623A.zip' sha1='b62309158878f832510b48ab7873790cbafa1ff7' size='46004980' language='en'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609' size='42768624' language='hu'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77' size='46534493' language='de'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
+    <remove file='open-ig-audio-generic-20120620A.zip'/>
+    <remove file='open-ig-audio-generic-20120505A.zip'/>
+    <remove file='open-ig-video-01-0.8.zip'/>
+    <remove file='open-ig-video-02-0.8.zip'/>
+    <remove file='open-ig-video-en-0.8.zip'/>
+    <remove file='open-ig-video-en-20120420A.zip'/>
+    <remove file='open-ig-audio-en-0.8.zip'/>
+    <remove file='open-ig-audio-hu-0.8.zip'/>
+    <remove file='open-ig-audio-en-20120604A.zip'/>
+    <remove file='open-ig-images-20120420A.zip'/>
+    <remove file='open-ig-images-20120421a.zip'/>
+    <remove file='open-ig-images-20120429a.zip'/>
+    <remove file='open-ig-images-20120517a.zip'/>
+    <remove file='open-ig-images-20120525a.zip'/>
+    <remove file='open-ig-images-20120529a.zip'/>
+    <remove file='open-ig-images-20120531a.zip'/>
+    <remove file='open-ig-images-20120602a.zip'/>
+    <remove file='open-ig-images-20120603a.zip'/>
+    <remove file='open-ig-images-20120605a.zip'/>
+    <remove file='open-ig-images-20120609a.zip'/>
+    <remove file='open-ig-images-20120620a.zip'/>
+    <remove file='open-ig-audio-en-20120420A.zip'/>
+    <remove file='open-ig-audio-en-20120429A.zip'/>
+    <remove file='open-ig-audio-fr-20120819A.zip'/>
+    <remove file='open-ig-images-20121022a.zip'/>
+    <remove file='open-ig-audio-generic-20120420A.zip'/>
+    <remove file='open-ig-images-20120625a.zip'/>
+    <remove file='open-ig-images-20120814a.zip'/>
+    <remove file='open-ig-images-20120819a.zip'/>
+    <remove file='open-ig-images-20120823a.zip'/>
+    <remove file='open-ig-images-20121203a'/>
+    <remove file='open-ig-images-20121224a'/>
+    <remove file='open-ig-images-20130110a.zip'/>
+    <remove file='open-ig-images-20130816a.zip'/>
+    <remove file='open-ig-images-20130831a.zip'/>
+    <remove file='open-ig-images-20131130a.zip'/>
+    <remove file='open-ig-images-20140129a.zip'/>
+    <remove file='open-ig-images-20140319a.zip'/>
+    <remove file='open-ig-images-20140325a.zip'/>
+    <remove file='open-ig-images-20140714a.zip'/>
+    <remove file='open-ig-images-20140718a.zip'/>
+    <remove file='open-ig-images-20140730a.zip'/>
+    <remove file='open-ig-images-20140901a.zip'/>
+    <remove file='open-ig-images-20140910a.zip'/>
+    <remove file='open-ig-images-20220129a.zip'/>
+    <remove file='open-ig-images-20220130a.zip'/>
+    <remove file='open-ig-images-20231211a.zip'/>
+  </module>
+  <module id='MapEditor' version='0.63'>
+    <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>
+      <desc lang='hu'>
+				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.</desc>
+      <desc lang='en'>
+				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.</desc>
+    </general>
+    <execute file='open-ig-mapeditor-%s.jar' memory='512' class='hu.openig.editors.MapEditor'/>
+    <notes url='https://code.google.com/p/open-ig/wiki/Map-editor-notes'>
+      <desc lang='hu'>Kép erőforrások átszervezése.</desc>
+      <desc lang='en'>Image resource refactoring.</desc>
+    </notes>
+  </module>
+  <module id='VideoPlayer' version='0.92'>
+    <general url='https://github.com/akarnokd/open-ig/wiki/Video-player'>
+      <desc lang='hu'>A játék videóit játsza le és exportálja.</desc>
+      <desc lang='en'>Plays and exports the videos of the game.</desc>
+    </general>
+    <execute file='videoplayer-%s.jar' memory='512' class='hu.openig.tools.VideoPlayer'/>
+    <notes url='https://github.com/akarnokd/open-ig/wiki/VideoPlayer_Notes'>
+      <desc lang='hu'>Export javítás.</desc>
+      <desc lang='en'>Export.</desc>
+    </notes>
+  </module>
+  <module id='CampaignEditor' version='0.02'>
+    <general url='https://github.com/akarnokd/open-ig/wiki/Campaign-editor'>
+      <desc lang='hu'>Kampányszerkesztő.</desc>
+      <desc lang='en'>Campaign editor.</desc>
+    </general>
+    <execute file='open-ig-ce-%s.jar' memory='1024' class='hu.openig.editors.ce.CampaignEditor'/>
+    <notes url='https://github.com/akarnokd/open-ig/wiki/Campaign-editor-notes'>
+      <desc lang='hu'>Első verzió</desc>
+      <desc lang='en'>Initial version</desc>
+    </notes>
+  </module>
+</update>

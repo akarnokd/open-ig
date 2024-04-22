@@ -222,7 +222,7 @@ public final class RenderTools {
     /** Number of layers. */
     private static final int STAR_LAYER_COUNT = 4;
     /** A star object. */
-    private static class Star {
+    private static final class Star {
         /** The star proportional position. */
         public double x;
         /** The star proportional position. */

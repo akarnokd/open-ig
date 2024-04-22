@@ -188,7 +188,7 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     }
     @Override
     public Location location() {
-        return Location.of((int)Math.round(gridLocation.x), (int)Math.round(gridLocation.y));
+        return Location.of(Math.round(gridLocation.x), Math.round(gridLocation.y));
     }
     @Override
     public Point2D.Double exactLocation() {
@@ -202,17 +202,21 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     public Location attackMoveLocation() {
         return attackMove;
     }
+    @Override
     public Location nextMove() {
         return nextMove;
     }
+    @Override
     public Location nextRotate() {
         return nextRotate;
     }
     /** @return true if the unit is moving. */
+    @Override
     public boolean isMoving() {
         return nextMove != null || !path.isEmpty();
     }
     /** @return true if the unit is in between cells. */
+    @Override
     public boolean inMotion()  {
         return (x % 1 != 0) || (y % 1 != 0);
     }

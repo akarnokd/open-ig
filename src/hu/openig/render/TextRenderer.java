@@ -36,7 +36,7 @@ public class TextRenderer {
      * Record to store a particularly sized character series's width and height.
      * @author akarnokd
      */
-    private static class SizedCharImages {
+    private static final class SizedCharImages {
         /** The uniform character width. */
         public int width;
         /** The uniform character height. */
