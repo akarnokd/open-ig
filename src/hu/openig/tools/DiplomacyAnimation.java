@@ -8,8 +8,8 @@
 
 package hu.openig.tools;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 
 import java.awt.AlphaComposite;
@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -143,22 +142,26 @@ public final class DiplomacyAnimation {
                             colorCounts.put(anImgc & 0xFFFFFF, c != null ? c + 1 : 1);
                         }
                         if (colorCounts.size() > 254) {
-                            List<Map.Entry<Integer, Integer>> lst = U.newArrayList(colorCounts.entrySet());
-                            Collections.sort(lst, new Comparator<Map.Entry<Integer, Integer>>() {
+                            List<Pair<Integer, Integer>> lst = new ArrayList<>(colorCounts.size());
+                            for (Map.Entry<Integer, Integer> e : colorCounts.entrySet()) {
+                                lst.add(Pair.of(e.getKey(), e.getValue()));
+                            }
+
+                            Collections.sort(lst, new Comparator<Pair<Integer, Integer>>() {
                                 @Override
-                                public int compare(Entry<Integer, Integer> o1,
-                                        Entry<Integer, Integer> o2) {
-                                    return Integer.compare(o2.getValue(), o1.getValue());
+                                public int compare(Pair<Integer, Integer> o1,
+                                        Pair<Integer, Integer> o2) {
+                                    return Integer.compare(o2.second, o1.second);
                                 }
                             });
 
                             Set<Integer> keptColors = new HashSet<>();
                             Map<Integer, Integer> translate = new HashMap<>();
                             for (int i = 0; i < 254; i++) {
-                                keptColors.add(lst.get(i).getKey());
+                                keptColors.add(lst.get(i).first);
                             }
                             for (int i = 254; i < lst.size(); i++) {
-                                final int c = lst.get(i).getKey();
+                                final int c = lst.get(i).first;
                                 final int[] argb3 = new int[4];
                                 getargb(c, argb3);
                                 int cm = Collections.min(keptColors, new Comparator<Integer>() {

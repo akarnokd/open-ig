@@ -8,9 +8,7 @@
 
 package hu.openig.mechanics;
 
-import hu.openig.core.Action0;
-import hu.openig.core.Difficulty;
-import hu.openig.core.Pred1;
+import hu.openig.core.*;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
@@ -32,15 +30,7 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.VehiclePlan;
 import hu.openig.utils.U;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Plans the creation of various ships, equipment and vehicles.
@@ -424,18 +414,22 @@ public class OffensePlanner extends Planner {
         Set<ResearchMainCategory> running = new HashSet<>();
         boolean bringin = false;
 
-        List<Map.Entry<ResearchType, Integer>> demandList = U.sort(demands.entrySet(), new Comparator<Map.Entry<ResearchType, Integer>>() {
+        List<Pair<ResearchType, Integer>> demandList = new ArrayList<>(demands.size());
+        for (Map.Entry<ResearchType, Integer> e : demands.entrySet()) {
+            demandList.add(Pair.of(e.getKey(), e.getValue()));
+        }
+        Collections.sort(demandList, new Comparator<Pair<ResearchType, Integer>>() {
             @Override
-            public int compare(Entry<ResearchType, Integer> o1,
-                    Entry<ResearchType, Integer> o2) {
-                double v1 = o1.getKey().productionCost * 1.0 * o1.getValue();
-                double v2 = o2.getKey().productionCost * 1.0 * o2.getValue();
+            public int compare(Pair<ResearchType, Integer> o1,
+                    Pair<ResearchType, Integer> o2) {
+                double v1 = o1.first.productionCost * 1.0 * o1.second;
+                double v2 = o2.first.productionCost * 1.0 * o2.second;
                 return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
             }
         });
         Set<ResearchType> upgradeSet = new HashSet<>();
-        for (Map.Entry<ResearchType, Integer> e : demandList) {
-            ResearchType rt = e.getKey();
+        for (Pair<ResearchType, Integer> e : demandList) {
+            ResearchType rt = e.first;
             if (!running.contains(rt.category.main)) {
                 int limit = 30;
                 if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
@@ -456,7 +450,7 @@ public class OffensePlanner extends Planner {
 
                 int inventory = world.inventoryCount(rt);
                 int available = fleetSelected.inventoryCount(rt);
-                int demand = e.getValue();
+                int demand = e.second;
 
                 UpgradeResult r = checkProduction(rt, demand, available, inventory, limit);
                 if (r == UpgradeResult.ACTION) {
