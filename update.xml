@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.243'>
+  <module id='Game' version='0.95.244'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.244' date='2024-04-22'>
+        <item category='Spacewar,AI' issues='1126'>Fixed a bug that may result in wrong spacebattle layout and wrong AI behaviors.</item>
+      </entry>
       <entry version='0.95.243' date='2024-04-18'>
         <item category='Balance' issues='1130'>Added surface exceptions to building on a race-by-race basis. (By @hemoridos)</item>
         <item category='UI' issues='1131'>Add scrollbars to more options panels. (By @hemoridos)</item>
@@ -274,7 +277,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.243.jar' sha1='DA51C5EA4823D66414123026F6E9BB4C82C6B831'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.244.jar' sha1='C966ABFFE9025488BF8575234DB60133C255325C'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240418a2.zip' sha1='C014B9A12EFC25E9648776776723F95C6B7ADC2D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240418a.zip' sha1='AE680ECA2D9BF4005E0E842DA2ADF18A2753A4AC'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
