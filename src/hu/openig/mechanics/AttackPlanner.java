@@ -175,11 +175,12 @@ public class AttackPlanner extends Planner {
 
                         if (targetPlanet != null) {
                             final AIPlanet ftargetPlanet = targetPlanet;
+                            final Player fExpectedOwner = ftargetPlanet.owner;
                             ownFleet.task = FleetTask.ATTACK;
                             add(new Action0() {
                                 @Override
                                 public void invoke() {
-                                    if (ownFleet.task != FleetTask.SCRIPT) {
+                                    if (ownFleet.task != FleetTask.SCRIPT && fExpectedOwner == ftargetPlanet.planet.owner) {
                                         controls.actionAttackPlanet(ownFleet.fleet, ftargetPlanet.planet, AIAttackMode.CAPTURE);
                                     }
                                 }

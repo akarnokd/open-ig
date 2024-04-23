@@ -752,6 +752,15 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         lastOwner.ai.onPlanetLost(this);
         newOwner.ai.onPlanetConquered(this, lastOwner);
         world.scripting.onConquered(this, lastOwner);
+
+        // Stop other fleets if they targeted this exact planet
+        for (Fleet otherFleet : world.fleets.values()) {
+            if (otherFleet.owner != newOwner
+                    && (otherFleet.mode == FleetMode.ATTACK || otherFleet.task == FleetTask.ATTACK)
+                    && otherFleet.targetPlanet() == this) {
+                otherFleet.stop();
+            }
+        }
     }
     /**
      * Sell remaining units of the last owner at a 25% price.

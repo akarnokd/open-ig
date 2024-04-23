@@ -1530,6 +1530,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         void drawBuildingHelpers(Graphics2D g2, PlanetSurface surface) {
             for (Building b : surface.buildings.iterable()) {
                 Rectangle r = getBoundingRect(b.location);
+                if (r == null) {
+                    // workaround for changed footprints with the new custom alien structures introduced in 0.95.242
+                    continue;
+                }
                 int nameSize = 10;
                 int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
                 int h = (r.height - nameSize) / 2;
