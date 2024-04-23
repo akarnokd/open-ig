@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.244'>
+  <module id='Game' version='0.95.245'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,10 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.245' date='2024-04-23'>
+        <item category='UI,Skirmish' issues='1133'>Fix a render crash due to building footprint changes. Unfortunately, can't repair planets so please rebuild buildings that look odd or clip into each other.</item>
+        <item category='AI' issues='1129,1118'>Avoid a diplomatic incident if a planet changes ownership while other fleets are still inbound for attacking the same planet.</item>
+      </entry>
       <entry version='0.95.244' date='2024-04-22'>
         <item category='Spacewar,AI' issues='1126'>Fixed a bug that may result in wrong spacebattle layout and wrong AI behaviors.</item>
       </entry>
@@ -277,7 +281,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.244.jar' sha1='C966ABFFE9025488BF8575234DB60133C255325C'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.245.jar' sha1='3427EB920B36503403DD94FF4E729DB1538BCAAE'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240418a2.zip' sha1='C014B9A12EFC25E9648776776723F95C6B7ADC2D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240418a.zip' sha1='AE680ECA2D9BF4005E0E842DA2ADF18A2753A4AC'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
