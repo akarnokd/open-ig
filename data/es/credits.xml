@@ -3,51 +3,51 @@
 <h1>Imperium Galactica</h1>
 <h2>(C) Digital Reality, 1993-1997</h2>
 <img>DigitalRealityLogo</img>
-<h2>Development</h2>
-<h3>Programming</h3>
+<h2>Desarrollo</h2>
+<h3>Programación</h3>
 <p>István Árpád 'Spidy' Kiss</p>
 <p>Ferenc Szabó</p>
 
-<h3>3D modelling</h3>
+<h3>Modelado 3D</h3>
 <p>Csaba Gyarmati</p>
 <p>Gábor Fehér</p>
 <p>Tamás Fodor</p>
 <p>Tamás Kreiner</p>
 <p>Károly Rózsa</p>
 
-<h3>Design</h3>
+<h3>Diseño</h3>
 <p>Gábor Fehér</p>
 <p>István Árpád 'Spidy' Kiss</p>
 
-<h3>Music and sound</h3>
+<h3>Música y sonido</h3>
 <p>Tamás Kreiner</p>
 
-<h3>Graphics design</h3>
+<h3>Diseño gráfico</h3>
 <p>Károly Rózsa</p>
 
-<h3>Colony graphics</h3>
+<h3>Gráficos de colonia</h3>
 <p>Tamás Fodor</p>
 
 <img>colony/buildings/human/colony_hub</img>
 
-<h3>Producer</h3>
+<h3>Productor</h3>
 <p>Jason Schreiber</p>
 <p>Nick Bridger</p>
 
-<h3>Associate Producer</h3>
+<h3>Productor asociado</h3>
 <p>Gary Patino</p>
 <p>Cormac Russel</p>
 
-<h3>Quality assurance</h3>
+<h3>Aseguramiento de calidad</h3>
 <p>Andre Garcia</p>
 
-<h3>Project management</h3>
+<h3>Gestión de proyectos</h3>
 <p>Gábor Fehér</p>
 
-<h3>Lead tester and further design</h3>
+<h3>Probador principal y diseño adicional</h3>
 <p>László Peller</p>
 
-<h3>Game testers</h3>
+<h3>Probadores del juego</h3>
 <p>Zoltán Berényi</p>
 <p>Csanád Bösze</p>
 <p>Gábor Lam</p>
@@ -58,11 +58,11 @@
 <p>András Peller</p>
 <p>Mihály Percsi</p>
 
-<h3>Senior producer</h3>
+<h3>Productor senior</h3>
 <p>Steven B. Sargent</p>
 
 <h2>Videos</h2>
-<h3>Actors and Actresses</h3>
+<h3>Actores y actrices</h3>
 
 <p>Dave Johnson  - Gábor Gáti</p>
 <p>Colonel Douglas - Albert Schneider</p>
@@ -88,91 +88,91 @@
 <p>Traders - Károly Rózsa, Tibor Nemes, Lajos Deschán, Miklós Hollósy</p>
 <p>István Szarvas, Józsefné Kis, György Murga</p>
 
-<h3>Voiceover</h3>
+<h3>Doblaje</h3>
 
 <h1>Open Imperium Galactica</h1>
 <h2>2009-2012</h2>
 
 <img>open-ig-logo</img>
 
-<h2>Helpers</h2>
-<h3>Actor/Actress identifications</h3>
+<h2>Ayudantes</h2>
+<h3>Identificación de actores/actrices</h3>
 <p>Gergely Harrach</p>
 <p>Tamás Góz - magyarszinkron.hu</p>
 <p>davlev</p>
 
-<h3>Video reverse engineering</h3>
+<h3>Ingeniería inversa de video</h3>
 <p>TCH</p>
 
-<h3>Splash screen</h3>
+<h3>Pantalla de presentación</h3>
 <p>Gxy</p>
 
-<h3>Ship and weapon firepowers</h3>
+<h3>Potencia de fuego de naves y armas</h3>
 <p>gump891202</p>
 <p>József "Joe" Torma</p>
 
-<h3>Ship equipment configurations</h3>
+<h3>Configuraciones de equipamiento de naves</h3>
 <p>Gergely Harrach</p>
 
-<h3>Sound effects</h3>
+<h3>Efectos de sonido</h3>
 <p>József "Joe" Torma</p>
 
-<h2>Development</h2>
-<h3>Programming</h3>
+<h2>Desarrollo</h2>
+<h3>Programación</h3>
 <p>Dávid Karnok</p>
 <p>Dávid "sigee15" Szigecsán</p>
 
-<h3>Modelling</h3>
+<h3>Modelado</h3>
 <p>Dávid Karnok</p>
 <p>Gxy</p>
 
-<h3>Graphical bugfixes</h3>
+<h3>Corrección de errores gráficos</h3>
 <p>Dávid Karnok</p>
 <p>József "Joe" Torma</p>
 <p>Norbert "Silver83" Pellny</p>
 
-<h3>New elements and gameplay</h3>
+<h3>Nuevos elementos y jugabilidad</h3>
 <p>Dávid Karnok</p>
 
-<h3>Missing IG content</h3>
+<h3>Contenido faltante en el juego</h3>
 <p>Harrach Gergely</p>
 <p>Dávid Karnok</p>
 
-<h3>Testers</h3>
+<h3>Probadores</h3>
 <p>József "Joe" Torma</p>
 <p>Norbert "Silver83" Pellny</p>
 
-<h2>German version</h2>
+<h2>Versión en alemán</h2>
 
-<h3>Sound effects</h3>
+<h3>Efectos de sonido</h3>
 <p>Norbert "Silver83" Pellny</p>
 
-<h3>Graphics</h3>
+<h3>Gráficos</h3>
 <p>Norbert "Silver83" Pellny</p>
 <p>Mister Hanky</p>
 
-<h3>Translation</h3>
+<h3>Traducción</h3>
 <p>Norbert "Silver83" Pellny</p>
 <p>Silvern Tiger</p>
 <p>anonymissimus</p>
 
-<h2>Russian version</h2>
+<h2>Versión en ruso</h2>
 
-<h3>Translation</h3>
+<h3>Traducción</h3>
 <p>Kirill Grigoriev</p>
 <p>X22</p>
 
-<h3>Graphics</h3>
+<h3>Gráficos</h3>
 <p>X22</p>
 
-<h2>French version</h2>
+<h2>Versión en francés</h2>
 
-<h3>Translation</h3>
+<h3>Traducción</h3>
 <p>Benjamin Grosjean</p>
 
-<h2>IG2 DLC developments</h2>
+<h2>Desarrollo del DLC de IG2</h2>
 
-<h3>Spy Graphics</h3>
+<h3>Gráficos de espías</h3>
 <p>Dániel "Danyetz" Bajor</p>
 
 
@@ -190,6 +190,6 @@
 <p></p>
 <p></p>
 <p></p>
-<h1>Thank you for playing!</h1>
+<h1>¡Gracias por jugar!</h1>
 
 </credits>
