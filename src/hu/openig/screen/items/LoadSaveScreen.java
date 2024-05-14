@@ -817,6 +817,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         UICheckBox continuousMoney;
         /** Automatically display objectives on change. */
         UICheckBox autoDisplayObjectives;
+        /** Use freeform movement in spacewar battles. */
+        UICheckBox freeformSpacewarMovement;
 
         void init() {
             reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
@@ -887,6 +889,16 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                     config.autoRepair = autoRepair.selected();
                 }
             };
+
+            freeformSpacewarMovement = new UICheckBox(get("settings.freeform_movement"), 14, commons.common().checkmark, commons.text());
+            freeformSpacewarMovement.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.spacewarFreeformMovement = freeformSpacewarMovement.selected();
+                }
+            };
+
 
             final UIImageButton rmprev = new UIImageButton(commons.common().moveLeft);
             rmprev.setDisabledPattern(commons.common().disabledPattern);
@@ -1058,6 +1070,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                     return format("settings.base_speed_value", config.timestep);
                 }
             };
+            freeformSpacewarMovement.selected(config.spacewarFreeformMovement);
             reequipTanks.selected(config.reequipTanks);
             reequipBombs.selected(config.reequipBombs);
             targetSpecificRockets.selected(config.targetSpecificRockets);
@@ -1094,7 +1107,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         int setComponentLocations() {
             int dy = 5;
             int ddy = 30;
-
+            freeformSpacewarMovement.location(10, dy + 8);
+            dy += ddy;
             reequipTanks.location(10, dy + 8);
             dy += ddy;
             reequipBombs.location(10, dy + 8);

@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -37,12 +39,18 @@ public abstract class GroundwarObject {
         this.matrix = matrix;
         this.angles = computeAngles(matrix[0].length);
     }
+
     /** @return Get the image for the current rotation and phase. */
     public BufferedImage get() {
+        return getImageForAngle(U.normalizedAngle(angle));
+    }
+
+    /** @return Get the image for the current rotation and phase. */
+    protected BufferedImage getImageForAngle(double objectAngle) {
         BufferedImage[] rotation = matrix[fireAnimPhase % matrix.length];
 
         if (cachedAngle != angle) {
-            double a = normalizedAngle() / 2 / Math.PI;
+            double a = objectAngle / 2 / Math.PI;
             if (a < 0) {
                 a = 1 + a;
             }
@@ -72,12 +80,6 @@ public abstract class GroundwarObject {
             cachedAngle = angle;
         }
         return rotation[cachedIndex % rotation.length];
-    }
-    /**
-     * @return the normalized angle between -PI and +PI.
-     */
-    public double normalizedAngle() {
-        return Math.atan2(Math.sin(angle), Math.cos(angle));
     }
     /**
      * @return the maximum phase index

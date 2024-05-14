@@ -102,7 +102,9 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
             BattleInfo battle = world.battle();
             if (battle.attacker.owner == p) {
                 for (SpacewarStructure s : own) {
-                    world.flee(s);
+                    if (!s.flee) {
+                        world.flee(s);
+                    }
                 }
             }
             battle.enemyFlee = p != p.world.player;

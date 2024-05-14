@@ -83,7 +83,8 @@ public class Mission14 extends Mission {
                 && (bi.targetFleet != null && hasTag(bi.targetFleet, "Mission-14-Garthog"))) {
             Player garthog = player("Garthog");
             for (SpacewarStructure s : war.structures(garthog)) {
-                war.move(s, Math.cos(s.angle) * 1000, s.y);
+                s.flee = true;
+                war.move(s, Math.cos(s.angle) * 150, s.y);
             }
             return SpacewarScriptResult.CONTINUE;
         }

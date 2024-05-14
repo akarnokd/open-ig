@@ -8,12 +8,15 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
 import hu.openig.core.Location;
+import hu.openig.core.Pathfinding;
 import hu.openig.model.BattleProjectile.Mode;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -66,10 +69,12 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     public StructureType type;
     /** The available weapon ports. */
     public final List<SpacewarWeaponPort> ports = new ArrayList<>();
+    /** The position with fractional precision in grid coordinates. */
+    public double gridX;
+    /** The position with fractional precision in grid coordinates. */
+    public double gridY;
     /** The angle images of the spaceship. */
     public BufferedImage[] angles;
-    /** The beam angle in an X-Y screen directed coordinate system. */
-    public double angle;
     /** The symmetrically trimmed width of the object image at 0 rotation angle. */
     public int trimmedWidth;
     /** The symmetrically trimmed height of the object image at 0 rotation angle. */
@@ -80,16 +85,14 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     public int movementSpeed;
     /** The range of the shortest beam-weapon. */
     public int minimumRange;
+    /** The range of the longest beam-weapon. */
+    public int maximumRange;
     /** The number of batched fighters. Once hp reaches zero, this number is reduced, the batch will disappear when the count reaches zero. */
     public int count = 1;
     /** The loss counter. */
     public int loss;
-    /** The movement target. */
-    public Point2D.Double moveTo;
     /** The attack target. */
     public SpacewarStructure attackUnit;
-    /** The location on the grid. */
-    public Location gridLocation;
     /** The target of the attack-move if non-null. */
     public Location attackMove;
     /** The next move rotation. */
@@ -97,9 +100,15 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     /** The next move location. */
     public Location nextMove;
     /** The current movement path to the target. */
-    public final List<Location> path = new ArrayList<>();
+    public final LinkedList<Location> path = new LinkedList<>();
+    /** The object the pathfinding used by this structure. */
+    public Pathfinding pathfinding;
     /** Attack anything in range. */
     public boolean guard;
+    /** The structure intends to leave the battle space. */
+    public boolean flee;
+    /** The unit has movement plans. */
+    public boolean hasPlannedMove = false;
     /** Kamikaze mode if greater than zero, indicates impact damage. */
     public double kamikaze;
     /** Kamikaze mode time to live. */
@@ -164,22 +173,27 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         }
         return sum;
     }
-    /** Compute the smallest weapon range. */
-    public void computeMinimumRange() {
+    /** Compute the longest and shortest weapon ranges. */
+    public void computeRanges() {
         minimumRange = Integer.MAX_VALUE;
+        maximumRange = Integer.MIN_VALUE;
         for (SpacewarWeaponPort p : ports) {
             if (p.projectile.mode == Mode.BEAM) {
                 minimumRange = Math.min(minimumRange, p.projectile.range);
+                maximumRange = Math.max(maximumRange, p.projectile.range);
             }
         }
         if (minimumRange == Integer.MAX_VALUE) {
             minimumRange = 0;
         }
+        if (maximumRange == Integer.MIN_VALUE) {
+            maximumRange = 0;
+        }
     }
     @Override
     public BufferedImage get() {
         // -0.5 .. +0.5
-        double a = normalizedAngle() / Math.PI / 2;
+        double a = U.normalizedAngle(angle) / Math.PI / 2;
         if (a < 0) {
             a = 1 + a;
 
@@ -188,12 +202,50 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     }
     @Override
     public Location location() {
-        return Location.of(Math.round(gridLocation.x), Math.round(gridLocation.y));
+        return Location.of((int)Math.round(gridX), (int)Math.round(gridY));
     }
+
+    @Override
+    public void setLocation(double x, double y) {
+        this.gridX = x;
+        this.gridY = y;
+    }
+
     @Override
     public Point2D.Double exactLocation() {
-        return new Point2D.Double(x, y);
+        return new Point2D.Double(gridX, gridY);
     }
+
+    @Override
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    @Override
+    public double getAngle() {
+        return this.angle;
+    }
+
+    @Override
+    public void increaseAngle(double angle) {
+        this.angle += angle;
+    }
+
+    @Override
+    public int getAngleCount() {
+        return angles.length;
+    }
+
+    @Override
+    public int getRotationTime() {
+        return (int)rotationTime;
+    }
+
+    @Override
+    public int getMovementSpeed() {
+        return movementSpeed;
+    }
+
     @Override
     public WarUnit getAttackTarget() {
         return attackUnit;
@@ -203,35 +255,71 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         return attackMove;
     }
     @Override
-    public Location nextMove() {
+    public Location getNextMove() {
         return nextMove;
     }
+
     @Override
-    public Location nextRotate() {
+    public void setNextMove(Location nextMove) {
+        this.nextMove = nextMove;
+    }
+
+    @Override
+    public void clearNextMove() {
+        this.nextMove = null;
+    }
+
+    @Override
+    public Location getNextRotate() {
         return nextRotate;
+    }
+
+    @Override
+    public void setNextRotate(Location nextRotate) {
+        this.nextRotate = nextRotate;
+    }
+
+    @Override
+    public void clearNextRotate() {
+        this.nextRotate = null;
     }
     /** @return true if the unit is moving. */
     @Override
     public boolean isMoving() {
-        return nextMove != null || !path.isEmpty();
+        return nextMove != null || hasPlannedMove;
     }
     /** @return true if the unit is in between cells. */
     @Override
     public boolean inMotion()  {
-        return (x % 1 != 0) || (y % 1 != 0);
+        return (gridX % 1 != 0) || (gridY % 1 != 0);
     }
+
+    @Override
+    public LinkedList<Location> getPath() {
+        return path;
+    }
+
     @Override
     public Player owner() {
         return owner;
+    }
+    @Override
+    public void setPathingMethod(Pathfinding pathfinding) {
+        this.pathfinding = pathfinding;
+    }
+    @Override
+    public Pathfinding getPathingMethod() {
+        return pathfinding;
     }
     /**
      * Merges the new path.
      * @param newPath the new path to follow
      */
     @Override
-    public void mergePath(List<Location> newPath) {
+    public void setPath(List<Location> newPath) {
         path.clear();
         path.addAll(newPath);
+        hasPlannedMove = true;
     }
     /**
      * @return Creates a new deep copy of this record.
@@ -240,6 +328,8 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         SpacewarStructure r = new SpacewarStructure(techId, category);
         r.x = x;
         r.y = y;
+        r.gridX = gridX;
+        r.gridY = gridY;
         r.owner = owner;
         r.angle = angle;
         r.angles = angles;
@@ -262,6 +352,7 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         r.shield = shield;
         r.shieldMax = shieldMax;
         r.minimumRange = minimumRange;
+        r.maximumRange = maximumRange;
         r.building = building;
         r.type = type;
         r.planet = planet;
@@ -284,12 +375,6 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         }
 
         return result;
-    }
-    /**
-     * @return the normalized angle between -PI and +PI.
-     */
-    public double normalizedAngle() {
-        return Math.atan2(Math.sin(angle), Math.cos(angle));
     }
     /**
      * Apply damage to this structure, considering the shield level and
@@ -347,6 +432,17 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
 
         return result;
     }
+
+    @Override
+    public boolean hasPlannedMove() {
+        return hasPlannedMove;
+    }
+
+    @Override
+    public void setHasPlannedMove(boolean hasPlannedMove) {
+        this.hasPlannedMove = hasPlannedMove;
+    }
+
     /** @return is the structure destroyed? */
     public boolean isDestroyed() {
         return count <= 0;
@@ -385,10 +481,10 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         return null;
     }
     /**
-     * Returns whether the space structure is a representation of a missile projectile.
-     * @return true if the space structure is a missile
+     * Returns whether the space structure is a representation of a rocket projectile.
+     * @return true if the space structure is a rocket
      */
-    public boolean isMissile() {
+    public boolean isRocket() {
         return type == StructureType.BOMB
                 || type == StructureType.VIRUS_BOMB
                 || type == StructureType.ROCKET

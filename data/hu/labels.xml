@@ -989,6 +989,7 @@
 	<entry key='settings.sound_volume'>Hanghatás hangerő</entry>
 	<entry key='settings.music_volume'>Zene hangerő</entry>
 	<entry key='settings.video_volume'>Videó hangerő</entry>
+	<entry key='settings.freeform_movement'>Hajók szabadon mozoghatnak űr harcban</entry>
 	<entry key='settings.reequip_tanks'>Tankok újrafeltöltése csata után</entry>
 	<entry key='settings.reequip_bombs'>Bombák/rakéták újrafeltöltése csata után</entry>
 	<entry key='settings.computer_voice_screen'>Számítógép hang képernyőváltáskor</entry>

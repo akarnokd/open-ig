@@ -185,10 +185,11 @@ public class Mission17 extends Mission {
         }
         for (SpacewarStructure s : war.structures(g)) {
             war.stop(s);
+            s.flee = true;
             if (war.battle().helperPlanet == null) {
-                war.move(s, war.space().width + 1000, s.y);
+                war.move(s, war.space().width + 150, s.y);
             } else {
-                war.move(s, -1000, s.y);
+                war.move(s, -150, s.y);
             }
         }
 

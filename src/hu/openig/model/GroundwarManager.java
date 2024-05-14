@@ -1335,7 +1335,7 @@ public class GroundwarManager implements GroundwarWorld {
         Point pg = gun.center();
         double targetAngle = Math.atan2(target.y - pg.y, target.x - pg.x);
 
-        double currentAngle = gun.normalizedAngle();
+        double currentAngle = U.normalizedAngle(gun.angle);
 
         double diff = targetAngle - currentAngle;
         if (diff < -Math.PI) {
@@ -1424,13 +1424,13 @@ public class GroundwarManager implements GroundwarWorld {
         Point pg = u.center();
         Point tg = planet.surface.center(target);
         if (tg.y - pg.y == 0 && tg.x - pg.x == 0) {
-            result.targetAngle = u.normalizedAngle();
+            result.targetAngle = U.normalizedAngle(u.angle);
             result.currentAngle = result.targetAngle;
             result.diff = 0;
         } else {
             result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
 
-            result.currentAngle = u.normalizedAngle();
+            result.currentAngle = U.normalizedAngle(u.angle);
 
             result.diff = result.targetAngle - result.currentAngle;
             if (result.diff < -Math.PI) {

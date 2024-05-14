@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -31,8 +33,6 @@ public class SpacewarProjectile extends SpacewarObject {
     public int ecmLimit;
     /** The damage to inflict. */
     public double damage;
-    /** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
-    public double angle;
     /** The source of this projectile. */
     public SpacewarStructure source;
     /** The targeted structure. */
@@ -49,7 +49,7 @@ public class SpacewarProjectile extends SpacewarObject {
     @Override
     public BufferedImage get() {
         // -0.5 .. +0.5
-        double a = normalizedAngle() / Math.PI / 2;
+        double a = U.normalizedAngle(angle) / Math.PI / 2;
         if (a < 0) {
             a = 1 + a;
 
@@ -58,11 +58,5 @@ public class SpacewarProjectile extends SpacewarObject {
         BufferedImage[] imageAngle = matrix[phaseIndex];
         int angleIndex = ((int)Math.round(imageAngle.length * a)) % imageAngle.length;
         return imageAngle[angleIndex];
-    }
-    /**
-     * @return the normalized angle between -PI and +PI.
-     */
-    public double normalizedAngle() {
-        return Math.atan2(Math.sin(angle), Math.cos(angle));
     }
 }

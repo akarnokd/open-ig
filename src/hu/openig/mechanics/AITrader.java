@@ -42,7 +42,6 @@ import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -560,7 +559,9 @@ public class AITrader implements AIManager {
             if (fh.first * 4 < initialDefense * 3) {
                 if (!battle.enemyFlee) {
                     for (SpacewarStructure s : sts) {
-                        world.flee(s);
+                        if (!s.flee) {
+                            world.flee(s);
+                        }
                     }
                     battle.enemyFlee = true;
                 }
@@ -583,7 +584,10 @@ public class AITrader implements AIManager {
             }
 
             for (SpacewarStructure s : idles) {
-                s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
+                if (!s.hasPlannedMove()) {
+                    s.flee = true;
+                    world.move(s, facing * s.movementSpeed, s.y);
+                }
             }
 
             if (battle.showLanding) {

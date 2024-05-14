@@ -2564,6 +2564,7 @@
   <entry key='settings.auto_display_objectives'>Automatically display objective changes</entry>
   <entry key='settings.continuous_money'>Calcul du moral et de l&#39;argent en temps réel</entry>
   <entry key='settings.day_night_effects'>Cycle jour/nuit</entry>
+  <entry key='settings.freeform_movement'>Use freeform movement scheme in spacewar battles</entry>
   <entry key='settings.fullscreen'>Plein écran</entry>
   <entry key='settings.gameplay'>Jouabilité</entry>
   <entry key='settings.load_save'>Sauvegardes</entry>

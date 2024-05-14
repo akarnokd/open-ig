@@ -212,7 +212,7 @@ public class Mission19 extends Mission {
             } else {
                 for (SpacewarStructure s : war.structures(freeTraders())) {
                     if (s.attackUnit == null) {
-                        war.move(s, Math.cos(s.angle) * 1000, s.y);
+                        war.move(s, Math.cos(s.angle) * -150, s.y);
                     }
                 }
             }

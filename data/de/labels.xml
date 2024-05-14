@@ -42,6 +42,7 @@
 	<entry key='settings.video_volume'>Video Lautstärke</entry>
 	<entry key='settings.subtitles'>Untertitel</entry>
 	<entry key='settings.animatetech'>Technologie animieren</entry>
+    <entry key='settings.freeform_movement'>Use freeform movement scheme in spacewar battles</entry>
 	<entry key='settings.reequip_tanks'>Flotte automatisch mit Panzern ausrüsten</entry>
 	<entry key='settings.reequip_bombs'>Flotte automatisch mit Raketen ausrüsten</entry>
 	<entry key='settings.computer_voice_screen'>Computerstimme bei Bildschirmumschaltung</entry>
