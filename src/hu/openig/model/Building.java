@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.utils.Exceptions;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -312,6 +313,12 @@ public class Building implements HasLocation {
     public Location location() {
         return location;
     }
+
+    @Override
+    public void setLocation(double x, double y) {
+        Exceptions.add(new AssertionError(String.format("Building location is final. Building: %s", this)));
+    }
+
     /**
      * Returns the bounding rectangle of this building (without offset).
      * @return the bounding rectangle

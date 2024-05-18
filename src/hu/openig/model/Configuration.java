@@ -278,6 +278,10 @@ public class Configuration {
     @LoadSave
     @LoadSaveGame
     public boolean buildingTextBackgrounds = true;
+    /** Allow free form movement in spacewar battles. */
+    @LoadSave
+    @LoadSaveGame
+    public boolean spacewarFreeformMovement = false;
     /** The current profile. */
     @LoadSave
     public String currentProfile = "default";

@@ -9,12 +9,12 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.core.Pathfinding;
 import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -39,16 +39,18 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
     public double hp;
     /** The original inventory item. */
     public InventoryItem item;
-    /** Unit target if non null. */
+    /** Unit target if non-null. */
     public GroundwarUnit attackUnit;
-    /** Building target if non null. */
+    /** Building target if non-null. */
     public Building attackBuilding;
-    /** The target of the attack-move if non null. */
+    /** The target of the attack-move if non-null. */
     public Location attackMove;
     /** The weapon cooldown counter. */
     public int cooldown;
     /** The current movement path to the target. */
-    public final LinkedList<Location> path = new LinkedList<>();
+    public LinkedList<Location> path = new LinkedList<>();
+    /** Pathfinding object used by the unit.*/
+    public Pathfinding pathfinding;
     /** The next move rotation. */
     public Location nextRotate;
     /** The next move location. */
@@ -69,6 +71,8 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
     public boolean guard = true;
     /** Is the unit selected? */
     public boolean selected;
+    /** The unit has movement plans. */
+    public boolean hasPlannedMove = false;
     /**
      * Orders the units based on damage level.
      */
@@ -78,15 +82,50 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
             return java.lang.Double.compare(o1.hp / o1.model.hp, o2.hp / o2.model.hp);
         }
     };
+
+    @Override
+    public boolean hasPlannedMove() {
+        return hasPlannedMove;
+    }
+
+    @Override
+    public void setHasPlannedMove(boolean hasPlannedMove) {
+        this.hasPlannedMove = hasPlannedMove;
+    }
+
     /** @return is this unit destroyed? */
     public boolean isDestroyed() {
         return hp <= 0;
+    }
+    @Override
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+    @Override
+    public double getAngle() {
+        return this.angle;
+    }
+    @Override
+    public void increaseAngle(double angle) {
+        this.angle += angle;
+    }
+    @Override
+    public int getAngleCount() {
+        return angles.length;
+    }
+    @Override
+    public int getRotationTime() {
+        return model.rotationTime;
+    }
+    @Override
+    public int getMovementSpeed() {
+        return model.movementSpeed;
     }
     /**
      * Apply damage to this unit.
      * @param points the points of damage
      */
-    public void damage(double points) {
+    public void applyDamage(double points) {
         hp = Math.max(0, hp - points);
     }
     /**
@@ -102,7 +141,12 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
         return Location.of((int)Math.round(x), (int)Math.round(y));
     }
     @Override
-    public Double exactLocation() {
+    public void setLocation(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+    @Override
+    public Point2D.Double exactLocation() {
         return new Point2D.Double(x, y);
     }
     @Override
@@ -114,12 +158,28 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
         return attackMove;
     }
     @Override
-    public Location nextMove() {
+    public Location getNextMove() {
         return nextMove;
     }
     @Override
-    public Location nextRotate() {
+    public void setNextMove(Location nextMove) {
+        this.nextMove = nextMove;
+    }
+    @Override
+    public void clearNextMove() {
+        this.nextMove = null;
+    }
+    @Override
+    public Location getNextRotate() {
         return nextRotate;
+    }
+    @Override
+    public void setNextRotate(Location nextRotate) {
+        this.nextRotate = nextRotate;
+    }
+    @Override
+    public void clearNextRotate() {
+        this.nextRotate = null;
     }
     @Override
     public String toString() {
@@ -157,12 +217,16 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
     /** @return true if the unit is moving. */
     @Override
     public boolean isMoving() {
-        return nextMove != null || !path.isEmpty();
+        return nextMove != null || hasPlannedMove;
     }
     /** @return true if the unit is in between cells. */
     @Override
     public boolean inMotion()  {
         return (x % 1 != 0) || (y % 1 != 0);
+    }
+    @Override
+    public LinkedList<Location> getPath() {
+        return path;
     }
     /**
      * @return the target cell of movement or null if not moving
@@ -264,12 +328,36 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
         return new Point(px + model.width / 2, py + model.height / 2);
     }
     /**
+     * @return the isometric angle used for rendering.
+     */
+    public double isometricAngle() {
+        double angle = U.normalizedAngle(this.angle + 0.733038);
+        if (((Math.PI / 2) > angle) && (-(Math.PI / 2) < angle)) {
+            return Math.atan(Math.tan(-angle) / 2);
+        } else {
+            return Math.atan(Math.tan(-angle) / 2) + Math.PI;
+        }
+    }
+    @Override
+    public BufferedImage get() {
+        return getImageForAngle(isometricAngle());
+    }
+    @Override
+    public Pathfinding getPathingMethod() {
+        return pathfinding;
+    }
+    @Override
+    public void setPathingMethod(Pathfinding pathfinding) {
+        this.pathfinding = pathfinding;
+    }
+    /**
      * Merges the new path.
      * @param newPath the new path to follow
      */
     @Override
-    public void mergePath(List<Location> newPath) {
+    public void setPath(List<Location> newPath) {
         path.clear();
         path.addAll(newPath);
+        hasPlannedMove = true;
     }
 }

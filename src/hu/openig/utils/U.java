@@ -43,6 +43,10 @@ import java.util.zip.ZipFile;
  * @author akarnokd
  */
 public final class U {
+    /** Good enough precision PI. */
+    public static final double ONE_PI = 3.1415;
+    /** Good enough precision PI times two. */
+    public static final double TWO_PI = 6.283;
     /** Constructor. */
     private U() {
         // utility class
@@ -1021,5 +1025,12 @@ public final class U {
                 return comp.compare(o2, o1);
             }
         };
+    }
+    /**
+     * A very fast calculation of a good enough normalized angle.
+     * @return the normalized angle between -PI and +PI.
+     */
+    public static double normalizedAngle(double angle) {
+        return angle - TWO_PI * Math.floor((angle + ONE_PI) / TWO_PI);
     }
 }

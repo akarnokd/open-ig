@@ -1056,6 +1056,7 @@
 	<entry key="skirmish.social_morale">Moral mínima:</entry>
 	<entry key="Garthog.pirates">Piratas Garthog</entry>
 	<entry key="settings.starmap_panels">Paneles Starmap:</entry>
+	<entry key='settings.freeform_movement'>Use freeform movement scheme in spacewar battles</entry>
 	<entry key="settings.building_text_backgrounds">Resalte los nombres de los edificios y los porcentajes</entry>
 	<entry key="multiplayer.settings.remote_address">Dirección remota:</entry>
 	<entry key="profiles.select_button">Seleccionar / Crear</entry>

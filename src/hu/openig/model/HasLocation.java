@@ -20,6 +20,10 @@ public interface HasLocation {
     /** @return the exact fractional location. */
     Point2D.Double exactLocation();
     /** @return the integral location. */
-
     Location location();
+    /** Set new location.
+     *  @param x the x coordinate
+     *  @param y the x coordinate
+     */
+    void setLocation(double x, double y);
 }

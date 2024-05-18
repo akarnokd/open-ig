@@ -20,6 +20,10 @@ public abstract class SpacewarObject {
     public double x;
     /** The current location. */
     public double y;
+    /** The position with fractional precision in grid coordinates. */
+    public double gridX;
+    /** The position with fractional precision in grid coordinates. */
+    public double gridY;
     /** The owner player. */
     public Player owner;
     /**
@@ -56,6 +60,8 @@ public abstract class SpacewarObject {
         int h = other.get().getHeight();
         return intersects(other.x - (w / 2d), other.y - (h / 2d), w , h);
     }
+    /** The object angle in an X-Y screen directed coordinate system. */
+    public double angle;
     /**
      * Test if the object is completely within the specified bounds.
      * @param rx the rectangle left

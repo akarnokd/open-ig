@@ -183,14 +183,7 @@ public class Mission17 extends Mission {
                 return SpacewarScriptResult.CONTINUE;
             }
         }
-        for (SpacewarStructure s : war.structures(g)) {
-            war.stop(s);
-            if (war.battle().helperPlanet == null) {
-                war.move(s, war.space().width + 1000, s.y);
-            } else {
-                war.move(s, -1000, s.y);
-            }
-        }
+        war.battle().enemyFlee = true;
 
         return SpacewarScriptResult.PLAYER_WIN;
     }

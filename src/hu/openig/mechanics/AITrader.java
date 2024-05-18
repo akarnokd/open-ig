@@ -33,16 +33,13 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
-import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
-import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -531,20 +528,7 @@ public class AITrader implements AIManager {
 
                 if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
                     if (lastVisitedPlanet.get(our) == battle.helperPlanet) {
-
                         // flip positions
-
-                        Dimension d = world.space();
-                        for (SpacewarStructure s : world.structures()) {
-                            if (s.type == StructureType.SHIP) {
-                                s.x = d.width - s.x - 100;
-                                if (battle.showLanding && s.owner == player) {
-                                    s.x -= 100;
-                                }
-                                s.angle -= Math.PI;
-                            }
-                        }
-
                         battle.invert = true;
                     }
                 }
@@ -564,7 +548,7 @@ public class AITrader implements AIManager {
                     }
                     battle.enemyFlee = true;
                 }
-                if (battle.showLanding) {
+                if (battle.showLanding && battle.invert) {
                     Point lp = world.landingPlace();
                     for (SpacewarStructure s : sts) {
                         double d1 = lp.distance(s.x, s.y);
@@ -577,18 +561,29 @@ public class AITrader implements AIManager {
             }
             // move a bit forward
             int facing = world.facing();
-
             if (battle.invert) {
                 facing = -facing;
             }
 
-            for (SpacewarStructure s : idles) {
-                s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
+            for (SpacewarStructure s : new ArrayList<>(idles)) {
+                Point lp = world.landingPlace();
+                if (!s.hasPlannedMove() && !battle.enemyFlee) {
+                    if (battle.showLanding && !battle.invert) {
+                        world.move(s, lp.x, lp.y);
+                    } else {
+                        s.flee = true;
+                        world.move(s, Math.max(facing * 150, facing * (world.space().width + 150)), s.y);
+                    }
+                    idles.remove(s);
+                }
             }
 
             if (battle.showLanding) {
                 Point lp = world.landingPlace();
                 for (SpacewarStructure s : sts) {
+                    if (!s.flee) {
+                        world.move(s, lp.x, lp.y);
+                    }
                     double d1 = lp.distance(s.x, s.y);
                     if (d1 <= 5 || s.x >= lp.x) {
                         return SpacewarAction.SURRENDER;

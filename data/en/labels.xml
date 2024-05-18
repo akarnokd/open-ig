@@ -1853,6 +1853,7 @@
   <entry key='settings.computer_voice_notify'>Computer voice for notification</entry>
   <entry key='settings.computer_voice_screen'>Computer voice for screen switch</entry>
   <entry key='settings.custom_cursors'>Custom cursors</entry>
+  <entry key='settings.freeform_movement'>Use freeform movement scheme in spacewar battles</entry>
   <entry key='settings.gameplay'>Gameplay</entry>
   <entry key='settings.load_save'>Load / Save</entry>
   <entry key='settings.music_volume'>Music volume</entry>

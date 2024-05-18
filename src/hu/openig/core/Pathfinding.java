@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class implementing the pathfinding algorithms for ground battles.
+ * Class implementing the pathfinding algorithms.
  * @author akarnokd, 2011.09.06.
  */
 public class Pathfinding extends AStarSearch<Location> {
@@ -30,7 +30,43 @@ public class Pathfinding extends AStarSearch<Location> {
                 return neighbors(value);
             }
         };
+
+        this.estimation = defaultEstimator;
+        this.distance = defaultDistance;
+        this.trueDistance = defaultTrueDistance;
     }
+
+    /**
+     * The default estimator for distance away from the target.
+     */
+    final Func2<Location, Location, Integer> defaultEstimator = new Func2<Location, Location, Integer>() {
+        @Override
+        public Integer invoke(Location t, Location u) {
+            return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
+        }
+    };
+
+    /** Routine that tells the distance between two neighboring locations. */
+    final Func2<Location, Location, Integer> defaultDistance = new Func2<Location, Location, Integer>() {
+        @Override
+        public Integer invoke(Location t, Location u) {
+            if (t.x == u.x || u.y == t.y) {
+                return 1000;
+            }
+            return 1414;
+        }
+    };
+
+    /**
+     * Computes the distance between any cells.
+     */
+    final Func2<Location, Location, Integer> defaultTrueDistance = new Func2<Location, Location, Integer>() {
+        @Override
+        public Integer invoke(Location t, Location u) {
+            return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
+        }
+    };
+
     /**
      * Search for a path leading closest to the given destination.
      * @param initial the initial location
@@ -99,39 +135,39 @@ public class Pathfinding extends AStarSearch<Location> {
         Location bottom = current.delta(0, 1);
         Location top = current.delta(0, -1);
 
-        if (isPassable.invoke(left)) {
+        if (!isBlocked.invoke(left) && isPassable.invoke(left)) {
             result.add(left);
         }
-        if (isPassable.invoke(right)) {
+        if (!isBlocked.invoke(right) && isPassable.invoke(right)) {
             result.add(right);
         }
-        if (isPassable.invoke(bottom)) {
+        if (!isBlocked.invoke(bottom) && isPassable.invoke(bottom)) {
             result.add(bottom);
         }
-        if (isPassable.invoke(top)) {
+        if (!isBlocked.invoke(top) && isPassable.invoke(top)) {
             result.add(top);
         }
         if (!isBlocked.invoke(left) && !isBlocked.invoke(top)) {
             Location c = current.delta(-1, -1);
-            if (isPassable.invoke(c)) {
+            if (!isBlocked.invoke(c) && isPassable.invoke(c)) {
                 result.add(c);
             }
         }
         if (!isBlocked.invoke(left) && !isBlocked.invoke(bottom)) {
             Location c = current.delta(-1, 1);
-            if (isPassable.invoke(c)) {
+            if (!isBlocked.invoke(c) && isPassable.invoke(c)) {
                 result.add(c);
             }
         }
         if (!isBlocked.invoke(right) && !isBlocked.invoke(top)) {
             Location c = current.delta(1, -1);
-            if (isPassable.invoke(c)) {
+            if (!isBlocked.invoke(c) && isPassable.invoke(c)) {
                 result.add(c);
             }
         }
         if (!isBlocked.invoke(right) && !isBlocked.invoke(bottom)) {
             Location c = current.delta(1, 1);
-            if (isPassable.invoke(c)) {
+            if (!isBlocked.invoke(c) && isPassable.invoke(c)) {
                 result.add(c);
             }
         }

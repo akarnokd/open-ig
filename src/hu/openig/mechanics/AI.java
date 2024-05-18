@@ -229,12 +229,10 @@ public class AI implements AIManager {
             for (SpacewarStructure s : world.structures(p)) {
                 s.guard |= s.type == StructureType.STATION || s.type == StructureType.PROJECTOR;
                 if (s.type == StructureType.SHIP
-
                         && s.item != null
-
                         && s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
                         && s.attackUnit != null && !s.attackUnit.isDestroyed()) {
-                    if (s.count == 1 && s.hp * 10 < s.hpMax) {
+                    if (s.count == 1 && s.hp * 10 < s.hpMax && s.kamikaze == 0) {
                         world.attack(s, s.attackUnit, Mode.KAMIKAZE);
                     }
                 }

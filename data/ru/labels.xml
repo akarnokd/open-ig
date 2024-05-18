@@ -2374,6 +2374,7 @@
   <entry key='settings.confirm_overwrite'>Перезаписать игру?</entry>
   <entry key='settings.confirm_quit'>Покидаете игру?</entry>
   <entry key='settings.fullscreen'>Полный экран</entry>
+  <entry key='settings.freeform_movement'>Use freeform movement scheme in spacewar battles</entry>
   <entry key='settings.gameplay'>Игра...</entry>
   <entry key='settings.load_save'>Загрузить / Сохранить</entry>
   <entry key='settings.movie_click_skip'>Пропускать видеоролики по клику мыши</entry>
