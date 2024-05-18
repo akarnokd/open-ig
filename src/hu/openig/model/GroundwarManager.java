@@ -492,7 +492,7 @@ public class GroundwarManager implements GroundwarWorld {
             if (u.owner != owner) {
                 if (U.cellInRange(cx, cy, u.x, u.y, area)) {
                     if (!u.isDestroyed()) {
-                        u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
+                        u.applyDamage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
                         if (u.isDestroyed()) {
                             createExplosion(u, ExplosionType.GROUND_RED);
 
@@ -1223,7 +1223,7 @@ public class GroundwarManager implements GroundwarWorld {
         } else
         if (unitWithinRange(u, u.attackUnit)) {
             if (!u.attackUnit.isDestroyed()) {
-                u.attackUnit.damage(u.damage());
+                u.attackUnit.applyDamage(u.damage());
                 if (u.attackUnit.isDestroyed()) {
                     playSounds.add(u.attackUnit.model.destroy);
                     createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
@@ -1273,7 +1273,7 @@ public class GroundwarManager implements GroundwarWorld {
 
                         && g.inRange(g.attack)) {
                     if (!g.attack.isDestroyed()) {
-                        g.attack.damage(g.damage());
+                        g.attack.applyDamage(g.damage());
                         if (g.attack.isDestroyed()) {
                             playSounds.add(g.attack.model.destroy);
                             createExplosion(g.attack, ExplosionType.GROUND_RED);

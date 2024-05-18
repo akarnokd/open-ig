@@ -72,10 +72,11 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
             hpActual += s.hp + Math.max(0, s.shield);
         }
         return Pair.of(hpActual, hpTotal);
-    }    /**
-     * Check if the current set of structures no longer has any weapons.
+    }
+    /**
+     * Check if the current set of structures has any weapons.
      * @param structs the structure list
-     * @return true if the set of structures has no weapons
+     * @return true if the set of structures has weapons
      */
     public boolean haveAnyWeapons(List<SpacewarStructure> structs) {
         for (SpacewarStructure s : structs) {
@@ -91,6 +92,13 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
     public SpacewarAction spaceBattle(List<SpacewarStructure> idles) {
         List<SpacewarStructure> own = world.structures(p);
 
+        if (world.battle().enemyFlee && !world.battle().fleeingBlockedByPlanet(p)) {
+            for (SpacewarStructure s : own) {
+                world.flee(s);
+            }
+            return SpacewarAction.FLEE;
+        }
+
         if (haveAnyWeapons(own)) {
             if (!world.battle().canFlee(p) || !checkFlee(own)) {
                 AI.defaultAttackBehavior(world, idles, p);
@@ -102,13 +110,10 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
             BattleInfo battle = world.battle();
             if (battle.attacker.owner == p) {
                 for (SpacewarStructure s : own) {
-                    if (!s.flee) {
-                        world.flee(s);
-                    }
+                    world.flee(s);
                 }
             }
             battle.enemyFlee = p != p.world.player;
-            return SpacewarAction.FLEE;
         }
         AI.defaultAttackBehavior(world, idles, p);
 

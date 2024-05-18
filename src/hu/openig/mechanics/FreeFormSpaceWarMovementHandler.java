@@ -30,7 +30,7 @@ public class FreeFormSpaceWarMovementHandler extends WarMovementHandler {
     }
 
     @Override
-    public void moveUnit(WarUnit unit) {
+    public boolean moveUnit(WarUnit unit) {
         SpacewarStructure ship = (SpacewarStructure) unit;
         double nextX = ship.getNextMove().x;
         double nextY = ship.getNextMove().y;
@@ -46,8 +46,10 @@ public class FreeFormSpaceWarMovementHandler extends WarMovementHandler {
                 ship.gridX = nextX;
                 ship.gridY = nextY;
                 clearUnitGoal(unit);
+                return true;
             }
         }
+        return false;
     }
 
     @Override

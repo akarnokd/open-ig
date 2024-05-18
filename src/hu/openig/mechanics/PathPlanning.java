@@ -53,13 +53,7 @@ public class PathPlanning implements Callable<PathPlanning> {
 
     @Override
     public PathPlanning call() {
-        Pair<Boolean, List<Location>> result;
-        try {
-            result = unit.getPathingMethod().searchApproximate(current, goal);
-        } catch (NullPointerException e) {
-            System.out.println(unit);
-            throw e;
-        }
+        Pair<Boolean, List<Location>> result = unit.getPathingMethod().searchApproximate(current, goal);
         pathingAttempts--;
         if (result.first) {
             pathFound = true;

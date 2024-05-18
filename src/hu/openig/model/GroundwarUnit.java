@@ -125,7 +125,7 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
      * Apply damage to this unit.
      * @param points the points of damage
      */
-    public void damage(double points) {
+    public void applyDamage(double points) {
         hp = Math.max(0, hp - points);
     }
     /**

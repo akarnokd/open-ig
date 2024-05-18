@@ -4567,7 +4567,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             moved = true;
             stop(u);
             move(u, lm.x, lm.y);
-        } else {
+        } else if (!selection.isEmpty()) {
             // Group units up nicely so paths to the generated destinations will intersect each other less
             Collections.sort(selection, new Comparator<GroundwarUnit>() {
                 @Override
@@ -4726,7 +4726,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             u.lastX = u.x;
             u.lastY = u.y;
             if (u.hasPlannedMove) {
-                movementHandler.moveUnit(u);
+                if (movementHandler.moveUnit(u)) {
+                    u.guard = true;
+                }
                 //                if (u.nextMove == null) {
                 Location loc = u.location();
                 Mine m = mines.get(loc);
@@ -5013,7 +5015,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         stop(u);
                     }
                 }
-                if ((am != null || !u.hasPlannedMove()) && directAttackUnits.contains(u.model.type)) {
+                if ((am != null || (!u.hasPlannedMove() && u.guard)) && directAttackUnits.contains(u.model.type)) {
                     // find a new target in range
                     List<GroundwarUnit> targets = unitsInRange(u);
                     if (targets.size() > 0) {
@@ -5278,15 +5280,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         if (u.model.type == GroundwarUnitType.ARTILLERY) {
             damageArea(u.attackUnit.x, u.attackUnit.y, u.damage(), u.model.area, u.owner);
-        } else
-        if (u.model.type == GroundwarUnitType.KAMIKAZE
-
-            && u.hp * 10 < u.model.hp) {
+        } else if (u.model.type == GroundwarUnitType.KAMIKAZE   && u.hp * 10 < u.model.hp) {
             special(u);
-        } else
-        if (unitWithinRange(u, u.attackUnit)) {
+        } else if (unitWithinRange(u, u.attackUnit)) {
             if (!u.attackUnit.isDestroyed()) {
-                u.attackUnit.damage(u.damage());
+                u.attackUnit.applyDamage(u.damage());
                 if (u.attackUnit.isDestroyed()) {
                     effectSound(u.attackUnit.model.destroy);
                     createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
@@ -5326,7 +5324,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (u.owner != owner) {
                 if (cellInRange(cx, cy, u.x, u.y, area)) {
                     if (!u.isDestroyed()) {
-                        u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
+                        u.applyDamage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
                         if (u.isDestroyed()) {
                             createExplosion(u, ExplosionType.GROUND_RED);
 
@@ -5374,7 +5372,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                         && unitInRange(g, g.attack)) {
                     if (!g.attack.isDestroyed()) {
-                        g.attack.damage(g.damage());
+                        g.attack.applyDamage(g.damage());
                         if (g.attack.isDestroyed()) {
                             effectSound(g.attack.model.destroy);
                             createExplosion(g.attack, ExplosionType.GROUND_RED);
@@ -5682,7 +5680,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (u.selected /* && u.owner == player() */) { // FIXME player only
                 stopped = true;
                 stop(u);
-                u.guard = true;
             }
         }
         for (GroundwarGun g : guns) {
@@ -6403,7 +6400,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     @Override
     public void move(GroundwarUnit u, int x, int y) {
-        u.guard = true;
+        u.guard = false;
         Location lm = Location.of(x, y);
         movementHandler.setMovementGoal(u, lm);
         if (!u.inMotion()) {
@@ -6455,6 +6452,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         u.attackMove = null;
         u.advanceOnBuilding = null;
         u.advanceOnUnit = null;
+        u.guard = true;
         minelayers.remove(u);
     }
     @Override

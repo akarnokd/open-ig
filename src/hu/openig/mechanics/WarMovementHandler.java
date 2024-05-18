@@ -39,8 +39,9 @@ public abstract class WarMovementHandler {
     public abstract void setMovementGoal(WarUnit unit, Location loc);
     /** Move a handled unit by one step.
      * @param unit the unit to move
+     * @return the unit finished it's planned movement
      * */
-    public abstract void moveUnit(WarUnit unit);
+    public abstract boolean moveUnit(WarUnit unit);
     /** Clear the movement goal of a unit handled by this object.
      * @param unit the unit to move
      * */

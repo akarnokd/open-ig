@@ -9,28 +9,14 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.model.BattleInfo;
+import hu.openig.model.*;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
-import hu.openig.model.Fleet;
-import hu.openig.model.FleetTask;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.ModelUtils;
-import hu.openig.model.ObjectiveState;
-import hu.openig.model.Planet;
-import hu.openig.model.Player;
-import hu.openig.model.ResearchSubCategory;
-import hu.openig.model.ResearchType;
-import hu.openig.model.SoundTarget;
-import hu.openig.model.SoundType;
-import hu.openig.model.SpacewarScriptResult;
-import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
-import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
-import java.awt.Dimension;
+import java.awt.*;
 
 /**
  * Mission 19: blockade of Zeuson.
@@ -181,12 +167,11 @@ public class Mission19 extends Mission {
 
             if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
                 if (battle.helperPlanet.id.equals("Zeuson")) {
-
+                    war.battle().showLanding = true;
                     Dimension d = war.space();
                     for (SpacewarStructure s : war.structures()) {
                         if (s.type == StructureType.SHIP) {
                             s.x = d.width - s.x - 100;
-                            s.angle -= Math.PI;
                         }
                     }
 
@@ -210,9 +195,24 @@ public class Mission19 extends Mission {
 
                 war.battle().enemyFlee = true;
             } else {
+
+                int facing = war.facing();
+                if (war.battle().invert) {
+                    facing = -facing;
+                }
                 for (SpacewarStructure s : war.structures(freeTraders())) {
                     if (s.attackUnit == null) {
-                        war.move(s, Math.cos(s.angle) * -150, s.y);
+                        s.flee = true; //Needed to allow pathing outside the screen
+                        war.move(s, Math.max(facing * 150, facing * (war.space().width + 150)), s.y);
+                    }
+                }
+            }
+            if (war.battle().showLanding && war.battle().invert) {
+                Point lp = war.landingPlace();
+                for (SpacewarStructure s : war.structures(freeTraders())) {
+                    double d1 = lp.distance(s.x, s.y);
+                    if ((d1 <= 5)) {
+                        war.removeStructure(s);
                     }
                 }
             }

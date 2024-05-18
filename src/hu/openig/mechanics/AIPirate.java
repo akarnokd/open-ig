@@ -116,9 +116,7 @@ public class AIPirate implements AIManager {
                 AI.defaultAttackBehavior(world, idles, p);
             } else {
                 for (SpacewarStructure s : sts) {
-                    if (!s.flee) {
-                        world.flee(s);
-                    }
+                    world.flee(s);
                 }
                 world.battle().enemyFlee = true;
             }

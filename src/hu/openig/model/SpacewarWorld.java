@@ -33,6 +33,11 @@ public interface SpacewarWorld {
      */
     List<SpacewarStructure> structures(Player owner);
     /**
+     * Remove a structure from the battle.
+     * @param sws the structure to remove
+     */
+     void removeStructure(SpacewarStructure sws);
+    /**
      * Returns the list of enemies to the structure.
      * @param s the structure
 

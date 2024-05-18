@@ -308,4 +308,14 @@ public class BattleInfo {
         }
         return false;
     }
+
+    /**
+     * Returns true if the particular player can flee from battle.
+     * @param p the player to check
+     * @return true if flee is allowed
+     */
+    public boolean fleeingBlockedByPlanet(Player p) {
+        return helperPlanet != null && helperPlanet.owner == p;
+    }
+
 }

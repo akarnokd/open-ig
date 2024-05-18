@@ -57,7 +57,10 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
     }
     @Override
     public void setMovementGoal(WarUnit unit, Location loc) {
-        pathPlanner.addPathPlanning(unit, loc);
+        Location lastMovementGoal = unit.getPath().peekLast();
+        if (lastMovementGoal == null || !unit.getPath().peekLast().equals(loc)) {
+            pathPlanner.addPathPlanning(unit, loc);
+        }
     }
 
     @Override
@@ -81,15 +84,15 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
         }
     }
     @Override
-    public void moveUnit(WarUnit unit) {
+    public boolean moveUnit(WarUnit unit) {
         if (unit.isDestroyed()) {
-            return;
+            return false;
         }
         if (unit.getNextMove() == null) {
             // I have no better idea when to do an occasional but this seems to work well enough
             if (Math.random() > 0.90f) {
                 repath(unit);
-                return;
+                return false;
             }
             unit.setNextMove(unit.getPath().peekFirst());
             unit.setNextRotate(unit.getNextMove());
@@ -98,7 +101,7 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
             if (!ignoreObstacles(unit.getNextMove(), unit) && (!isPassable(unit.getNextMove(), unit) || isCellReserved(unit.getNextMove(), unit))) {
                 // trigger replanning
                 repath(unit);
-                return;
+                return false;
             }
         }
 
@@ -106,7 +109,7 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
             for (WarUnit wunit : unitsForPathfinding.get(unit.getNextMove())) {
                 if (wunit != unit && !wunit.inMotion() && !needsRotation(wunit, wunit.getNextRotate())) {
                     repath(unit);
-                    return;
+                    return false;
                 }
             }
         }
@@ -115,20 +118,22 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
             unit.setNextRotate(null);
         }
         if (unit.getNextRotate() == null) {
-            moveUnitStep(unit, simulationDelay);
+            return moveUnitStep(unit, simulationDelay);
         }
+        return false;
     }
 
     /**
      * Move the war unit one step.
      * @param unit the unit
      * @param time the available time
+     * @return the unit finished it's planned path
      */
-    void moveUnitStep(WarUnit unit, double time) {
+    boolean moveUnitStep(WarUnit unit, double time) {
         double dv = 1.0 * time / unit.getMovementSpeed() / cellSize;
         // detect collision
         if (!ignoreObstacles(unit.getNextMove(), unit) && !reserveCellFor(unit)) {
-            return;
+            return false;
         }
         double distanceToTarget = Math.hypot(unit.getNextMove().x - unit.exactLocation().x, unit.getNextMove().y - unit.exactLocation().y);
 
@@ -147,11 +152,14 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
                     unit.setNextMove(nextCell);
                     moveUnitStep(unit, time2);
                 }
+            } else {
+                return true;
             }
         } else {
             double angle = Math.atan2(unit.getNextMove().y - unit.exactLocation().y, unit.getNextMove().x - unit.exactLocation().x);
             updateUnitLocation(unit, dv * Math.cos(angle), dv * Math.sin(angle), true);
         }
+        return false;
     }
     /**
      * Reserve the next movement cell for the war unit.
@@ -291,13 +299,10 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
      * @return true if the place is passable
      */
     boolean isPassable(Location loc, WarUnit unit) {
-            Set<WarUnit> wunits = unitsForPathfinding.get(loc);
-            if (loc.equals(unit.location())) {
-                return true;
-            }
             if (ignoreObstacles(loc, unit)) {
                 return true;
             }
+            Set<WarUnit> wunits = unitsForPathfinding.get(loc);
             if (wunits == null) {
                 return true;
             }
