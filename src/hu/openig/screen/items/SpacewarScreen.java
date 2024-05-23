@@ -3782,7 +3782,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         for (SpacewarStructure s : structures) {
             s.selected = canControl(s);
         }
-        enableFleetControls(true);
+        enableSelectedFleetControls();
     }
     /**
      * Select the specified button and deselect others.
@@ -3800,7 +3800,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 guard(ship);
             }
         }
-        enableFleetControls(true);
+        enableSelectedFleetControls();
     }
     /**
      * Create explosion object for the given spacewar structure.

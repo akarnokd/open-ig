@@ -137,15 +137,23 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     /** The UI panel element for audio settings. */
     @Settings(page = SettingsPage.AUDIO)
     UIPanel audioSettings;
+    /** The inner contents of the UI panel element for audio settings. */
+    AuidoSettingsPanel audioContents = new AuidoSettingsPanel();
     /** The UI panel element for control settings. */
     @Settings(page = SettingsPage.CONTROL)
+    /** The inner contents of the UI panel element for control settings. */
     UIPanel controlSettings;
+    ControlSettingsPanel controlContents = new ControlSettingsPanel();
     /** The UI panel element for gameplay settings. */
     @Settings(page = SettingsPage.GAMEPLAY)
+    /** The inner contents of the UI panel element for gameplay settings. */
     UIPanel gamePlaySettings;
+    GamePlaySettingsPanel gpContents = new GamePlaySettingsPanel();
     /** The UI panel element for visual settings. */
     @Settings(page = SettingsPage.VISUAL)
+    /** The inner contents of the UI panel element for visual settings. */
     UIPanel visualSettings;
+    VisualSettingsPanel visualContents = new VisualSettingsPanel();
     /** The save name. */
     @Settings(page = SettingsPage.LOAD_SAVE)
     UILabel saveName;
@@ -329,7 +337,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         // -----------------------------------------------------------------------------------------------
 
         audioSettings = new UIPanel();
-        AuidoSettingsPanel audioContents = new AuidoSettingsPanel();
         audioContents.size(innerContentDimension);
         audioContents.init();
         audioSettings.backgroundColor(0x80000000);
@@ -340,7 +347,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         // -----------------------------------------------------------------------------------------------
 
         controlSettings = new UIPanel();
-        ControlSettingsPanel controlContents = new ControlSettingsPanel();
         controlContents.size(innerContentDimension);
         controlContents.init();
         controlSettings.backgroundColor(0x80000000);
@@ -351,7 +357,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         // -----------------------------------------------------------------------------------------------
 
         gamePlaySettings = new UIPanel();
-        GamePlaySettingsPanel gpContents = new GamePlaySettingsPanel();
         gpContents.size(innerContentDimension);
         gpContents.init();
         gamePlaySettings.backgroundColor(0x80000000);
@@ -366,7 +371,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         // -----------------------------------------------------------------------------------------------
 
         visualSettings = new UIPanel();
-        VisualSettingsPanel visualContents = new VisualSettingsPanel();
         visualContents.size(innerContentDimension);
         visualContents.init();
         visualSettings.backgroundColor(0x80000000);
@@ -503,6 +507,11 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         setTooltip(audioPage, "options.sound.tooltip");
         setTooltip(controlPage, "options.mouse.tooltip");
         setTooltip(visualPage, "options.visual.tooltip");
+
+        audioContents.init();
+        controlContents.init();
+        gpContents.init();
+        visualContents.init();
 
         commons.setCursor(Cursors.POINTER);
     }
@@ -896,6 +905,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.spacewarFreeformMovement = freeformSpacewarMovement.selected();
+                    System.out.println("spacewarFreeformMovement in config: " + config.spacewarFreeformMovement + " Config Object:" + config);
+
                 }
             };
 
@@ -943,6 +954,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.automaticBattle = automaticBattle.selected();
+                    System.out.println("automaticBattle in config: " + config.automaticBattle + " Config Object:" + config);
                 }
             };
 
@@ -1781,6 +1793,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.computerVoiceScreen = computerVoiceScreen.selected();
+                    System.out.println("computerVoiceScreen in config: " + config.computerVoiceScreen + " Config Object:" + config);
                 }
             };
             computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());
