@@ -150,7 +150,7 @@ public class Configuration {
     /** Automatically determine battle outcome. */
     @LoadSave
     @LoadSaveGame
-    public boolean automaticBattle;
+    public boolean automaticBattle = false;
     /** Repair limit. */
     @LoadSave
     @LoadSaveGame
