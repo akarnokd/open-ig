@@ -2306,19 +2306,19 @@ public class StarmapScreen extends ScreenBase {
                     Planet p = getPlanetAt(fleet().owner, e.x, e.y, false);
                     Fleet f = getFleetAt(fleet().owner, e.x, e.y, false, fleet());
                     if (p != null) {
-                        fleet().targetPlanet(p);
+                        fleet().setTargetPlanet(p);
                         fleet().targetFleet = null;
                         fleet().mode = FleetMode.MOVE;
                         fleet().task = FleetTask.MOVE;
                     } else
 
                     if (f != null) {
-                        fleet().targetPlanet(null);
+                        fleet().setTargetPlanet(null);
                         fleet().targetFleet = f;
                         fleet().mode = FleetMode.MOVE;
                         fleet().task = FleetTask.MOVE;
                     } else {
-                        fleet().targetPlanet(null);
+                        fleet().setTargetPlanet(null);
                         fleet().targetFleet = null;
                         fleet().mode = FleetMode.MOVE;
                         fleet().task = FleetTask.MOVE;

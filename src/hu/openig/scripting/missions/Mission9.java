@@ -156,7 +156,7 @@ public class Mission9 extends Mission {
             ii.tag = "Mission-9-Smuggler";
         }
         pf.mode = FleetMode.MOVE;
-        pf.targetPlanet(sst);
+        pf.setTargetPlanet(sst);
 
         addScripted(pf);
 
@@ -259,7 +259,7 @@ public class Mission9 extends Mission {
                 } else
                 if (slipped) {
                     // resume flight
-                    smg.targetPlanet(sst);
+                    smg.setTargetPlanet(sst);
                     smg.task = FleetTask.SCRIPT;
                 }
             }

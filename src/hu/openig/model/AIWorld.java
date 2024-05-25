@@ -215,11 +215,10 @@ public class AIWorld {
         now = player.world.time.getTime();
 
         for (DiplomaticRelation dr : player.world.relations) {
-            if (dr.first.equals(player.id)) {
-                relations.put(player.world.players.get(dr.second), dr);
-            } else
-            if (dr.second.equals(player.id)) {
-                relations.put(player.world.players.get(dr.first), dr);
+            if (dr.first == player) {
+                relations.put(dr.second, dr);
+            } else if (dr.second == player) {
+                relations.put(dr.first, dr);
             }
         }
         for (Player p : player.world.players.values()) {

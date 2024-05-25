@@ -111,6 +111,8 @@ public class Player {
     public int colonizationLimit = -1;
     /** The limit where the AI considers attacking the other party. */
     public int warThreshold = 45;
+    /** The limit above which the AI cancels all ongoing attacks against the other party. */
+    public int endHostilitiesThreshold = 55;
     /** The negotiation offers from players. */
     public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<>();
     /** The factor for police-to-morale conversion. */
@@ -340,7 +342,7 @@ public class Player {
      */
     public void setStance(Player p, int value) {
         DiplomaticRelation dr = world.establishRelation(this, p);
-        dr.value = value;
+        dr.updateDrValue(value);
     }
     /**
 
@@ -349,7 +351,7 @@ public class Player {
      * @return does this player know the other player? */
     public boolean knows(Player other) {
         DiplomaticRelation dr = world.getRelation(this, other);
-        return dr != null && (dr.second.equals(other.id) || (dr.first.equals(other.id) && dr.full));
+        return dr != null && (dr.second == other || (dr.first == other && dr.full));
     }
     /**
      * @return the set ow known players
@@ -357,11 +359,11 @@ public class Player {
     public Map<Player, DiplomaticRelation> knownPlayers() {
         Map<Player, DiplomaticRelation> result = new LinkedHashMap<>();
         for (DiplomaticRelation dr : world.relations) {
-            if (dr.first.equals(id)) {
-                result.put(world.players.get(dr.second), dr);
+            if (dr.first.id.equals(id)) {
+                result.put(dr.second, dr);
             }
-            if (dr.second.equals(id) && dr.full) {
-                result.put(world.players.get(dr.first), dr);
+            if (dr.second.id.equals(id) && dr.full) {
+                result.put(dr.first, dr);
             }
         }
         return result;

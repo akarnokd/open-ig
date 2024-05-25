@@ -449,7 +449,7 @@ public class DiplomacyScreen extends WalkableScreen {
             messagePhase = 2;
 
             DiplomaticRelation dr = world().getRelation(player(), other);
-            dr.value = Math.max(0, Math.min(100, dr.value + change));
+            dr.updateDrValue(dr.value + change);
         } else
         if (messagePhase == 2) {
             returnToOptions();
@@ -1345,11 +1345,8 @@ public class DiplomacyScreen extends WalkableScreen {
             ApproachType at = ApproachType.NEUTRAL;
 
             ResponseMode m = other.ai.diplomacy(player(),
-
                     a.first.type,
-
                     at,
-
                     a.second);
 
             displayResults(a.first, a.second.name, at, m);
@@ -1370,10 +1367,12 @@ public class DiplomacyScreen extends WalkableScreen {
         dr = world().getRelation(player(), enemy);
         dr.alliancesAgainst.remove(other.id);
 
+        dr.updateDrValue(Math.min(dr.value, 30));
+
         dr = world().getRelation(other, enemy);
         dr.alliancesAgainst.remove(player().id);
 
-        dr.value = Math.min(dr.value, 30);
+        dr.updateDrValue(Math.min(dr.value, 30));
     }
     /**
      * Perform generic topic negotiation.
@@ -1383,11 +1382,8 @@ public class DiplomacyScreen extends WalkableScreen {
         ApproachType at = ApproachType.NEUTRAL;
 
         ResponseMode m = other.ai.diplomacy(player(),
-
                 neg.type,
-
                 at,
-
                 null);
 
         if (m == ResponseMode.YES) {
@@ -1492,7 +1488,7 @@ public class DiplomacyScreen extends WalkableScreen {
                         DiplomaticRelation dr = world().getRelation(world().player, other);
                         if (na.callType == CallType.ALLIANCE) {
                             if (dr.value < 91) {
-                                dr.value = 91;
+                                dr.updateDrValue(91);
                             }
                         } else
                         if (na.callType == CallType.MONEY) {
@@ -1503,7 +1499,7 @@ public class DiplomacyScreen extends WalkableScreen {
                                 other.statistics.moneyIncome.value += mny;
                                 player().statistics.moneySpent.value += mny;
                                 if (dr.value < 95) {
-                                    dr.value += 5;
+                                    dr.updateDrValue(dr.value + 5);
                                 }
                             } else {
                                 commons.control().displayError(format("diplomacy.not_enough_money", other.name));

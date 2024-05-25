@@ -112,7 +112,7 @@ public class Mission14 extends Mission {
             ii.tag = "Mission-14-Garthog";
         }
         Planet nc = planet("New Caroline");
-        f.targetPlanet(nc);
+        f.setTargetPlanet(nc);
         f.mode = FleetMode.MOVE;
         f.task = FleetTask.SCRIPT;
         garthog.changeInventoryCount(research("SpySatellite1"), 1);
@@ -155,7 +155,7 @@ public class Mission14 extends Mission {
             Fleet tf = findTaggedFleet("Mission-14-Garthog", garthog);
             if (tf != null) {
                 Planet nc = planet("New Caroline");
-                tf.targetPlanet(nc);
+                tf.setTargetPlanet(nc);
                 tf.mode = FleetMode.MOVE;
                 tf.task = FleetTask.SCRIPT;
             } else {

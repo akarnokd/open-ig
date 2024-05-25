@@ -167,7 +167,7 @@ public class Mission4 extends Mission {
         // make sure the temporary Pirates2 player has no relations left.
         for (int i = world.relations.size() - 1; i >= 0; i--) {
             DiplomaticRelation r = world.relations.get(i);
-            if (r.first.equals("Pirates2") || r.second.equals("Pirates2")) {
+            if (r.first.id.equals("Pirates2") || r.second.id.equals("Pirates2")) {
                 world.relations.remove(i);
             }
         }

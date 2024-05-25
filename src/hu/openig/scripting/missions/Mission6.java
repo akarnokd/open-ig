@@ -135,7 +135,7 @@ public class Mission6 extends Mission {
                 Planet ach = planet("Achilles");
                 double d = Math.hypot(ach.x - garthog.x, ach.y - garthog.y);
                 if (d <= 1) {
-                    garthog.targetPlanet(ach);
+                    garthog.setTargetPlanet(ach);
                     garthog.mode = FleetMode.ATTACK;
                     garthog.task = FleetTask.SCRIPT;
                 }
@@ -217,7 +217,7 @@ public class Mission6 extends Mission {
             ii.tag = "Mission-6-Garthog";
         }
         Planet ach = planet("Achilles");
-        f.targetPlanet(ach);
+        f.setTargetPlanet(ach);
         f.mode = FleetMode.ATTACK;
         f.task = FleetTask.SCRIPT;
         garthog.changeInventoryCount(research("SpySatellite1"), 1);

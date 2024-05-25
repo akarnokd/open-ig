@@ -155,11 +155,9 @@ public class AITrader implements AIManager {
                 fleets.add(tf);
             }
         }
-        Set<String> drs = new HashSet<>();
+        Set<Player> drs = new HashSet<>();
         for (DiplomaticRelation dr0 : world.relations) {
-            if (dr0.first.equals(world.player.id)
-
-                    || dr0.second.equals(world.player.id)) {
+            if (dr0.first == player || dr0.second == player) {
                 if (dr0.tradeAgreement) {
                     if (dr0.first.equals(world.player.id)) {
                         drs.add(dr0.second);
@@ -175,7 +173,7 @@ public class AITrader implements AIManager {
                 if (pl.owner == world.player
 
                         || (pl.owner == player)
-                        || drs.contains(pl.owner.id)) {
+                        || drs.contains(pl.owner)) {
                     planets.add(pl);
                 }
             }
@@ -611,10 +609,10 @@ public class AITrader implements AIManager {
         fleetTurnedBack.add(f);
         Planet pl = lastVisitedPlanet.get(f);
         if (pl != null) {
-            f.targetPlanet(pl);
+            f.setTargetPlanet(pl);
         } else {
             Exceptions.add(new AssertionError("Fleet " + f.id + " has no previous planet to return to!"));
-            f.targetPlanet(nearest(player.world.planets.values(), f));
+            f.setTargetPlanet(nearest(player.world.planets.values(), f));
         }
         f.mode = FleetMode.MOVE;
     }

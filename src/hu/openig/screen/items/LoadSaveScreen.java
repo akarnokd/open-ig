@@ -141,18 +141,18 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     AuidoSettingsPanel audioContents = new AuidoSettingsPanel();
     /** The UI panel element for control settings. */
     @Settings(page = SettingsPage.CONTROL)
-    /** The inner contents of the UI panel element for control settings. */
     UIPanel controlSettings;
+    /** The inner contents of the UI panel element for control settings. */
     ControlSettingsPanel controlContents = new ControlSettingsPanel();
     /** The UI panel element for gameplay settings. */
     @Settings(page = SettingsPage.GAMEPLAY)
-    /** The inner contents of the UI panel element for gameplay settings. */
     UIPanel gamePlaySettings;
+    /** The inner contents of the UI panel element for gameplay settings. */
     GamePlaySettingsPanel gpContents = new GamePlaySettingsPanel();
     /** The UI panel element for visual settings. */
     @Settings(page = SettingsPage.VISUAL)
-    /** The inner contents of the UI panel element for visual settings. */
     UIPanel visualSettings;
+    /** The inner contents of the UI panel element for visual settings. */
     VisualSettingsPanel visualContents = new VisualSettingsPanel();
     /** The save name. */
     @Settings(page = SettingsPage.LOAD_SAVE)
@@ -905,7 +905,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.spacewarFreeformMovement = freeformSpacewarMovement.selected();
-                    System.out.println("spacewarFreeformMovement in config: " + config.spacewarFreeformMovement + " Config Object:" + config);
 
                 }
             };
@@ -954,7 +953,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.automaticBattle = automaticBattle.selected();
-                    System.out.println("automaticBattle in config: " + config.automaticBattle + " Config Object:" + config);
                 }
             };
 
@@ -1793,7 +1791,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 public void invoke() {
                     buttonSound(SoundType.CLICK_MEDIUM_2);
                     config.computerVoiceScreen = computerVoiceScreen.selected();
-                    System.out.println("computerVoiceScreen in config: " + config.computerVoiceScreen + " Config Object:" + config);
                 }
             };
             computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());

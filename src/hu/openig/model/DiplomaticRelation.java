@@ -20,9 +20,9 @@ import java.util.Set;
  */
 public class DiplomaticRelation {
     /** The first player ID who made the contact. */
-    public String first;
+    public Player first;
     /** The second player ID who made the contact. */
-    public String second;
+    public Player second;
     /** Indicate that the secondary side has also discovered the first. */
     public boolean full;
     /** The relation value, 0..100. */
@@ -46,6 +46,33 @@ public class DiplomaticRelation {
         return dr;
     }
     /**
+     * Update the diplomatic relations value with the given amount.
+     * Apply any changes that might result from the new relations value.
+     * @param drValue the amount to current value to
+     */
+    public void updateDrValue(double drValue) {
+        double oldValue = this.value;
+        this.value = Math.min(100, Math.max(0, drValue));
+        // Relations improved
+        if (oldValue < this.value) {
+            int endHostilitiesThreshold = Math.max(first.endHostilitiesThreshold, second.endHostilitiesThreshold);
+            if (this.value > endHostilitiesThreshold) {
+                for (Fleet fleet : first.ownFleets()) {
+                    if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
+                            && (second.ownPlanets().contains(fleet.targetPlanet()) || second.ownFleets().contains(fleet.targetFleet))) {
+                        fleet.stop();
+                    }
+                }
+                for (Fleet fleet : second.ownFleets()) {
+                    if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
+                            && (first.ownPlanets().contains(fleet.targetPlanet()) || first.ownFleets().contains(fleet.targetFleet))) {
+                        fleet.stop();
+                    }
+                }
+            }
+        }
+    }
+    /**
      * Assign the values from the other diplomatic relation.
      * @param other the other relation
      */
@@ -67,7 +94,7 @@ public class DiplomaticRelation {
      * or the relation is full.
      */
     public boolean knows(String playerId) {
-        return first.equals(playerId) || (second.equals(playerId) && full);
+        return first.id.equals(playerId) || (second.id.equals(playerId) && full);
     }
     /**
      * Set the new won't talk value.
