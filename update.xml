@@ -44,10 +44,10 @@
     <release-details>
       <entry version='0.95.246' date='2024-05-25'>
         <item category='Translation' issues='1138'>Translated game into spanish. By @JouseJG and @je-sendra</item>
-        <item category='Spacewar,Groundwar' issues='1139'>Rework of pathing in groundwar and spacewar. Experimental grid-based spacewar. By @hemorids</item>
-        <item category='Saves' issues='1136,1140'>Fixed global settings overriding the per-save configurations. By @hemorids</item>
-        <item category='Diplomacy' issues='1135,1141'>Improving relationship from war to neutral will now stop any in-progress attack fleets. By @hemorids</item>
-        <item category='AI' issues='1141'>Fixed an issue that prevented AI from attacking fleets. By @hemorids</item>
+        <item category='Spacewar,Groundwar' issues='1139'>Rework of pathing in groundwar and spacewar. Experimental grid-based spacewar. By @hemoridos</item>
+        <item category='Saves' issues='1136,1140'>Fixed global settings overriding the per-save configurations. By @hemoridos</item>
+        <item category='Diplomacy' issues='1135,1141'>Improving relationship from war to neutral will now stop any in-progress attack fleets. By @hemoridos</item>
+        <item category='AI' issues='1141'>Fixed an issue that prevented AI from attacking fleets. By @hemoridos</item>
       </entry>
       <entry version='0.95.245' date='2024-04-23'>
         <item category='UI,Skirmish' issues='1133'>Fix a render crash due to building footprint changes. Unfortunately, can&#39;t repair planets so please rebuild buildings that look odd or clip into each other.</item>
