@@ -8,15 +8,12 @@
 
 package hu.openig.tools;
 
-import hu.openig.utils.Base64;
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.IOUtils;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import hu.openig.utils.*;
 
 /**
  * Utility class to upload files to the google-code site.
@@ -45,7 +42,7 @@ public final class UploadToWeb {
 
             String boundary = "----------Googlecode_boundary_reindeer_flotilla";
 
-            URL u = new URL(String.format("https://%s.googlecode.com/files", project));
+            URL u = new URI(String.format("https://%s.googlecode.com/files", project)).toURL();
             HttpsURLConnection c = (HttpsURLConnection)u.openConnection();
             try {
                 String up = Base64.encodeBytes(String.format("%s:%s", username, password).getBytes("UTF-8"));
@@ -79,7 +76,7 @@ public final class UploadToWeb {
             } finally {
                 c.disconnect();
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Exceptions.add(ex);
         }
     }

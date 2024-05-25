@@ -16,7 +16,7 @@ import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
-import hu.openig.mechanics.FreeFormSpaceWarMovementHandler;;
+import hu.openig.mechanics.FreeFormSpaceWarMovementHandler;
 import hu.openig.mechanics.SimpleSpaceWarMovementHandler;
 import hu.openig.mechanics.WarMovementHandler;
 import hu.openig.model.AISpaceBattleManager;
@@ -2765,7 +2765,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param maxGroups the maximum number of fighter groups to create with splitting
      * @param splitFighters if set to false no splitting is done, the fighters units are copied as is to the output list
      * */
-    private void applyFighterGrouping(List<SpacewarStructure> baseFighterList, LinkedList<SpacewarStructure> outFighterList, int maxGroups, boolean splitFighters) {
+    static void applyFighterGrouping(List<SpacewarStructure> baseFighterList, LinkedList<SpacewarStructure> outFighterList, int maxGroups, boolean splitFighters) {
         if (baseFighterList.isEmpty()) {
             return;
         }

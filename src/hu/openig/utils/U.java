@@ -1028,6 +1028,7 @@ public final class U {
     }
     /**
      * A very fast calculation of a good enough normalized angle.
+     * @param angle the input angle
      * @return the normalized angle between -PI and +PI.
      */
     public static double normalizedAngle(double angle) {

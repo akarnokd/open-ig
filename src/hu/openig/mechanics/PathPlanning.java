@@ -39,6 +39,7 @@ public class PathPlanning implements Callable<PathPlanning> {
      * Constructor. Initializes the fields.
      * @param goal the goal location
      * @param unit the unit
+     * @param pathWeightMap the path weight map
      */
     public PathPlanning(WarUnit unit, Location goal, PathWeightMap pathWeightMap) {
         if (unit.inMotion() && (unit.getNextMove() != null) && (unit.location() != unit.getNextMove())) {

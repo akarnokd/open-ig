@@ -94,6 +94,7 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
     }
 
     /** @return is this unit destroyed? */
+    @Override
     public boolean isDestroyed() {
         return hp <= 0;
     }
@@ -334,9 +335,8 @@ public class GroundwarUnit extends GroundwarObject implements WarUnit {
         double angle = U.normalizedAngle(this.angle + 0.733038);
         if (((Math.PI / 2) > angle) && (-(Math.PI / 2) < angle)) {
             return Math.atan(Math.tan(-angle) / 2);
-        } else {
-            return Math.atan(Math.tan(-angle) / 2) + Math.PI;
         }
+        return Math.atan(Math.tan(-angle) / 2) + Math.PI;
     }
     @Override
     public BufferedImage get() {

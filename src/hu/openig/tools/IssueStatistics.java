@@ -8,14 +8,11 @@
 
 package hu.openig.tools;
 
-import hu.openig.utils.U;
-import hu.openig.utils.XElement;
-
 import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.net.*;
+import java.util.*;
+
+import hu.openig.utils.*;
 
 /**
  * Download issue statistics.
@@ -74,7 +71,7 @@ public final class IssueStatistics {
         XElement comments = new XElement("comments");
         for (int i = 1; i < 548; i++) {
             System.out.println("Issue #" + i);
-            URL u = new URL("https://github.com/akarnokd/open-ig/issues/" + i + "/comments/full");
+            URL u = new URI("https://github.com/akarnokd/open-ig/issues/" + i + "/comments/full").toURL();
 
             try (InputStream in = u.openStream()) {
                 XElement ce = XElement.parseXML(in);

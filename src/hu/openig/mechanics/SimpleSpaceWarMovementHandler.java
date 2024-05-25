@@ -29,6 +29,7 @@ public class SimpleSpaceWarMovementHandler extends SimpleWarMovementHandler {
     /**
      * Check if the given cell location fall into the bounds of the battle space.
      * @param loc location of the cell
+     * @param unit the unit
      * @return true if the cell is within the map bounds
      */
     public boolean cellInMap(Location loc, WarUnit unit) {
@@ -57,8 +58,7 @@ public class SimpleSpaceWarMovementHandler extends SimpleWarMovementHandler {
         SpacewarStructure sws = (SpacewarStructure) unit;
         if (sws.kamikaze > 0 && loc.equals(sws.getAttackTarget().location())) {
             return true;
-        } else {
-            return super.isPassable(loc, unit);
         }
+        return super.isPassable(loc, unit);
     }
 }

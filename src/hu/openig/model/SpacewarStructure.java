@@ -444,6 +444,7 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     }
 
     /** @return is the structure destroyed? */
+    @Override
     public boolean isDestroyed() {
         return count <= 0;
     }
