@@ -80,7 +80,7 @@ public class Mission10 extends Mission {
         // ----------------------------------------------------------------
         tagFleet(pf, "Mission-10-Governor");
         pf.mode = FleetMode.MOVE;
-        pf.targetPlanet(nax);
+        pf.setTargetPlanet(nax);
 
         addScripted(pf);
 

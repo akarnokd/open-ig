@@ -254,7 +254,7 @@ public class AttackPlanner extends Planner {
                 DiplomaticRelation dr = world.relations.get(f.fleet.owner);
 
                 if (dr != null && dr.full && !dr.strongAlliance) {
-                    if (dr.value < p.warThreshold && hasActiveAlliance(dr.alliancesAgainst)) {
+                    if (dr.value < p.warThreshold && !hasActiveAlliance(dr.alliancesAgainst)) {
                         candidates.add(f);
                     }
                 }
@@ -305,9 +305,7 @@ public class AttackPlanner extends Planner {
                 }
                 DiplomaticRelation dr = world.relations.get(p.owner);
                 if (dr != null && dr.full && !dr.strongAlliance) {
-                    if (dr.value < this.p.warThreshold
-
-                            && !hasActiveAlliance(dr.alliancesAgainst)) {
+                    if (dr.value < this.p.warThreshold && !hasActiveAlliance(dr.alliancesAgainst)) {
                         if (planetValue(p) > 0) {
                             candidates.add(p);
                             enemies.add(p.owner);

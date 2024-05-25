@@ -373,8 +373,8 @@ public final class AchievementManager {
             ap.displayProgress = false;
             ap.max = 1;
             for (DiplomaticRelation dr : t.relations) {
-                if (dr.first.equals(u.id) || dr.second.equals(u.id)) {
-                    Player otherPlayer = dr.first.equals(u.id) ? t.player(dr.second) : t.player(dr.first);
+                if (dr.first == u || dr.second == u) {
+                    Player otherPlayer = (dr.first == u ? dr.second : dr.first);
                     if (dr.full
                             && !otherPlayer.race.equals(u.race)
                             && !otherPlayer.race.equals("traders")

@@ -99,10 +99,10 @@ public final class Simulator {
                     if (world.level >= 4) {
                         for (DiplomaticRelation dr : world.relations) {
                             if (dr != null && dr.full && !dr.strongAlliance && dr.alliancesAgainst.isEmpty()) {
-                                Player p1 = world.players.get(dr.first);
-                                Player p2 = world.players.get(dr.second);
+                                Player p1 = dr.first;
+                                Player p2 = dr.second;
                                 if  ((p1.isMainPlayer && !p2.isMainPlayer) || (!p1.isMainPlayer && p2.isMainPlayer)) {
-                                    dr.value = Math.max(0, dr.value - world.customBalanceSettings.nonPlayerRelationshipDeterioration / 100d);
+                                    dr.updateDrValue(dr.value - world.customBalanceSettings.nonPlayerRelationshipDeterioration / 100d);
                                 }
                             }
                         }
@@ -914,7 +914,7 @@ public final class Simulator {
                             f.targetFleet = null;
                         }
                         if (clearPlanet) {
-                            f.targetPlanet(null);
+                            f.setTargetPlanet(null);
                         }
                         if (f.task == FleetTask.MOVE) {
                             f.task = FleetTask.IDLE;
@@ -936,27 +936,34 @@ public final class Simulator {
     /**
      * Handle the case when the fleet reached the target planet.
      * @param world the world
-     * @param f the fleet
+     * @param fleet the fleet
      */
-    static void handleAttack(World world, Fleet f) {
-        Planet tp = f.targetPlanet();
-        Fleet tf = f.targetFleet;
-        Player o = tp != null ? tp.owner : (tf != null ? tf.owner : null);
-        if (o != null) {
+    static void handleAttack(World world, Fleet fleet) {
+        Planet targetPlanet = fleet.targetPlanet();
+        Fleet targetFleet = fleet.targetFleet;
+        Player targetPlayer = targetPlanet != null ? targetPlanet.owner : (targetFleet != null ? targetFleet.owner : null);
+        fleet.task = FleetTask.IDLE;
+        if (targetPlayer == null) {
+            return;
+        }
+        DiplomaticRelation dr = world.getRelation(fleet.owner, targetPlayer);
+        if (dr != null) {
             // do not attack a strong ally
-            DiplomaticRelation dr = world.getRelation(f.owner, o);
-            if (dr == null || !dr.strongAlliance) {
-                BattleInfo bi = new BattleInfo();
-                bi.attacker = f;
-                bi.targetFleet = tf;
-                bi.targetPlanet = tp;
-                f.task = FleetTask.IDLE;
-
-                world.pendingBattles.add(bi);
+            if (dr.strongAlliance) {
+                return;
+            }
+            // cancel attack if relations improved
+            int endHostilitiesThreshold = Math.max(dr.first.endHostilitiesThreshold, dr.second.endHostilitiesThreshold);
+            if (dr.value > endHostilitiesThreshold) {
                 return;
             }
         }
-        f.task = FleetTask.IDLE;
+
+        BattleInfo bi = new BattleInfo();
+        bi.attacker = fleet;
+        bi.targetFleet = targetFleet;
+        bi.targetPlanet = targetPlanet;
+        world.pendingBattles.add(bi);
     }
     /**
      * Regenerate the shields and/or health.

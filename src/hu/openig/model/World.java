@@ -2053,7 +2053,7 @@ public class World implements ModelLookup {
             }
             s0 = xfleet.get("target-planet", null);
             if (s0 != null) {
-                f.targetPlanet(planets.get(s0));
+                f.setTargetPlanet(planets.get(s0));
             }
             s0 = xfleet.get("arrived-at", null);
             if (s0 != null) {
@@ -2878,8 +2878,8 @@ public class World implements ModelLookup {
     public DiplomaticRelation getRelation(Player first, Player second) {
         if (first != null && second != null) {
             for (DiplomaticRelation dr : relations) {
-                if ((dr.first.equals(first.id) && dr.second.equals(second.id))
-                        || (dr.first.equals(second.id) && dr.second.equals(first.id))) {
+                if ((dr.first == first && dr.second == second)
+                        || (dr.first == second && dr.second == first)) {
                     return dr;
                 }
             }
@@ -2910,8 +2910,8 @@ public class World implements ModelLookup {
      */
     public DiplomaticRelation createDiplomaticRelation(Player first, Player second) {
         DiplomaticRelation dr = new DiplomaticRelation();
-        dr.first = first.id;
-        dr.second = second.id;
+        dr.first = first;
+        dr.second = second;
         dr.value = (first.initialStance + second.initialStance) / 2d;
         relations.add(dr);
         return dr;
@@ -2924,8 +2924,8 @@ public class World implements ModelLookup {
         XElement xrels = xworld.add("relations");
         for (DiplomaticRelation dr : relations) {
             XElement xrel = xrels.add("relation");
-            xrel.set("first", dr.first);
-            xrel.set("second", dr.second);
+            xrel.set("first", dr.first.id);
+            xrel.set("second", dr.second.id);
             xrel.set("full", dr.full);
             xrel.set("trade-agreement", dr.tradeAgreement);
             xrel.set("strong-alliance", dr.strongAlliance);
@@ -3487,11 +3487,10 @@ public class World implements ModelLookup {
             int maxWar = Math.max(p1.warThreshold, p2.warThreshold);
             // each attack degrades relations a bit
             if (dr.value >= maxWar) {
-                dr.value = minWar - 1;
+                dr.updateDrValue(minWar - 1);
             } else {
-                dr.value -= 1;
+                dr.updateDrValue(dr.value - 1);
             }
-            dr.value = Math.max(0, dr.value);
             dr.tradeAgreement = false;
             dr.wontTalk(true);
             dr.lastContact = time.getTime();

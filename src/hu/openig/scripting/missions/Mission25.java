@@ -43,8 +43,8 @@ public class Mission25 extends Mission {
         if (stage == M25.RUNNING) {
             // make sure dargslan keep hating the player the most
             for (DiplomaticRelation dr : world.relations) {
-                if (dr.full && (dr.first.equals("Dargslan") || dr.second.equals("Dargslan"))) {
-                    if (!dr.first.equals("Empire") && !dr.second.equals("Empire")) {
+                if (dr.full && (dr.first.id.equals("Dargslan") || dr.second.id.equals("Dargslan"))) {
+                    if (!dr.first.id.equals("Empire") && !dr.second.id.equals("Empire")) {
                         dr.value = 10;
                     } else {
                         dr.value = 1;

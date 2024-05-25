@@ -259,8 +259,8 @@ public class AbandonColonyScreen extends ScreenBase {
                             p.morale(p.morale() - 50);
                         }
                         for (DiplomaticRelation dr : world().relations) {
-                            if (dr.full && (dr.first.equals(player().id) || dr.second.equals(player().id))) {
-                                dr.value = Math.max(0, dr.value - 5);
+                            if (dr.full && (dr.first == player() || dr.second == player())) {
+                                dr.updateDrValue(dr.value - 5);
                             }
                         }
                     } else {
@@ -268,8 +268,8 @@ public class AbandonColonyScreen extends ScreenBase {
                             p.morale(p.morale() - 20);
                         }
                         for (DiplomaticRelation dr : world().relations) {
-                            if (dr.full && (dr.first.equals(player().id) || dr.second.equals(player().id))) {
-                                dr.value = Math.max(0, dr.value - 25);
+                            if (dr.full && (dr.first == player() || dr.second == player())) {
+                                dr.updateDrValue(dr.value - 25);
                             }
                         }
                     }
@@ -292,8 +292,8 @@ public class AbandonColonyScreen extends ScreenBase {
                         }
                     } else {
                         for (DiplomaticRelation dr : world().relations) {
-                            if (dr.first.equals(player().id) || dr.second.equals(player().id)) {
-                                dr.value = Math.max(0, dr.value - 5);
+                            if (dr.first == player() || dr.second == player()) {
+                                dr.updateDrValue(dr.value - 5);
                             }
                         }
                         List<Planet> ps = new ArrayList<>();

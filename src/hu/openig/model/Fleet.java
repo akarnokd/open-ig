@@ -78,7 +78,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
      * Set the new target planet and save the current target into {@code arrivedAt}.
      * @param p the new target planet
      */
-    public void targetPlanet(Planet p) {
+    public void setTargetPlanet(Planet p) {
         if (p == null) {
             arrivedAt = targetPlanet;
         } else {

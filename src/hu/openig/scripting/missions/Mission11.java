@@ -116,7 +116,7 @@ public class Mission11 extends Mission {
 
         Planet target = selectTarget();
 
-        f.targetPlanet(target);
+        f.setTargetPlanet(target);
 
         garthog.changeInventoryCount(research("SpySatellite1"), 1);
         DefaultAIControls.actionDeploySatellite(garthog, target, research("SpySatellite1"));
