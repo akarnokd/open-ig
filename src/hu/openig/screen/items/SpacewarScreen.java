@@ -14,11 +14,13 @@ import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.AITest;
 import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.mechanics.FreeFormSpaceWarMovementHandler;
 import hu.openig.mechanics.SimpleSpaceWarMovementHandler;
 import hu.openig.mechanics.WarMovementHandler;
+import hu.openig.model.AIMode;
 import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.BattleGroundProjector;
@@ -1487,30 +1489,29 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         // add shields
         for (Building b : nearbyPlanet.surface.buildings.iterable()) {
-            double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
-            if (power >= 0.5 && b.type.kind.equals("Shield")) {
+            if (b.type.kind.equals("Shield")) {
+                double eff = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
+                if (eff >= 0.5) {
+                    BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 
-                double eff = power;
+                    SpacewarStructure st = new SpacewarStructure(b.type);
+                    st.owner = nearbyPlanet.owner;
+                    st.type = StructureType.SHIELD;
+                    st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
+                    st.trimmedHeight = bge.trimmedHeight;
+                    st.trimmedWidth = bge.trimmedWidth;
+                    st.infoImageName = bge.infoImageName;
+                    st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
+                    st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
+                    st.value = b.type.cost;
+                    st.destruction = bge.destruction;
+                    st.building = b;
+                    st.planet = nearbyPlanet;
 
-                BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
+                    shieldValue += eff * bge.shields;
 
-                SpacewarStructure st = new SpacewarStructure(b.type);
-                st.owner = nearbyPlanet.owner;
-                st.type = StructureType.SHIELD;
-                st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
-                st.trimmedHeight = bge.trimmedHeight;
-                st.trimmedWidth = bge.trimmedWidth;
-                st.infoImageName = bge.infoImageName;
-                st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
-                st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
-                st.value = b.type.cost;
-                st.destruction = bge.destruction;
-                st.building = b;
-                st.planet = nearbyPlanet;
-
-                shieldValue += eff * bge.shields;
-
-                structures.add(st);
+                    structures.add(st);
+                }
             }
         }
         for (SpacewarStructure sws : shields()) {
@@ -3711,6 +3712,25 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                         }
                     }
                 }
+                e.consume();
+                return true;
+            }
+            // FIXME CHEAT
+            if (e.getKeyCode() == KeyEvent.VK_J) {
+                Player p = world().player;
+
+                if (p.aiMode == AIMode.NONE) {
+                    p.aiMode = AIMode.TEST;
+                    p.ai = new AITest();
+                    p.ai.init(p);
+                    System.out.println("Switching to TEST AI.");
+                } else {
+                    p.aiMode = AIMode.NONE;
+                    p.ai = new AIUser();
+                    p.ai.init(p);
+                    System.out.println("Switching to no AI.");
+                }
+                allPlayerSet.put(player(), p.ai.spaceBattle(this));
                 e.consume();
                 return true;
             }
