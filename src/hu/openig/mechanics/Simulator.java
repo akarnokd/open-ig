@@ -805,12 +805,12 @@ public final class Simulator {
             }
         }
         if (dayChange) {
-            AchievementProgress ap = p.getOrCreateProgress("achievements.decade");
+            AchievementProgress ap = p.getOrCreateProgress("achievement.decade");
             ap.displayProgress = true;
             ap.max = 10;
             ap.progress += 1 / 365.2425;
 
-            ap = p.getOrCreateProgress("achievements.oldest_man");
+            ap = p.getOrCreateProgress("achievement.oldest_man");
             ap.displayProgress = true;
             ap.max = 100;
             ap.progress += 1 / 365.2425;
@@ -954,7 +954,7 @@ public final class Simulator {
             }
             // cancel attack if relations improved
             int endHostilitiesThreshold = Math.max(dr.first.endHostilitiesThreshold, dr.second.endHostilitiesThreshold);
-            if (dr.value > endHostilitiesThreshold) {
+            if (dr.value > endHostilitiesThreshold && !(fleet.owner.ai instanceof AIUser)) {
                 return;
             }
         }

@@ -250,11 +250,29 @@ public class GameKeyManager extends KeyAdapter {
                     e.consume();
                 }
                 break;
+            // FIXME CHEAT
+            case KeyEvent.VK_J:
+                if (e.isControlDown()) {
+                    Player p = world().player;
+
+                    if (p.aiMode == AIMode.NONE) {
+                        p.aiMode = AIMode.TEST;
+                        p.ai = new AITest();
+                        p.ai.init(p);
+                        System.out.println("Switching to TEST AI.");
+                    } else {
+                        p.aiMode = AIMode.NONE;
+                        p.ai = new AIUser();
+                        p.ai.init(p);
+                        System.out.println("Switching to no AI.");
+                    }
+                    e.consume();
+                }
+                break;
             default:
             }
         }
         if (!commons.worldLoading && world() != null
-
                 && !control().movieVisible() && !commons.battleMode) {
             if (e.getKeyChar() == '+' || e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
                 if (enableForCurrentScreen()) {
@@ -581,33 +599,16 @@ public class GameKeyManager extends KeyAdapter {
                 break;
             // FIXME CHEAT
             case KeyEvent.VK_J:
-                // TOGGLE test AI on player
-                if (e.isControlDown()) {
-                    if (e.isShiftDown()) {
-                        Player p = world().player;
-                        for (Player p0 : p.knownPlayers().keySet()) {
-                            if (!p0.noDiplomacy) {
-                                DiplomaticOffer dio = new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE);
-                                dio.value(1000);
-                                p.offers.put(p0.id, dio);
-                            }
-                        }
-                        signalMessage(p);
-                    } else {
-                        Player p = world().player;
-
-                        if (p.aiMode == AIMode.NONE) {
-                            p.aiMode = AIMode.TEST;
-                            p.ai = new AITest();
-                            p.ai.init(p);
-                            System.out.println("Switching to TEST AI.");
-                        } else {
-                            p.aiMode = AIMode.NONE;
-                            p.ai = new AIUser();
-                            p.ai.init(p);
-                            System.out.println("Switching to no AI.");
+                if (e.isControlDown() && e.isShiftDown()) {
+                    Player p = world().player;
+                    for (Player p0 : p.knownPlayers().keySet()) {
+                        if (!p0.noDiplomacy) {
+                            DiplomaticOffer dio = new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE);
+                            dio.value(1000);
+                            p.offers.put(p0.id, dio);
                         }
                     }
+                    signalMessage(p);
 
                     e.consume();
                 }

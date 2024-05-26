@@ -40,7 +40,7 @@ public class Building implements HasLocation {
     public int assignedWorker;
     /** The buildup progress up to the top hit point. */
     public int buildProgress;
-    /** The hitpoints of this building. */
+    /** The currently available hitpoints of this building. */
     public int hitpoints;
     /** The current upgrade. Can be null for plain buildings. */
     public Upgrade currentUpgrade;
