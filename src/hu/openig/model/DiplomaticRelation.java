@@ -57,16 +57,20 @@ public class DiplomaticRelation {
         if (oldValue < this.value) {
             int endHostilitiesThreshold = Math.max(first.endHostilitiesThreshold, second.endHostilitiesThreshold);
             if (this.value > endHostilitiesThreshold) {
-                for (Fleet fleet : first.ownFleets()) {
-                    if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
-                            && (second.ownPlanets().contains(fleet.targetPlanet()) || second.ownFleets().contains(fleet.targetFleet))) {
-                        fleet.stop();
+                if (first != first.world.player) {
+                    for (Fleet fleet : first.ownFleets()) {
+                        if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
+                                && (second.ownPlanets().contains(fleet.targetPlanet()) || second.ownFleets().contains(fleet.targetFleet))) {
+                            fleet.stop();
+                        }
                     }
                 }
-                for (Fleet fleet : second.ownFleets()) {
-                    if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
-                            && (first.ownPlanets().contains(fleet.targetPlanet()) || first.ownFleets().contains(fleet.targetFleet))) {
-                        fleet.stop();
+                if (second != first.world.player) {
+                    for (Fleet fleet : second.ownFleets()) {
+                        if ((fleet.mode == FleetMode.ATTACK || fleet.task == FleetTask.ATTACK)
+                                && (first.ownPlanets().contains(fleet.targetPlanet()) || first.ownFleets().contains(fleet.targetFleet))) {
+                            fleet.stop();
+                        }
                     }
                 }
             }

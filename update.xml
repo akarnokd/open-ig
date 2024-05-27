@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.246'>
+  <module id='Game' version='0.95.247'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.247' date='2024-05-27'>
+        <item category='Diplomacy,Spacewar' issues='1143'>Fixed a bug that cancelled fleet attacks of the player before the game established an initial diplomatic relation between the parties.</item>
+      </entry>
       <entry version='0.95.246' date='2024-05-25'>
         <item category='Translation' issues='1138'>Translated game into spanish. By @JouseJG and @je-sendra</item>
         <item category='Spacewar,Groundwar' issues='1139'>Rework of pathing in groundwar and spacewar. Experimental grid-based spacewar. By @hemoridos</item>
@@ -288,7 +291,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.246.jar' sha1='59D9F4FC9185246C498660D95AD64D5C700DE7FE'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.247.jar' sha1='149849F47798BFF6070AA41E22147F38B0D81B9A'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240525a2.zip' sha1='BE89E399DAE26D3159248137087BB80F719ABC45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240418a.zip' sha1='AE680ECA2D9BF4005E0E842DA2ADF18A2753A4AC'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
