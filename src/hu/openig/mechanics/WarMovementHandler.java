@@ -28,6 +28,9 @@ public abstract class WarMovementHandler {
         this.cellSize = cellSize;
         this.simulationDelay = simulationDelay;
     }
+    /** Initialize units managed by this movement handler.
+     * */
+    public abstract void initUnits();
     /** Remove a unit handled by the movement handler object.
      * @param unit the unit to remove
      * */

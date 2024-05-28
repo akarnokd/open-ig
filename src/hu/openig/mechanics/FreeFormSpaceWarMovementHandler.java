@@ -22,6 +22,8 @@ public class FreeFormSpaceWarMovementHandler extends WarMovementHandler {
     }
 
     @Override
+    public void initUnits() { }
+    @Override
     public void removeUnit(WarUnit unit) { }
     @Override
     public void setMovementGoal(WarUnit unit, Location loc) {
