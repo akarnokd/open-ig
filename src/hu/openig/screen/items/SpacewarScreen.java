@@ -18,7 +18,7 @@ import hu.openig.mechanics.AITest;
 import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.mechanics.FreeFormSpaceWarMovementHandler;
-import hu.openig.mechanics.SimpleSpaceWarMovementHandler;
+import hu.openig.mechanics.SpaceWarMovementHandler;
 import hu.openig.mechanics.WarMovementHandler;
 import hu.openig.model.AIMode;
 import hu.openig.model.AISpaceBattleManager;
@@ -238,7 +238,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     /** The operational space at 1:1 zoom. */
     final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
     /** Pixel size of a single cell on the grid map, 27px size results in original grid map of 18*36. */
-    static final int GRID_CELL_SIZE = 26;
+    static final int GRID_CELL_SIZE = 20;
     /** Number of cells on the grid on the x-axis. */
     int gridSizeX;
     /** The X offset needed to align the grid map centered on the battle space. */
@@ -832,6 +832,61 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 candidates.add(s);
             }
         }
+
+        // If no mouse dragging, only select one unit. Check overlapping units under the mouse pointer and select one
+        // There is a small leeway of 2 pixel distance for people with slippery fingers
+        // Preference for selection fighters > cruisers > battleships and the one centered closest to the mouse click
+        if (p0.distance(p1) < 2 && !candidates.isEmpty()) {
+            List<SpacewarStructure> fighters = new ArrayList<>();
+            List<SpacewarStructure> cruisers = new ArrayList<>();
+            List<SpacewarStructure> battleships = new ArrayList<>();
+            List<SpacewarStructure> stations = new ArrayList<>();
+            List<SpacewarStructure> buildings = new ArrayList<>();
+            for (SpacewarStructure sws : candidates) {
+                if (sws.type == StructureType.PROJECTOR || sws.type == StructureType.SHIELD) {
+                    buildings.add(sws);
+                    continue;
+                }
+                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+                    fighters.add(sws);
+                    continue;
+                }
+                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+                    cruisers.add(sws);
+                    continue;
+                }
+                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+                    battleships.add(sws);
+                    continue;
+                }
+                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+                    stations.add(sws);
+                }
+            }
+            List<SpacewarStructure> selectedType = new ArrayList<>();
+            if (!fighters.isEmpty()) {
+                selectedType = fighters;
+            } else if (!cruisers.isEmpty()) {
+                selectedType = cruisers;
+            } else if (!battleships.isEmpty()) {
+                selectedType = battleships;
+            } else if (!stations.isEmpty()) {
+                selectedType = stations;
+            } else if (!buildings.isEmpty()) {
+                selectedType = buildings;
+            }
+            SpacewarStructure closestSws = selectedType.get(0);
+            double distanceOfClosestSws = Math.hypot(closestSws.x - p0.x, closestSws.y - p0.y);
+            for (SpacewarStructure sws : selectedType) {
+                double distanceOfSws = Math.hypot(sws.x - p0.x, sws.y - p0.y);
+                if (distanceOfSws < distanceOfClosestSws) {
+                    closestSws = sws;
+                }
+            }
+            candidates.clear();
+            candidates.add(closestSws);
+        }
+
         return own;
     }
     /** Zoom in/out to fit the available main map space. */
@@ -1877,18 +1932,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                     gr.dispose();
                 }
             }
-            if (showDebug && !structures.isEmpty() && movementHandler instanceof SimpleSpaceWarMovementHandler) {
+            if (showDebug && !structures.isEmpty() && movementHandler instanceof SpaceWarMovementHandler) {
                 gr = (Graphics2D) g2.create();
                 gr.setColor(Color.RED);
-                for (Location unitsOnLocation : ((SimpleSpaceWarMovementHandler)movementHandler).unitsForPathfinding.keySet()) {
-                    Set<WarUnit> wunits = ((SimpleSpaceWarMovementHandler)movementHandler).unitsForPathfinding.get(unitsOnLocation);
+                for (Location unitsOnLocation : ((SpaceWarMovementHandler)movementHandler).unitsForPathfinding.keySet()) {
+                    Set<WarUnit> wunits = ((SpaceWarMovementHandler)movementHandler).unitsForPathfinding.get(unitsOnLocation);
                     if (wunits != null  && !wunits.isEmpty()) {
                         gr.drawRect(gridLocationToSpaceX(unitsOnLocation) - GRID_CELL_SIZE / 2, gridLocationToSpaceY(unitsOnLocation) - GRID_CELL_SIZE / 2, GRID_CELL_SIZE, GRID_CELL_SIZE);
                     }
                 }
                 gr.setColor(Color.BLUE);
-                for (Location unitsOnLocation : ((SimpleSpaceWarMovementHandler)movementHandler).reservedCells.keySet()) {
-                    WarUnit wunit = ((SimpleSpaceWarMovementHandler)movementHandler).reservedCells.get(unitsOnLocation);
+                for (Location unitsOnLocation : ((SpaceWarMovementHandler)movementHandler).reservedCells.keySet()) {
+                    WarUnit wunit = ((SpaceWarMovementHandler)movementHandler).reservedCells.get(unitsOnLocation);
                     if (wunit != null) {
                         gr.drawRect(gridLocationToSpaceX(unitsOnLocation) - GRID_CELL_SIZE / 2, gridLocationToSpaceY(unitsOnLocation) - GRID_CELL_SIZE / 2, GRID_CELL_SIZE, GRID_CELL_SIZE);
                     }
@@ -3244,7 +3299,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 List<SpacewarStructure> structuresForPathing = new ArrayList<>();
                 structuresForPathing.addAll(ships());
                 structuresForPathing.addAll(stations());
-                movementHandler = new SimpleSpaceWarMovementHandler(commons.pool, GRID_CELL_SIZE, SIMULATION_DELAY, structuresForPathing, gridSizeX, gridSizeY);
+                movementHandler = new SpaceWarMovementHandler(commons.pool, GRID_CELL_SIZE, SIMULATION_DELAY, structuresForPathing, gridSizeX, gridSizeY);
+                movementHandler.initUnits();
             }
         } else {
             stopButton.enabled = enabled;
@@ -4107,7 +4163,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 return true;
             }
         } else
-        if (ship.type == StructureType.SHIP && ship.kamikaze == 0) {
+        if (ship.type == StructureType.SHIP && ship.kamikaze == 0 && !ship.hasPlannedMove()) {
             for (SpacewarStructure es : enemiesInRange(ship)) {
                 if (es.kamikaze > 0 && es.isRocket()) {
                     ship.attackUnit = es;
@@ -5518,7 +5574,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     public void move(SpacewarStructure s, double x, double y) {
         s.attackUnit = null;
         s.guard = false;
-        movementHandler.setMovementGoal(s, getSpaceToGridLocationAt(x, y));
+        if (s.type == StructureType.SHIP) {
+            movementHandler.setMovementGoal(s, getSpaceToGridLocationAt(x, y));
+        }
         if (s.selected && s.owner == player()) {
             enableSelectedFleetControls();
         }

@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,8 +152,15 @@ public class BattleSpaceLayout {
         workingHeight = referenceHeight;
         workingWidth = (int)Math.floor(getWidth() * ratio);
         Map<Location, ResearchSubCategory> newMap = new HashMap<>();
+        Point2D centerPoint = new Point2D.Double((getRightmostX()) / 2.0 , (image.getHeight()) / 2.0);
+        Point2D newCenterPoint = new Point2D.Double(centerPoint.getX() * ratio , centerPoint.getY() * ratio);
         for (Location loc : map.keySet()) {
-            newMap.put(Location.of((int)Math.round(loc.x * ratio), (int)Math.round(loc.y * ratio)), map.get(loc));
+            double scaledYpoint = (loc.y - centerPoint.getY()) * ratio + newCenterPoint.getY();
+            int newYpoint = (int) (Math.round(scaledYpoint) == Math.round(newCenterPoint.getY()) ? Math.round(scaledYpoint) : (scaledYpoint > newCenterPoint.getY() ? Math.ceil(scaledYpoint) : Math.floor(scaledYpoint)));
+            double scaledXpoint = (loc.x - centerPoint.getX()) * ratio + newCenterPoint.getX();
+            int newXpoint = (int) (Math.round(scaledXpoint) == Math.round(newCenterPoint.getX()) ? Math.round(scaledXpoint) : (scaledXpoint > newCenterPoint.getX() ? Math.ceil(scaledXpoint) : Math.floor(scaledXpoint)));
+            Location newLocation = Location.of(newXpoint, newYpoint);
+            newMap.put(newLocation, map.get(loc));
         }
         map = newMap;
     }

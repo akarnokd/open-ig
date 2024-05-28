@@ -376,6 +376,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     doAddGuns();
                     doAddUnits();
                     movementHandler = new GroundWarMovementHandler(commons.pool, 28, SIMULATION_DELAY, units, surface().width, surface().height, surface().placement);
+                    movementHandler.initUnits();
                     planet().allocation = ResourceAllocationStrategy.BATTLE;
                     startBattle.visible(false);
                     simulator = commons.register(SIMULATION_DELAY, new Action0() {
@@ -4726,7 +4727,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             u.lastX = u.x;
             u.lastY = u.y;
             if (u.hasPlannedMove) {
-                if (movementHandler.moveUnit(u)) {
+                if (movementHandler.moveUnit(u) && u.advanceOnUnit == null && u.advanceOnBuilding == null && !u.hasValidTarget()) {
                     u.guard = true;
                 }
                 //                if (u.nextMove == null) {
@@ -5756,7 +5757,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     ) {
                 move(u, lm.x, lm.y);
                 u.attackMove = lm;
-                u.guard = true;
+                u.guard = false;
                 attacked = true;
             }
         }
@@ -6196,6 +6197,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         world().scripting.onGroundwarStart(this);
 
         movementHandler = new GroundWarMovementHandler(commons.pool, 28, SIMULATION_DELAY, units, surface().width, surface().height, surface().placement);
+        movementHandler.initUnits();
         commons.simulation.resume();
     }
     /**
@@ -6416,7 +6418,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     public void attackMove(GroundwarUnit u, int x, int y) {
         stop(u);
-        u.guard = true;
+        u.guard = false;
         Location lm = Location.of(x, y);
         u.attackMove = lm;
         movementHandler.setMovementGoal(u, lm);

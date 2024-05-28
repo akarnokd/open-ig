@@ -44,6 +44,10 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
         this.gridSizeX = gridSizeX;
         this.gridSizeY = gridSizeY;
         this.units = units;
+    }
+
+    @Override
+    public void initUnits() {
         for (WarUnit wunit : units) {
             Location pfl = wunit.location();
             Set<WarUnit> set = unitsForPathfinding.get(pfl);
@@ -96,22 +100,13 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
             }
             unit.setNextMove(unit.getPath().peekFirst());
             unit.setNextRotate(unit.getNextMove());
-
-            // is the next move location still passable?
-            if (!ignoreObstacles(unit.getNextMove(), unit) && (!isPassable(unit.getNextMove(), unit) || isCellReserved(unit.getNextMove(), unit))) {
-                // trigger replanning
-                repath(unit);
-                return false;
-            }
         }
 
-        if (!ignoreObstacles(unit.getNextMove(), unit) && unitsForPathfinding.get(unit.getNextMove()) != null) {
-            for (WarUnit wunit : unitsForPathfinding.get(unit.getNextMove())) {
-                if (wunit != unit && !wunit.inMotion() && !needsRotation(wunit, wunit.getNextRotate())) {
-                    repath(unit);
-                    return false;
-                }
-            }
+        // is the next move location still passable?
+        if (!ignoreObstacles(unit.getNextMove(), unit) && (!isPassable(unit.getNextMove(), unit) || isCellReserved(unit.getNextMove(), unit))) {
+            // trigger replanning
+            repath(unit);
+            return false;
         }
 
         if (unit.getNextRotate() != null && rotateStep(unit, unit.getNextRotate().x, unit.getNextRotate().y)) {

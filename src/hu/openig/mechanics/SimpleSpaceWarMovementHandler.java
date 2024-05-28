@@ -52,13 +52,4 @@ public class SimpleSpaceWarMovementHandler extends SimpleWarMovementHandler {
         }
         return super.ignoreObstacles(loc, unit);
     }
-
-    @Override
-    boolean isPassable(Location loc, WarUnit unit) {
-        SpacewarStructure sws = (SpacewarStructure) unit;
-        if (sws.kamikaze > 0 && loc.equals(sws.getAttackTarget().location())) {
-            return true;
-        }
-        return super.isPassable(loc, unit);
-    }
 }
