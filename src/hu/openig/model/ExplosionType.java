@@ -28,7 +28,20 @@ public enum ExplosionType {
     /** Explosion. */
     GROUND_ROCKET("groundwar/rocket_explosions", 9),
     /** Explosion. */
-    GROUND_ROCKET_2("groundwar/rocket_explosions_2", 9)
+    GROUND_ROCKET_2("groundwar/rocket_explosions_2", 9),
+
+    /** Small explosion animation. */
+    EXPLOSION_SMALL("spacewar/explosion_1", 11),
+    /** Medium explosion animation. */
+    EXPLOSION_MEDIUM("spacewar/explosion_2", 11),
+    /** Large explosion animation. */
+    EXPLOSION_LARGE("spacewar/explosion_3", 18),
+    /** Tiny explosion animation. */
+    EXPLOSION_TINY("spacewar/explosion_hit", 5),
+    /** Green explosion. */
+    EXPLOSION_GREEN("spacewar/explosion_4", 30),
+    /** Multi explosion animation.The actual animation is a combinations of multiple explosion animations. */
+    EXPLOSION_MULTI("spacewar/explosion_3", 18),
     ;
     /** The explosion image resource. */
     public final String image;

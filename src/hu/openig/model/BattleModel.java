@@ -48,7 +48,7 @@ public class BattleModel {
     /** The probabilities for backfiring, if not present, there is no limit. */
     public final Map<Difficulty, Double> backfires = new HashMap<>();
     /** The explosion images. */
-    public final Map<ExplosionType, BufferedImage[]> groundExplosions = new HashMap<>();
+    public final Map<ExplosionType, BufferedImage[]> explosionAnimations = new HashMap<>();
     /** The flying rocket [phase][angle]. */
     public BufferedImage[][] groundRocket;
     /** The direct attack units. */

@@ -4180,7 +4180,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             if (u.paralizedTTL > 0) {
                 // draw green paralization effect
-                BufferedImage[] expl = world().battle.groundExplosions.get(ExplosionType.GROUND_GREEN);
+                BufferedImage[] expl = world().battle.explosionAnimations.get(ExplosionType.GROUND_GREEN);
                 int idx = (PARALIZED_TTL - u.paralizedTTL) % expl.length;
 
                 BufferedImage icon = expl[idx];
@@ -5459,7 +5459,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param type the type of the explosion animation
      */
     void createExplosion(GroundwarUnit target, ExplosionType type) {
-        GroundwarExplosion exp = new GroundwarExplosion(world().battle.groundExplosions.get(type));
+        GroundwarExplosion exp = new GroundwarExplosion(world().battle.explosionAnimations.get(type));
+        ExplosionType.valueOf("GROUND_YELLOW");
         Point center = centerOf(target);
         exp.x = center.x;
         exp.y = center.y;
@@ -5473,7 +5474,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param type the type of the explosion animation
      */
     void createExplosion(int x, int y, ExplosionType type) {
-        GroundwarExplosion exp = new GroundwarExplosion(world().battle.groundExplosions.get(type));
+        GroundwarExplosion exp = new GroundwarExplosion(world().battle.explosionAnimations.get(type));
         exp.x = x;
         exp.y = y;
         explosions.add(exp);

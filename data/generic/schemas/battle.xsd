@@ -132,6 +132,11 @@
 				<xs:documentation>Some projectiles may turn while travelling (e.g., rockets). Defines how much time it takes to do a one step rotation. The larger this number is the faster the projectile will turn.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="explosion-anim" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Ratio of simulation time and distance travelled. The smaller this number is the faster the projectile will travel.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="space-entities">
 		<xs:annotation>
@@ -204,6 +209,11 @@
                 <xs:documentation>The base hitpoints of the entity in skirmish.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+		<xs:attribute name="explosion-anim" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Ratio of simulation time and distance travelled. The smaller this number is the faster the projectile will travel.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ground-shields">
 		<xs:annotation>
@@ -249,6 +259,11 @@
 		<xs:attribute name="shield" type="xs:decimal" use="required">
 			<xs:annotation>
 				<xs:documentation>The percentage of the shield hitpoints in respect to the base hitpoints.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="explosion-anim" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Ratio of simulation time and distance travelled. The smaller this number is the faster the projectile will travel.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -318,6 +333,11 @@
 				<xs:documentation>Defines how much time it takes to do a one step rotation. The larger this number is the faster the projector will turn.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="explosion-anim" type="xs:string" use="optional">
+		<xs:annotation>
+			<xs:documentation>Ratio of simulation time and distance travelled. The smaller this number is the faster the projectile will travel.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ground-vehicles">
 		<xs:annotation>

@@ -34,6 +34,7 @@ import hu.openig.model.Building;
 import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
 import hu.openig.model.Cursors;
+import hu.openig.model.ExplosionType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
@@ -1509,7 +1510,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.item = ii;
                 st.angle = Math.PI;
                 st.owner = nearbyPlanet.owner;
-                st.destruction = bse.destruction;
+                st.destruction = bse.destructionSound;
+                st.destructionExplosion = bse.destructionExplosion;
                 st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
                 st.trimmedHeight = bse.trimmedHeight;
                 st.trimmedWidth = bse.trimmedWidth;
@@ -1559,7 +1561,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                     st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
                     st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
                     st.value = b.type.cost;
-                    st.destruction = bge.destruction;
+                    st.destruction = bge.destructionSound;
+                    st.destructionExplosion = bge.destructionExplosion;
                     st.building = b;
                     st.planet = nearbyPlanet;
 
@@ -1600,7 +1603,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
                 st.value = b.type.cost;
                 st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
-                st.destruction = bge.destruction;
+                st.destruction = bge.destructionSound;
+                st.destructionExplosion = bge.destructionExplosion;
                 st.building = b;
                 st.planet = nearbyPlanet;
 
@@ -1780,7 +1784,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.type = StructureType.SHIP;
                 st.item = ii;
                 st.owner = ii.owner;
-                st.destruction = bse.destruction;
+                st.destruction = bse.destructionSound;
+                st.destructionExplosion = bse.destructionExplosion;
                 st.angles = ii.owner != player() ? bse.alternative : bse.normal;
                 st.trimmedHeight = bse.trimmedHeight;
                 st.trimmedWidth = bse.trimmedWidth;
@@ -1960,7 +1965,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
         drawSpacewarStructures(structures, g2);
         for (SpacewarExplosion e : explosions) {
-            drawCenter(e.get(), e.x, e.y, g2);
+            BufferedImage animPhase = e.get();
+            if (animPhase != null) {
+                drawCenter(e.get(), e.x, e.y, g2);
+            }
         }
 
         g2.setTransform(af);
@@ -3478,6 +3486,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
         r.port.cooldown = r.port.projectile.delay;
 
+
         SpacewarStructure proj = new SpacewarStructure(world().researches.get(r.port.projectile.id));
         proj.owner = r.fired.owner;
         proj.attackUnit = target;
@@ -3489,7 +3498,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         proj.gridX = r.fired.gridX;
         proj.gridY = r.fired.gridY;
         proj.angle = r.fired.angle;
-        proj.destruction = SoundType.EXPLOSION_MEDIUM;
+        proj.destruction = r.port.projectile.sound;
+        proj.destructionExplosion = r.port.projectile.impactExplosion;
         proj.ecmLevel = r.type.getInt("anti-ecm", 0);
         proj.kamikaze = r.port.damage(proj.owner);
         proj.ttl = ROCKET_TTL;
@@ -3883,8 +3893,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param s the structure
      * @param destroy should the explosion destroy the target?
      */
-    void createExplosion(SpacewarStructure s, boolean destroy) {
-        SpacewarExplosion x = new SpacewarExplosion(getExplosionFor(s.destruction));
+    void createStructureExplosion(SpacewarStructure s, boolean destroy) {
+        SpacewarExplosion x;
+        x = new SpacewarExplosion(world().battle.explosionAnimations.get(s.destructionExplosion));
         x.owner = s.owner;
         if (destroy) {
             x.target = s;
@@ -3892,21 +3903,28 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         x.x = s.x;
         x.y = s.y;
         explosions.add(x);
+        if (s.destructionExplosion == ExplosionType.EXPLOSION_MULTI) {
+            createMultiExplosion(s);
+        }
     }
     /**
-     * Get the explosion animation for a given sound effect.
-     * @param destruction the destruction sound
-     * @return the animation phases
+     * Create explosion object for the given spacewar structure.
+     * @param ship the structure
      */
-    BufferedImage[] getExplosionFor(SoundType destruction) {
-        switch (destruction) {
-        case EXPLOSION_MEDIUM:
-        case EXPLOSION_MEDIUM_2:
-            return commons.spacewar().explosionMedium;
-        case EXPLOSION_SHORT:
-            return commons.spacewar().explosionSmall;
-        default:
-            return commons.spacewar().explosionLarge;
+    void createMultiExplosion(SpacewarStructure ship) {
+        for (int i = 0; i < 10; i++) {
+            SpacewarExplosion x;
+            if (i % 5 == 0) {
+                x = new SpacewarExplosion(world().battle.explosionAnimations.get(ExplosionType.EXPLOSION_GREEN));
+            } else {
+                x = new SpacewarExplosion(world().battle.explosionAnimations.get(ExplosionType.EXPLOSION_LARGE));
+                x.delay = (int)Math.round(Math.random() * 10);
+            }
+            x.owner = ship.owner;
+            Point2D randomPointOnStructure = getRandomPointOnStructure(ship, 0.9);
+            x.x = randomPointOnStructure.getX();
+            x.y = randomPointOnStructure.getY();
+            explosions.add(x);
         }
     }
     /**
@@ -3915,10 +3933,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param y the Y coordinate
      * @param explosion the sound effect
      */
-    void createExplosion(double x, double y, SoundType explosion) {
-        SpacewarExplosion xp = new SpacewarExplosion(getExplosionFor(explosion));
+    void createExplosion(double x, double y, ExplosionType explosion) {
+        SpacewarExplosion xp = new SpacewarExplosion(world().battle.explosionAnimations.get(explosion));
         xp.x = x;
         xp.y = y;
+        explosions.add(xp);
+    }
+    /**
+     * Create explosion object for the given spatial location.
+     * @param projectile the projectile
+     */
+    void createProjectileImpactExplosion(SpacewarProjectile projectile) {
+        SpacewarExplosion xp = new SpacewarExplosion(projectile.impactExplosionAnim);
+        xp.x = projectile.x;
+        xp.y = projectile.y;
         explosions.add(xp);
     }
     /** Perform the spacewar simulation. */
@@ -3928,8 +3956,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         for (SpacewarExplosion exp : new ArrayList<>(explosions)) {
             if (exp.next()) {
                 explosions.remove(exp);
-            } else
-            if (exp.isMiddle() && exp.target != null && exp.target.isDestroyed()) {
+            } else if (exp.isMiddle() && exp.target != null && exp.target.isDestroyed()) {
                 structures.remove(exp.target);
                 if ((exp.target.type == StructureType.SHIP && exp.target.count == 0) || exp.target.type == StructureType.STATION) {
                     movementHandler.removeUnit(exp.target);
@@ -4234,7 +4261,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                         ship.techId,
                         ship.owner.id);
                 createLoss(ship);
-                createExplosion(ship, true);
+                createStructureExplosion(ship, true);
             }
         }
     }
@@ -4245,7 +4272,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     void handleRocket(SpacewarStructure ship) {
         if (ship.ttl-- < 0) {
             createLoss(ship);
-            createExplosion(ship, false);
+            createStructureExplosion(ship, false);
             structures.remove(ship);
             return;
         }
@@ -4285,7 +4312,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                         ship.owner.id);
             }
             createLoss(ship);
-            createExplosion(ship, true);
+            createStructureExplosion(ship, true);
             if (ship.type == StructureType.VIRUS_BOMB
                     && (ship.attackUnit.type == StructureType.PROJECTOR || ship.attackUnit.type == StructureType.SHIELD)) {
                 battle.infectPlanet = ship.attackUnit.planet;
@@ -4330,7 +4357,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 double x2 = ship.attackUnit.x + sr * Math.cos(a);
                 double y2 = ship.attackUnit.y + sr * Math.sin(a);
 
-                createExplosion(x2, y2, SoundType.EXPLOSION_MEDIUM);
+                createExplosion(x2, y2, ExplosionType.EXPLOSION_LARGE);
                 damageArea(source, x2, y2, (ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
             }
         }
@@ -4360,8 +4387,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         // move projectiles
         for (SpacewarProjectile p : new ArrayList<>(projectiles)) {
             if (moveProjectileStep(p)) {
+                createProjectileImpactExplosion(p);
                 projectiles.remove(p);
-
                 damageTarget(p.source, p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
             } else if (!p.intersects(0, 0, space.width, space.height)) {
                 projectiles.remove(p);
@@ -4469,19 +4496,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     void damageTarget(
             SpacewarStructure source,
             SpacewarStructure target,
-
             double damage,
-
             SoundType impactSound,
             String techId,
             String owner) {
+
         int loss0 = target.loss;
 
         if (target.damage(damage)) {
 
             battle.spaceLosses.add(target);
             soundsToPlay.add(target.destruction);
-            createExplosion(target, true);
+            createStructureExplosion(target, true);
             if (target.type == StructureType.SHIELD) {
                 dropGroundShields();
             }
@@ -4678,15 +4704,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         for (SpacewarWeaponPort p : ship.inRange(ship.attackUnit)) {
             if (p.cooldown <= 0) {
                 //appears as if the ship is aiming at random parts of the target
-                double inaccuracy = 0.40f;
-                double aimOffsetX = ship.attackUnit.trimmedWidth * (-inaccuracy + (Math.random() * inaccuracy * 2));
-                double aimOffsetY = ship.attackUnit.trimmedHeight * (-inaccuracy + (Math.random() * inaccuracy * 2));
-                aimOffsetX = (aimOffsetX) * Math.cos(ship.attackUnit.angle) - (aimOffsetY) * Math.sin(ship.attackUnit.angle);
-                aimOffsetY = (aimOffsetX) * Math.sin(ship.attackUnit.angle) + (aimOffsetY) * Math.cos(ship.attackUnit.angle);
-                createBeam(ship, p, ship.attackUnit.x + aimOffsetX, ship.attackUnit.y + aimOffsetY, ship.attackUnit);
+                Point2D randomPointOnStructure = getRandomPointOnStructure(ship.attackUnit, 0.8);
+                createBeam(ship, p, randomPointOnStructure.getX(), randomPointOnStructure.getY(), ship.attackUnit);
                 p.cooldown = (int) (p.projectile.delay * (0.5f + Math.random()));
             }
         }
+    }
+    /**
+     * Return a random point on the given SpaceWarStructure.
+     * @param sws the SpaceWarStructure
+     * @param ratio the ratio of maximum how far from the center of the SpaceWarStructure the new point can be.
+     * */
+    Point2D getRandomPointOnStructure(SpacewarStructure sws, double ratio) {
+        double boundsRatio = ratio / 2;
+        double aimOffsetX = sws.trimmedWidth * (Math.random() * boundsRatio * 2 - boundsRatio);
+        double aimOffsetY = sws.trimmedHeight * (Math.random() * boundsRatio * 2 - boundsRatio);
+        aimOffsetX = (aimOffsetX) * Math.cos(sws.angle) - (aimOffsetY) * Math.sin(sws.angle);
+        aimOffsetY = (aimOffsetX) * Math.sin(sws.angle) + (aimOffsetY) * Math.cos(sws.angle);
+        return new Point2D.Double(sws.x + aimOffsetX, sws.y + aimOffsetY);
     }
     /**
      * Create a beam aimed at (ax, ay) and should hit the target only.
@@ -4705,6 +4740,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         sp.source = source;
         sp.target = target;
         sp.movementSpeed = p.projectile.movementSpeed;
+        sp.impactExplosionAnim =  world().battle.explosionAnimations.get(p.projectile.impactExplosion);
         sp.impactSound = SoundType.HIT;
         sp.x = source.x;
         sp.y = source.y;

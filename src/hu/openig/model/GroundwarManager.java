@@ -522,7 +522,7 @@ public class GroundwarManager implements GroundwarWorld {
      * @param type the type of the explosion animation
      */
     void createExplosion(GroundwarUnit target, ExplosionType type) {
-        GroundwarExplosion exp = new GroundwarExplosion(world.battle.groundExplosions.get(type));
+        GroundwarExplosion exp = new GroundwarExplosion(world.battle.explosionAnimations.get(type));
         exp.x = target.x;
         exp.y = target.y;
         exp.target = target;
@@ -535,7 +535,7 @@ public class GroundwarManager implements GroundwarWorld {
      * @param type the type of the explosion animation
      */
     void createExplosion(double x, double y, ExplosionType type) {
-        GroundwarExplosion exp = new GroundwarExplosion(world.battle.groundExplosions.get(type));
+        GroundwarExplosion exp = new GroundwarExplosion(world.battle.explosionAnimations.get(type));
         exp.x = x;
         exp.y = y;
         ground.explosions.add(exp);

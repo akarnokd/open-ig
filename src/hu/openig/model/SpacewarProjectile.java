@@ -37,6 +37,8 @@ public class SpacewarProjectile extends SpacewarObject {
     public SpacewarStructure source;
     /** The targeted structure. */
     public SpacewarStructure target;
+    /** The explosion animation on impact. */
+    public BufferedImage[] impactExplosionAnim;
     /** The impact sound. */
     public SoundType impactSound;
     /**

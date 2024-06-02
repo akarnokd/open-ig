@@ -66,21 +66,6 @@ public class SpacewarGFX {
     /** Zoom button. */
     @Btn2(name = "spacewar/button_zoom")
     public BufferedImage[] zoom;
-    /** Small explosion animation. */
-    @Anim(name = "spacewar/explosion_1", width = 20)
-    public BufferedImage[] explosionSmall;
-    /** Medium explosion animation. */
-    @Anim(name = "spacewar/explosion_2", width = 30)
-    public BufferedImage[] explosionMedium;
-    /** Large explosion animation. */
-    @Anim(name = "spacewar/explosion_3", width = 60)
-    public BufferedImage[] explosionLarge;
-    /** Tiny explosion animation. */
-    @Anim(name = "spacewar/explosion_hit", width = 9)
-    public BufferedImage[] explosionTiny;
-    /** Green explosion. */
-    @Anim(name = "spacewar/explosion_4", width = 40)
-    public BufferedImage[] explosionGreen;
 //    /** The planet. */
 //    @Img(name = "spacewar/planet")
 //    public BufferedImage planet;

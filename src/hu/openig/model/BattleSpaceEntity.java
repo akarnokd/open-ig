@@ -28,8 +28,10 @@ public class BattleSpaceEntity {
     public int trimmedWidth;
     /** The symmetrically trimmed height of the object image at 0 rotation angle. */
     public int trimmedHeight;
-    /** The sound effect for explosion. */
-    public SoundType destruction;
+    /** The sound effect for destruction explosion. */
+    public SoundType destructionSound;
+    /** The animation of the destruction explosion. */
+    public ExplosionType destructionExplosion;
     /** The rotation speed: full rotation time in milliseconds. */
     public int rotationTime;
     /** The movement speed: milliseconds per pixel. */
