@@ -47,7 +47,7 @@ public class SimpleSpaceWarMovementHandler extends SimpleWarMovementHandler {
     @Override
     boolean ignoreObstacles(Location loc, WarUnit unit) {
         SpacewarStructure sws = (SpacewarStructure) unit;
-        if (sws.kamikaze > 0 && loc.equals(sws.getAttackTarget().location())) {
+        if (sws.kamikaze > 0 && unitsForPathfinding.get(loc) != null && unitsForPathfinding.get(loc).contains(sws.attackUnit)) {
             return true;
         }
         return super.ignoreObstacles(loc, unit);

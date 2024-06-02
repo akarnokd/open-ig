@@ -2298,6 +2298,11 @@ public class World implements ModelLookup {
      * @param xbattle the battle definition
      */
     void processBattle(XElement xbattle) {
+        for (ExplosionType et : ExplosionType.values()) {
+            BufferedImage img = rl.getImage(et.image);
+            battle.explosionAnimations.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
+        }
+
         for (XElement xproj : xbattle.childElement("projectiles").childrenWithName("projectile")) {
             BattleProjectile bp = new BattleProjectile();
 
@@ -2318,6 +2323,7 @@ public class World implements ModelLookup {
             if (xproj.has("sound")) {
                 bp.sound = SoundType.valueOf(xproj.get("sound"));
             }
+            bp.impactExplosion = ExplosionType.valueOf(xproj.get("explosion-anim"));
             bp.baseDamage = xproj.getInt("damage");
             bp.range = xproj.getInt("range");
             bp.delay = xproj.getInt("delay");
@@ -2357,7 +2363,8 @@ public class World implements ModelLookup {
             }
 
             se.infoImageName = xspace.get("image");
-            se.destruction = SoundType.valueOf(xspace.get("sound"));
+            se.destructionSound = SoundType.valueOf(xspace.get("sound"));
+            se.destructionExplosion = ExplosionType.valueOf(xspace.get("explosion-anim"));
             if (xspace.has("movement-speed")) {
                 se.movementSpeed = xspace.getInt("movement-speed");
             }
@@ -2405,10 +2412,11 @@ public class World implements ModelLookup {
             }
             se.infoImageName = xdefense.get("image");
             if (xdefense.has("sound")) {
-                se.destruction = SoundType.valueOf(xdefense.get("sound"));
+                se.destructionSound = SoundType.valueOf(xdefense.get("sound"));
             } else {
                 System.err.println("Missing sound for " + id);
             }
+            se.destructionExplosion = ExplosionType.valueOf(xdefense.get("explosion-anim"));
             se.projectile = xdefense.get("projectile");
             se.rotationTime = xdefense.getInt("rotation-time");
             se.baseDamage = xdefense.getInt("damage");
@@ -2436,10 +2444,11 @@ public class World implements ModelLookup {
             }
             se.infoImageName = xdefense.get("image");
             if (xdefense.has("sound")) {
-                se.destruction = SoundType.valueOf(xdefense.get("sound"));
+                se.destructionSound = SoundType.valueOf(xdefense.get("sound"));
             } else {
                 System.err.println("Missing sound for " + id);
             }
+            se.destructionExplosion = ExplosionType.valueOf(xdefense.get("explosion-anim"));
             se.shields = xdefense.getInt("shield");
 
             battle.groundShields.put(id, se);
@@ -2573,11 +2582,6 @@ public class World implements ModelLookup {
                 double v = xvs.getDouble("value");
                 matrix.put(Pair.of(a, e), v);
             }
-        }
-
-        for (ExplosionType et : ExplosionType.values()) {
-            BufferedImage img = rl.getImage(et.image);
-            battle.groundExplosions.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
         }
 
         BufferedImage rimg = rl.getImage("inventions/weapons/vehicles/rocket_matrix");

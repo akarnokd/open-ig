@@ -65,6 +65,8 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     public int ecmLevel;
     /** The destruction sound. */
     public SoundType destruction;
+    /** The destruction explosion. */
+    public ExplosionType destructionExplosion;
     /** The structure type. */
     public StructureType type;
     /** The available weapon ports. */
@@ -337,6 +339,7 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         r.trimmedHeight = trimmedHeight;
         r.count = count;
         r.destruction = destruction;
+        r.destructionExplosion = destructionExplosion;
         r.ecmLevel = ecmLevel;
         r.hp = hp;
         r.hpMax = hpMax;

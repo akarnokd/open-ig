@@ -18,6 +18,8 @@ import java.util.Objects;
 public class SpacewarExplosion extends SpacewarObject {
     /** The phase counter for the animation if any. */
     public int phase;
+    /** The delay counter for the animation to start playing. */
+    public int delay = 0;
     /** The phase image of the beam (e.g., the rotating meson bubble). */
     public final BufferedImage[] phases;
     /** The structure to remove when the explosion is at the middle. */
@@ -31,6 +33,9 @@ public class SpacewarExplosion extends SpacewarObject {
     }
     @Override
     public BufferedImage get() {
+        if (delay > 0) {
+            return null;
+        }
         return phases[(phase) % phases.length];
     }
     /** @return true if the animation is at the middle. */
@@ -43,6 +48,10 @@ public class SpacewarExplosion extends SpacewarObject {
      * @return true if the end is reached
      */
     public boolean next() {
+        if (delay > 0) {
+            delay--;
+            return false;
+        }
         return ++phase == phases.length;
     }
 }

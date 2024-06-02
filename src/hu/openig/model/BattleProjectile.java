@@ -34,6 +34,8 @@ public class BattleProjectile {
     public String id;
     /** The sound effect to play when fired. */
     public SoundType sound;
+    /** The on impact explosion animation identifier. */
+    public ExplosionType impactExplosion;
     /** The normal [rotation][phase] image matrix. */
     public BufferedImage[][] matrix;
     /** The alternative [rotation][phase] image matrix. */
@@ -58,6 +60,7 @@ public class BattleProjectile {
     public BattleProjectile copy() {
         BattleProjectile result = new BattleProjectile();
         result.sound = sound;
+        result.impactExplosion = impactExplosion;
         result.matrix = matrix;
         result.alternative = alternative;
         result.delay = delay;

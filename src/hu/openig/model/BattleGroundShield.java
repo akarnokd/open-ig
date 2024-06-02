@@ -24,7 +24,9 @@ public class BattleGroundShield {
     /** The symmetrically trimmed height of the object image at 0 rotation angle. */
     public int trimmedHeight;
     /** The destruction sound. */
-    public SoundType destruction;
+    public SoundType destructionSound;
+    /** The animation of the destruction explosion. */
+    public ExplosionType destructionExplosion;
     /** The shield percentage. */
     public int shields;
     /** The information image. */
