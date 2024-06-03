@@ -3,8 +3,8 @@
 	<projectiles>
 		<projectile id="Laser1" matrix="inventions/weapons/lasers/laser_1_rotate" width="64" height="1" sound="FIRE_LASER1" explosion-anim="EXPLOSION_TINY" damage="5" delay="1000" range="180" mode="BEAM" movement-speed="6"/>
 		<projectile id="Laser2" matrix="inventions/weapons/lasers/laser_2_rotate" width="64" height="1" sound="FIRE_LASER2" explosion-anim="EXPLOSION_TINY" damage="10" delay="900" range="200" mode="BEAM" movement-speed="5"/>
-		<projectile id="Laser3" matrix="inventions/weapons/lasers/laser_3_rotate" width="64" height="1" sound="FIRE_LASER3" explosion-anim="EXPLOSION_SMALL" damage="15" delay="700" range="220" mode="BEAM" movement-speed="3"/>
-		<projectile id="Laser4" matrix="inventions/weapons/lasers/laser_4_rotate" width="64" height="1" sound="FIRE_LASER4" explosion-anim="EXPLOSION_SMALL" damage="20" delay="800" range="240" mode="BEAM" movement-speed="4"/>
+		<projectile id="Laser3" matrix="inventions/weapons/lasers/laser_3_rotate" width="64" height="1" sound="FIRE_LASER1" explosion-anim="EXPLOSION_SMALL" damage="15" delay="700" range="220" mode="BEAM" movement-speed="3"/>
+		<projectile id="Laser4" matrix="inventions/weapons/lasers/laser_4_rotate" width="64" height="1" sound="FIRE_LASER2" explosion-anim="EXPLOSION_SMALL" damage="20" delay="800" range="240" mode="BEAM" movement-speed="4"/>
 		<projectile id="Ion" matrix="inventions/weapons/cannons/ion_projectile_rotate" width="64" height="1" sound="FIRE_PARTICLE" explosion-anim="EXPLOSION_MEDIUM" damage="20" delay="1200" range="300" mode="BEAM" movement-speed="9"/>
 		<projectile id="Plasma" matrix="inventions/weapons/cannons/plasma_projectile_rotate" width="64" height="1" sound="FIRE_PARTICLE" explosion-anim="EXPLOSION_MEDIUM" damage="25" delay="1100" range="320" mode="BEAM" movement-speed="10"/>
 		<projectile id="Particle" matrix="inventions/weapons/cannons/particle_projectile_matrix" width="1" height="12" sound="FIRE_MESON" explosion-anim="EXPLOSION_GREEN" damage="35" delay="1000" range="340" mode="BEAM" movement-speed="8"/>

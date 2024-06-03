@@ -3524,8 +3524,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
 
         structures.add(proj);
-
-        effectSound(r.port.projectile.sound);
+        if (commons.simulation.paused()) {
+            effectSound(r.port.projectile.sound);
+        } else {
+            soundsToPlay.add(r.port.projectile.sound);
+        }
     }
     /**
      * Set to attack the specified target.
@@ -4754,7 +4757,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
 
         projectiles.add(sp);
-        effectSound(p.projectile.sound);
+        soundsToPlay.add(p.projectile.sound);
     }
     /**
      * Apply loss results back to the initial fleets and planets.
