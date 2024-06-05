@@ -8,6 +8,7 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIResult;
@@ -27,6 +28,8 @@ import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The default AI controls.
@@ -223,9 +226,16 @@ public class DefaultAIControls implements AIControls {
         if (!planet.canBuild(buildingType)) {
             log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
             return AIResult.NO_AVAIL;
-        } else
-        if (p.money() >= buildingType.cost) {
-            Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
+        } else if (p.money() >= buildingType.cost) {
+            Point pt;
+            if (buildingType.kind.equals("Gun") || buildingType.kind.equals("Shield")) {
+                Location loc = findLocationForPlanetaryDefenseBuilding(planet);
+                System.out.printf("PlaceBuilding Defensive Building, Planet = %s, Type = %s Loc: %s \n", planet.id, buildingType.id, loc);
+                pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType), loc);
+                System.out.println(pt);
+            } else {
+                pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
+            }
             if (pt != null) {
                 AutoBuilder.construct(w, planet, buildingType, pt);
 //                log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
@@ -238,6 +248,22 @@ public class DefaultAIControls implements AIControls {
             return AIResult.NO_MONEY;
         }
     }
+
+    Location findLocationForPlanetaryDefenseBuilding(Planet planet) {
+        for (Building b : planet.surface.buildings.findByKind("Gun")) {
+            return b.location();
+        }
+        for (Building b : planet.surface.buildings.findByKind("Shield")) {
+            return b.location();
+        }
+        ArrayList<Location> corners = new ArrayList<>();
+        corners.add(Location.of(0,0));
+        corners.add(Location.of(-planet.surface.height + 1,-planet.surface.height + 1));
+        corners.add(Location.of(planet.surface.width - planet.surface.height + 1, - planet.surface.height - planet.surface.width + 1));
+        corners.add(Location.of(planet.surface.width - 1, -planet.surface.width + 1));
+        return corners.get((new Random()).nextInt(4));
+    }
+
     @Override
     public void actionDemolishBuilding(Planet planet, Building b) {
         planet.demolish(b);

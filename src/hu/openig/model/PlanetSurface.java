@@ -645,6 +645,17 @@ public class PlanetSurface {
         public Point findLocation(Dimension dim) {
             return findLocation(dim.width, dim.height);
         }
+
+        /**
+         * Find a location for the given dimensions, starting from a specific point on the surface.
+         * <p>Note: the dimensions should incorporate 1+1 road on both axis.</p>
+         * @param dim the dimensions
+         * @param preferredLocation the point from which the location search starts from
+         * @return the location or null if not found
+         */
+        public Point findLocation(Dimension dim, Location preferredLocation) {
+            return findLocation(dim.width, dim.height, preferredLocation);
+        }
         /**
          * Find a location on the surface which can support a building (and surrounding roads)
          * with the given size. The location search starts of from the center of the map
@@ -656,11 +667,26 @@ public class PlanetSurface {
         public Point findLocation(int width, int height) {
             int cx = this.width() / 2 - this.height() / 2 - width / 2;
             int cy = -this.width() / 2 - this.height() / 2 + height / 2;
+            return findLocation(width, height, Location.of(cx, cy));
+        }
 
-            int rx1 = Math.abs(this.width() - cx);
-            int rx2 = Math.abs(-this.height() - cx);
-            int ry1 = Math.abs(this.width() + this.height() + cy);
-            int ry2 = Math.abs(cy);
+        /**
+         * Find a location on the surface which can support a building (and surrounding roads)
+         * with the given size. The location search starts from the specified point on the surface.
+         * @param width should be the building tile width + 2
+         * @param height should be the building tile height + 2
+         * @param preferredLocation the point from which the location search starts from
+         * @return the top-left point where this building could be built, null indicates that
+         * no suitable location is present
+         */
+        public Point findLocation(int width, int height, Location preferredLocation) {
+            int startX = preferredLocation.x;
+            int startY = preferredLocation.y;
+
+            int rx1 = Math.abs(this.width() - startX);
+            int rx2 = Math.abs(-this.height() - startX);
+            int ry1 = Math.abs(this.width() + this.height() + startY);
+            int ry2 = Math.abs(startY);
             int maxr = Math.max(Math.max(rx1, rx2), Math.max(ry1, ry2));
             // the square size
             List<PlaceCandidate> candidates = new ArrayList<>();
@@ -671,10 +697,10 @@ public class PlanetSurface {
                 int[] ys = new int[size];
                 clockwise(xs, ys, len);
                 for (int k = 0; k < size; k++) {
-                    int x0 = cx + xs[k] - i;
-                    int y0 = cy - ys[k] + i;
+                    int x0 = startX + xs[k] - i;
+                    int y0 = startY - ys[k] + i;
                     if (canPlaceBuilding(x0, y0, width, height)) {
-                        int d = (cx - x0) * (cx - x0) + (cy - y0) * (cy - y0);
+                        int d = (startX - x0) * (startX - x0) + (startY - y0) * (startY - y0);
                         PlaceCandidate pc = createCandidate(x0, y0, width, height, d);
                         if (pc != null) {
                             candidates.add(pc);
