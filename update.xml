@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.247'>
+  <module id='Game' version='0.95.248'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,13 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.248' date='2024-06-07'>
+        <item category='Diplomacy' issues='1149'>Diplomacy should now be established correctly and not cause a memory overflow.</item>
+        <item category='AI' issues='1072,1120,1148'>The AI will now start searching for suitable build locations for shields and projectors around already existing ones. By @hemoridos</item>
+        <item category='Sound' issues='1119,1147'>Did loudness normalization on generic sound effects to -16 LUFS with some variation on louder sound effects. By @hemoridos</item>
+        <item category='Spacewar' issues='579,1146'>Added explosion variety to space battles. By @hemoridos</item>
+        <item category='Spacewar' issues='1144'>Implemented larger sized ship movements in space war. By @hemoridos</item>
+      </entry>
       <entry version='0.95.247' date='2024-05-27'>
         <item category='Diplomacy,Spacewar' issues='1143'>Fixed a bug that cancelled fleet attacks of the player before the game established an initial diplomatic relation between the parties.</item>
       </entry>
@@ -291,9 +298,9 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.247.jar' sha1='149849F47798BFF6070AA41E22147F38B0D81B9A'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240525a2.zip' sha1='BE89E399DAE26D3159248137087BB80F719ABC45'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240418a.zip' sha1='AE680ECA2D9BF4005E0E842DA2ADF18A2753A4AC'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.248.jar' sha1='4658706AF04532088D5028E8F7415093273CEACA'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240607a2.zip' sha1='C504F2ACAB39BBF762D8682DA0EDBB9079FF3688'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240607a.zip' sha1='E5E626A18FF968CF646A041D333B3C664394D848'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -315,7 +322,8 @@
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77' size='46534493' language='de'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20240607.zip' sha1='2a881e718ad806f349f06f9dc40daca74a13c4e9'/>
+    <remove file='open-ig-audio-generic-20121121A.zip'/>
     <remove file='open-ig-audio-generic-20120620A.zip'/>
     <remove file='open-ig-audio-generic-20120505A.zip'/>
     <remove file='open-ig-video-01-0.8.zip'/>
@@ -363,6 +371,7 @@
     <remove file='open-ig-images-20220129a.zip'/>
     <remove file='open-ig-images-20220130a.zip'/>
     <remove file='open-ig-images-20231211a.zip'/>
+    <remove file='open-ig-images-20240418a.zip'/>
   </module>
   <module id='MapEditor' version='0.63'>
     <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>

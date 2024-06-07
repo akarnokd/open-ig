@@ -2900,7 +2900,7 @@ public class World implements ModelLookup {
         DiplomaticRelation dr = getRelation(first, second);
         if (dr != null) {
             // establish full relation
-            dr.full |= dr.second.equals(first.id);
+            dr.full |= dr.second.equals(first);
         }  else {
             dr = createDiplomaticRelation(first, second);
         }
