@@ -214,9 +214,9 @@ public class ResearchPlanner extends Planner {
      */
     boolean demolishOneLabIf(int lab, int global, int local, final AIPlanet planet, final String resource) {
         if (lab < global && local > 0) {
-            for (AIBuilding b : new ArrayList<>(planet.buildings)) {
+            for (AIBuilding b : new ArrayList<>(planet.fetchBuildings())) {
                 if (b.type.resources.containsKey(resource)) {
-                    planet.buildings.remove(b);
+                    planet.fetchBuildings().remove(b);
                 }
             }
             applyActions.add(new Action0() {
@@ -302,7 +302,7 @@ public class ResearchPlanner extends Planner {
                 return AIResult.NO_AVAIL;
             }
             if (bt.cost <= world.money) {
-                Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
+                Point pt = planet.findLocation(bt);
                 if (pt != null) {
                     build(planet, bt);
                     return AIResult.SUCCESS;

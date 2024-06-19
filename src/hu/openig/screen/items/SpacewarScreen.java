@@ -748,10 +748,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @return an enemy structure or null if none
      */
     SpacewarStructure enemyAt(double x, double y) {
-        for (SpacewarStructure s : structures) {
-            if (!canControl(s) && s.contains(x, y)) {
-                return s;
-            }
+        List<SpacewarStructure> candidates = new ArrayList<>();
+        testStructure(structures, candidates, new Point2D.Double(x, y), new Point2D.Double(x, y));
+        if (candidates.isEmpty()) {
+            return null;
+        }
+        SpacewarStructure sws = candidates.get(0);
+        if (!canControl(sws)) {
+            return sws;
         }
         return null;
     }
@@ -766,6 +770,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             }
         }
         return result;
+    }
+    /**
+     * @return Returns a list of the currently selected structures.
+     */
+    void clearSelection() {
+        for (SpacewarStructure s : structures) {
+            s.selected = false;
+        }
     }
     /**
      * Select the structures which intersect with the current selection box.
@@ -790,7 +802,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         Point2D.Double p0 = mouseToSpace(sx0, sy0);
         Point2D.Double p1 = mouseToSpace(sx1, sy1);
 
-        own = testStructure(structures, candidates, own, p0, p1);
+        clearSelection();
+        own = testStructure(structures, candidates, p0, p1);
 
         if (selectionMode == SelectionBoxMode.SUBTRACT) {
             currentSelection.removeAll(candidates);
@@ -818,32 +831,35 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * Test the structures in source.
      * @param source the source structures
      * @param candidates the candidate for selection
-     * @param own was own items?
      * @param p0 the top-left point
      * @param p1 the bottom-right point
      * @return was own items?
      */
     boolean testStructure(Iterable<? extends SpacewarStructure> source,
-            List<SpacewarStructure> candidates, boolean own,
+            List<SpacewarStructure> candidates,
             Point2D.Double p0, Point2D.Double p1) {
+        ArrayList<SpacewarStructure> inReticule = new ArrayList<>();
+        boolean own = false;
         for (SpacewarStructure s : source) {
-            s.selected = false;
             if (s.intersects(p0.x, p0.y, p1.x - p0.x, p1.y - p0.y)) {
                 own |= canControl(s);
-                candidates.add(s);
+                inReticule.add(s);
             }
         }
 
         // If no mouse dragging, only select one unit. Check overlapping units under the mouse pointer and select one
         // There is a small leeway of 2 pixel distance for people with slippery fingers
         // Preference for selection fighters > cruisers > battleships and the one centered closest to the mouse click
-        if (p0.distance(p1) < 2 && !candidates.isEmpty()) {
+        if (p0.distance(p1) < 2 && !inReticule.isEmpty()) {
             List<SpacewarStructure> fighters = new ArrayList<>();
             List<SpacewarStructure> cruisers = new ArrayList<>();
             List<SpacewarStructure> battleships = new ArrayList<>();
             List<SpacewarStructure> stations = new ArrayList<>();
             List<SpacewarStructure> buildings = new ArrayList<>();
-            for (SpacewarStructure sws : candidates) {
+            for (SpacewarStructure sws : inReticule) {
+                if (sws.isRocket()) {
+                    continue;
+                }
                 if (sws.type == StructureType.PROJECTOR || sws.type == StructureType.SHIELD) {
                     buildings.add(sws);
                     continue;
@@ -876,6 +892,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             } else if (!buildings.isEmpty()) {
                 selectedType = buildings;
             }
+            if (selectedType.isEmpty()) {
+                return false;
+            }
             SpacewarStructure closestSws = selectedType.get(0);
             double distanceOfClosestSws = Math.hypot(closestSws.x - p0.x, closestSws.y - p0.y);
             for (SpacewarStructure sws : selectedType) {
@@ -884,10 +903,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                     closestSws = sws;
                 }
             }
-            candidates.clear();
-            candidates.add(closestSws);
+            inReticule.clear();
+            inReticule.add(closestSws);
         }
 
+        candidates.addAll(inReticule);
         return own;
     }
     /** Zoom in/out to fit the available main map space. */
@@ -2930,7 +2950,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         //fill all the cruiser slots
         for (Pair<Location, ResearchSubCategory> e : olist) {
             Location p = e.first;
-            if (e.second == ResearchSubCategory.SPACESHIPS_CRUISERS) { //fighter spot
+            if (e.second == ResearchSubCategory.SPACESHIPS_CRUISERS) { //cruiser spot
                 if (!cruisers.isEmpty()) {
                     SpacewarStructure sws = cruisers.getFirst();
                     if (structureFits(sws, p)) {
@@ -3498,7 +3518,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         proj.gridX = r.fired.gridX;
         proj.gridY = r.fired.gridY;
         proj.angle = r.fired.angle;
-        proj.destruction = r.port.projectile.sound;
+        proj.destruction = SoundType.HIT;
         proj.destructionExplosion = r.port.projectile.impactExplosion;
         proj.ecmLevel = r.type.getInt("anti-ecm", 0);
         proj.kamikaze = r.port.damage(proj.owner);
@@ -3954,7 +3974,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     }
     /** Perform the spacewar simulation. */
     void doSpacewarSimulation() {
-        soundsToPlay.clear();
         // advance explosions
         for (SpacewarExplosion exp : new ArrayList<>(explosions)) {
             if (exp.next()) {
@@ -4114,6 +4133,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         if (isEnemyFleeing != battle.enemyFlee) {
             chatFlee();
         }
+        soundsToPlay.clear();
 
         enableSelectedFleetControls();
         askRepaint();

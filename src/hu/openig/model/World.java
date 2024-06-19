@@ -1329,10 +1329,11 @@ public class World implements ModelLookup {
                     xb.set("worker", b.assignedWorker);
                 }
             }
-            if (!p.surface.pavements.isEmpty()) {
+            ArrayList<Location> pavements = p.surface.surfaceCells.getPavementLocations();
+            if (!pavements.isEmpty()) {
                 StringBuilder pavementsStr = new StringBuilder();
                 boolean separate = false;
-                for (Location ploc : p.surface.pavements) {
+                for (Location ploc : pavements) {
                     if (separate) {
                         pavementsStr.append(";");
                     }
@@ -1801,8 +1802,8 @@ public class World implements ModelLookup {
 
             p.inventory.clear();
             p.surface.buildings.clear();
-            p.surface.pavements.clear();
             p.surface.buildingmap.clear();
+            p.surface.surfaceCells.clearAllNonSurfaceElements();
             p.timeToLive.clear();
 
             // change surface type
@@ -1883,7 +1884,7 @@ public class World implements ModelLookup {
             if (xplanet.has("pavements")) {
                 for (String pavementXY : xplanet.get("pavements").split(";")) {
                     String[] pavement = pavementXY.split(",");
-                    p.surface.pavements.add(Location.of(Integer.parseInt(pavement[0]), Integer.parseInt(pavement[1])));
+                    p.surface.surfaceCells.setPavement(Integer.parseInt(pavement[0]), Integer.parseInt(pavement[1]));
                 }
             }
 
@@ -1903,7 +1904,7 @@ public class World implements ModelLookup {
                 for (XElement xmessage : e.getValue()[1].childrenWithName("message")) {
                     Message msg = new Message();
                     msg.load(xmessage, this);
-                    e.getKey().messageHistory.add(msg);
+                    e.getKey().messageHistory.addFirst(msg);
                 }
                 e.getKey().sortHistory();
             }
@@ -3400,11 +3401,14 @@ public class World implements ModelLookup {
                     ps.basemap = new HashMap<>(map.size() * pscale * pscale);
                     ps.features = new ArrayList<>(features.size() * pscale * pscale);
 
+                    ps.setSize(w0 * pscale, h0 * pscale);
                     for (int i = 0; i < pscale; i++) {
                         for (int j = 0; j < pscale; j++) {
                             for (Map.Entry<Location, SurfaceEntity> e : map.entrySet()) {
                                 if (i == 0 && j == 0) {
-                                    ps.basemap.put(e.getKey(), e.getValue());
+                                    Location loc = e.getKey();
+                                    ps.basemap.put(loc, e.getValue());
+                                    ps.surfaceCells.initEmptySurface(loc.x, loc.y);
                                 } else {
                                     Location loc = e.getKey();
                                     int x2 = loc.x + i * w0 - j * h0;
@@ -3412,21 +3416,17 @@ public class World implements ModelLookup {
 
                                     Location loc2 = Location.of(x2, y2);
                                     ps.basemap.put(loc2, e.getValue());
+                                    ps.surfaceCells.initEmptySurface(loc2.x, loc2.y);
                                 }
                             }
                             for (SurfaceFeature sf : features) {
                                 if (i == 0 && j == 0) {
-                                    ps.features.add(sf);
+                                    ps.placeBase(sf.tile, sf.location.x, sf.location.y, sf.id, sf.type);
                                 } else {
-                                    SurfaceFeature sf2 = sf.copy();
+                                    int x2 = sf.location.x + i * w0 - j * h0;
+                                    int y2 = sf.location.y - i * w0 - j * h0;
 
-                                    Location loc = sf2.location;
-                                    int x2 = loc.x + i * w0 - j * h0;
-                                    int y2 = loc.y - i * w0 - j * h0;
-
-                                    sf2.location = Location.of(x2, y2);
-
-                                    ps.features.add(sf2);
+                                    ps.placeBase(sf.tile, x2, y2, sf.id, sf.type);
                                 }
                             }
                             if (i > 0) {
@@ -3443,6 +3443,7 @@ public class World implements ModelLookup {
                                         Location loc4 = Location.of(x3 + 1, y3);
                                         SurfaceEntity se = ps.basemap.get(loc4);
                                         ps.basemap.put(loc3, se);
+                                        ps.surfaceCells.initEmptySurface(loc3.x, loc3.y);
                                     }
                                 }
                             }
@@ -3460,14 +3461,13 @@ public class World implements ModelLookup {
                                         Location loc4 = Location.of(x3 + 1, y3);
                                         SurfaceEntity se = ps.basemap.get(loc4);
                                         ps.basemap.put(loc3, se);
+                                        ps.surfaceCells.initEmptySurface(loc3.x, loc3.y);
                                     }
                                 }
 
                             }
                         }
                     }
-
-                    ps.setSize(w0 * pscale, h0 * pscale);
                 }
             }
             for (Planet p : planets.values()) {
@@ -3475,6 +3475,7 @@ public class World implements ModelLookup {
                 p.surface.basemap = ps0.basemap;
                 p.surface.features = ps0.features;
                 p.surface.setSize(ps0.width, ps0.height);
+                p.surface.surfaceCells = ps0.surfaceCells.copy();
             }
         }
     }

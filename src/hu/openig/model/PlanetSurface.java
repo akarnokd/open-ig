@@ -76,8 +76,8 @@ public class PlanetSurface {
     public List<SurfaceFeature> features = new ArrayList<>();
     /** Set of locations that should be excluded from groundwar deployments. */
     public Set<Location> deploymentExclusions = new HashSet<>();
-    /** Locations that have been paved and thus now buildable/passable. */
-    public Set<Location> pavements = new HashSet<>();
+    /** The object containing basic surface information for placements. */
+    public SurfaceCellArray surfaceCells;
     /**
      * If true, the features list will contain all tiles,
      * if false, only the non 1x1 tiles will be added.
@@ -88,18 +88,6 @@ public class PlanetSurface {
         @Override
         protected Map<Location, SurfaceEntity> basemap() {
             return basemap;
-        }
-        @Override
-        protected Map<Location, SurfaceEntity> buildingmap() {
-            return buildingmap;
-        }
-        @Override
-        protected boolean cellInMap(int x, int y) {
-            return PlanetSurface.this.cellInMap(x, y);
-        }
-        @Override
-        protected boolean hasPavement(Location loc) {
-            return pavements.contains(loc);
         }
         @Override
         protected int height() {
@@ -113,6 +101,10 @@ public class PlanetSurface {
         @Override
         protected Buildings buildings() {
             return buildings;
+        }
+        @Override
+        protected SurfaceCellArray surfaceCellArray() {
+            return surfaceCells;
         }
     };
     /** Compute the rendering start-stop locations. */
@@ -180,6 +172,7 @@ public class PlanetSurface {
                 se.tile = tile;
                 se.building = building;
                 buildingmap.put(Location.of(a, b), se);
+                surfaceCells.setBuilding(a, b);
             }
         }
         buildings.add(building);
@@ -202,6 +195,11 @@ public class PlanetSurface {
                 se.virtualColumn = a - x;
                 se.tile = tile;
                 basemap.put(Location.of(a, b), se);
+                if (tile.width > 1 || tile.height > 1) {
+                    surfaceCells.initSurfaceFeature(a, b);
+                } else {
+                    surfaceCells.initEmptySurface(a, b);
+                }
             }
         }
         if (isEditorMode || (tile.width > 1 || tile.height > 1)) {
@@ -244,6 +242,7 @@ public class PlanetSurface {
                 int width = Integer.parseInt(surface.get("width"));
                 int height = Integer.parseInt(surface.get("height"));
                 setSize(width, height);
+                this.surfaceCells = new SurfaceCellArray(this.width, this.height);
                 for (XElement tile : surface.childrenWithName("tile")) {
                     String type = tile.get("type");
                     int id = Integer.parseInt(tile.get("id"));
@@ -284,6 +283,7 @@ public class PlanetSurface {
     void setBuildings(BuildingModel bm, XElement buildings, Func0<Integer> newId) {
         this.buildings.clear();
         this.buildingmap.clear();
+        surfaceCells.clearAllBuildings();
 
         for (XElement tile : buildings.childrenWithName("building")) {
             int id = tile.getInt("id", -1);
@@ -394,6 +394,7 @@ public class PlanetSurface {
         // share basemap
         result.basemap = basemap;
         result.features = features;
+        result.surfaceCells = surfaceCells.copy();
 
         for (Map.Entry<Location, SurfaceEntity> se : buildingmap.entrySet()) {
             if (se.getValue().type == SurfaceEntityType.ROAD) {
@@ -413,6 +414,7 @@ public class PlanetSurface {
         Map<Tile, RoadType> trs = bm.tileRoads.get(raceId);
         // remove all roads
         Iterator<SurfaceEntity> it = buildingmap.values().iterator();
+        surfaceCells.removeRoads();
         while (it.hasNext()) {
             SurfaceEntity se = it.next();
             if (se.type == SurfaceEntityType.ROAD) {
@@ -528,20 +530,28 @@ public class PlanetSurface {
         corners.add(ld);
 
         buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
+        surfaceCells.setCrossRoad(la.x, la.y);
         buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
+        surfaceCells.setCrossRoad(lb.x, lb.y);
         buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
+        surfaceCells.setCrossRoad(lc.x, lc.y);
         buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
+        surfaceCells.setCrossRoad(ld.x, ld.y);
         // add linear segments
 
         Tile ht = rts.get(RoadType.HORIZONTAL);
         for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
             buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
             buildingmap.put(Location.of(i, rect.y - rect.height + 1), createRoadEntity(ht));
+            surfaceCells.setRoad(i, rect.y);
+            surfaceCells.setRoad(i, rect.y - rect.height + 1);
         }
         Tile vt = rts.get(RoadType.VERTICAL);
         for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
             buildingmap.put(Location.of(rect.x, i), createRoadEntity(vt));
             buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
+            surfaceCells.setRoad(rect.x, i);
+            surfaceCells.setRoad(rect.x + rect.width - 1, i);
         }
     }
     /**
@@ -555,6 +565,7 @@ public class PlanetSurface {
             for (int a = building.location.x; a < building.location.x + building.tileset.normal.width; a++) {
                 for (int b = building.location.y; b > building.location.y - building.tileset.normal.height; b--) {
                     buildingmap.remove(Location.of(a, b));
+                    surfaceCells.clearBuilding(a, b);
                 }
             }
             return true;
@@ -570,21 +581,13 @@ public class PlanetSurface {
         protected abstract int width();
         /** @return the map's vertical height. */
         protected abstract int height();
-        /**
-         * Test if the given coordinate is within the map.
-         * @param x the X coordinate
-         * @param y the Y coordinate
-         * @return true if within the map
-         */
-        protected abstract boolean cellInMap(int x, int y);
-        /** @return the building map */
-        protected abstract Map<Location, SurfaceEntity> buildingmap();
         /** @return the base map. */
         protected abstract Map<Location, SurfaceEntity> basemap();
         /** @return the existing buildings. */
         protected abstract Buildings buildings();
-        /** @return true if the location is paved. */
-        protected abstract boolean hasPavement(Location loc);
+        /** The object containing basic surface information for placements. */
+        protected abstract SurfaceCellArray surfaceCellArray();
+
         /**
          * Test if the given rectangular region is eligible for building placement, e.g.:
          * all cells are within the map's boundary, no other buildings are present within the given bounds,
@@ -622,19 +625,7 @@ public class PlanetSurface {
          * @return true if placement is allowed
          */
         public boolean canPlaceBuilding(int x, int y) {
-            if (!cellInMap(x, y)) {
-                return false;
-            }
-            SurfaceEntity se = buildingmap().get(Location.of(x, y));
-            if (se != null && se.type == SurfaceEntityType.BUILDING) {
-                return false;
-            }
-            Location loc = Location.of(x, y);
-            if (hasPavement(loc)) {
-                return true;
-            }
-            se = basemap().get(loc);
-            return !(se != null && (se.tile.width > 1 || se.tile.height > 1));
+            return surfaceCellArray().isCellBuildable(x, y);
         }
         /**
          * Find a location for the given dimensions.
@@ -731,16 +722,16 @@ public class PlanetSurface {
          */
         PlaceCandidate createCandidate(int x0, int y0, int width, int height, int d) {
             // no buildings at all
-            if (buildingmap().isEmpty()) {
+            if (buildings().isEmpty()) {
                 return new PlaceCandidate(x0, y0, 1, 0, d);
             }
             int roads = 1;
             int edges = 0;
             for (int k = x0; k < x0 + width; k++) {
                 for (int j = y0; j > y0 - height; j--) {
-                    if (isRoad(k, j)) {
+                    if (surfaceCellArray().hasRoad(k, j)) {
                         roads++;
-                        if (isCrossRoad(k, j)) {
+                        if (surfaceCellArray().hasCrossRoad(k, j)) {
                             edges++;
                         }
                     }
@@ -776,58 +767,6 @@ public class PlanetSurface {
                 ys[j] = i;
                 j++;
             }
-        }
-        /**
-         * Check if the cell is the edge of a building road.
-         * @param x the center x
-         * @param y the center y
-         * @return true if edge road
-         */
-        boolean isCrossRoad(int x, int y) {
-            if (isEdge(x - 1, y - 1) && isRoad(x, y - 1) && isRoad(x - 1, y)) {
-                return true;
-            }
-            if (isEdge(x + 1, y - 1) && isRoad(x, y - 1) && isRoad(x + 1, y)) {
-                return true;
-            }
-            if (isEdge(x - 1, y + 1) && isRoad(x - 1, y) && isRoad(x, y + 1)) {
-                return true;
-            }
-            return isEdge(x + 1, y + 1) && isRoad(x, y + 1) && isRoad(x + 1, y);
-        }
-        /**
-         * Check if the given location is a road.
-         * @param x the X coordinate
-         * @param y the Y coordinate
-         * @return true if road
-         */
-        boolean isRoad(int x, int y) {
-            SurfaceEntity e = buildingmap().get(Location.of(x, y));
-            return e != null && e.type == SurfaceEntityType.ROAD;
-        }
-        /**
-         * Check if the given location is a building edge.
-         * @param x the X coordinate
-         * @param y the Y coordinate
-         * @return true if road
-         */
-        boolean isEdge(int x, int y) {
-            SurfaceEntity e = buildingmap().get(Location.of(x, y));
-            if (e != null && e.building != null) {
-                if (e.virtualColumn == 0 && e.virtualRow == 0) {
-                    return true;
-                }
-                if (e.virtualColumn == 0 && e.virtualRow == e.building.tileset.normal.height - 1) {
-                    return true;
-                }
-                if (e.virtualColumn == e.building.tileset.normal.width - 1 && e.virtualRow == e.building.tileset.normal.height - 1) {
-                    return true;
-                }
-                if (e.virtualColumn == e.building.tileset.normal.width - 1 && e.virtualRow == 0) {
-                    return true;
-                }
-            }
-            return false;
         }
         /**
          * A building place candidate.
@@ -962,5 +901,222 @@ public class PlanetSurface {
         return new Point((int)(baseXOffset + Tile.toScreenX(x, y) + 28),
 
                 (int)(baseYOffset + Tile.toScreenY(x, y) + 14));
+    }
+
+    /**
+     * Simplified representation of the planetary surface mostly for fast placement checking.
+     * The underlying surface data of stored in a byte array, where each element represents
+     * a surface tile's current state as a bitmap. Array is used with offset indexing instead
+     * of a matrix, for faster duplication.
+     */
+    public static class SurfaceCellArray {
+
+        /** The array containing tile information. */
+        private byte[] surfaceArray;
+        /** The width of the surface being modelled. */
+        protected int surfaceWidth;
+        /** The height of the surface being modelled. */
+        protected int surfaceHeight;
+
+        /** Null tile usually on the edges of the map, placed due to rendering reasons. */
+        public static final byte UNDEFINED = 0;
+        /** Empty, walkable surface tile. */
+        public static final byte EMPTY_SURFACE =   0b0000001;
+        /** Empty, non-walkable surface feature tile. */
+        public static final byte SURFACE_FEATURE = 0b0000010;
+        /** Tile containing a road. */
+        public static final byte ROAD =            0b0000100;
+        /** Tile containing any kind of road junction. */
+        public static final byte CROSSROAD =       0b0001000;
+        /** Tile containing pavement. */
+        public static final byte PAVED_FEATURE =   0b0010000;
+        /** Tile with a building on it. */
+        public static final byte BUILDING =        0b0100000;
+
+        /** Mask for tiles that are empty and buildable. */
+        public static final byte WALKABLE =        (EMPTY_SURFACE | ROAD | CROSSROAD | PAVED_FEATURE);
+
+        SurfaceCellArray(int width, int height) {
+            surfaceWidth = width * 2;
+            surfaceHeight = height;
+            surfaceArray = new byte[surfaceWidth * surfaceHeight];
+        }
+
+        public SurfaceCellArray() { }
+        /**
+         * Create a copy of this object.
+         * */
+        public SurfaceCellArray copy() {
+            SurfaceCellArray copyObject = new SurfaceCellArray();
+            copyObject.surfaceWidth = this.surfaceWidth;
+            copyObject.surfaceHeight = this.surfaceHeight;
+            copyObject.surfaceArray = this.surfaceArray.clone();
+            return copyObject;
+        }
+        /**
+         * Calculate the unique array index for the specified coordinates.
+         * The even isometric surface columns are shifted up when calculating the index for each tile location.
+         * example:
+         *     |(0,0)  |        |(1,-1)|      |      |(0,0)  |(0,-1)  |(1,-1)|(1,-2)|
+         *     |       |(0,-1)  |      |(1,-2)|  =>  |(-1,-1)|(-1,-1)|(0,-2)|(0,-3)|
+         *     |(-1,-1)|        |(0,-2)|      |
+         *     |       |(-1,-1)|       |(0,-3)|
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        private int getArrayIndexForLocation(int x, int y) {
+            int xIndex = x - y;
+            int yIndex = (x + y) / -2;
+            return yIndex * surfaceWidth + xIndex;
+        }
+        /**
+         * Calculate the surface location of a tile based on the array index.
+         * @param index the index to get location for
+         * @return the location represented by an index
+         */
+        private Location getLocationForArrayIndex(int index) {
+            int x = index % surfaceWidth;
+            int y = index / surfaceWidth;
+            return Location.of((x / 2) - y, -(x / 2 + x % 2) - y);
+        }
+        /**
+         * Return the stored bitmap for a surface location.
+         * @param loc location information to return
+         * @return the bitmap for a surface location
+         */
+        public byte getCellType(Location loc) {
+            int xIndex = loc.x - loc.y;
+            int yIndex = (loc.x + loc.y) / -2;
+            return surfaceArray[yIndex * surfaceWidth + xIndex];
+        }
+        /**
+         * Return the list of all locations containing pavement.
+         * @return list of locations with pavement
+         */
+        public ArrayList<Location> getPavementLocations() {
+            ArrayList<Location> pavements = new ArrayList<>();
+            for (int i = 0; i < surfaceWidth * surfaceHeight; i++) {
+                if ((surfaceArray[i] & PAVED_FEATURE) != 0) {
+                    pavements.add(getLocationForArrayIndex(i));
+                }
+            }
+            return pavements;
+        }
+        /**
+         * Initialize an empty walkable surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void initEmptySurface(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] = EMPTY_SURFACE;
+        }
+        /**
+         * Initialize a non-walkable surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void initSurfaceFeature(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] = SURFACE_FEATURE;
+        }
+        /**
+         * Set road on a surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void setRoad(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] |= ROAD;
+        }
+        /**
+         * Set crossroad on a surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void setCrossRoad(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] |= CROSSROAD;
+        }
+        /**
+         * Set pavement on a surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void setPavement(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] = (byte) ((surfaceArray[getArrayIndexForLocation(x, y)] & ~SURFACE_FEATURE) | PAVED_FEATURE);
+        }
+        /**
+         * Set building on a surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void setBuilding(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] |= BUILDING;
+        }
+        /**
+         * Clear building from a surface tile.
+         * @param x the x coordinate
+         * @param y the y coordinate
+         */
+        public void clearBuilding(int x, int y) {
+            surfaceArray[getArrayIndexForLocation(x, y)] &= (~BUILDING);
+        }
+        /**
+         * Remove roads and crossroads from all surface tiles.
+         */
+        public void removeRoads() {
+            for (int i = 0; i < surfaceWidth * surfaceHeight; i++) {
+                surfaceArray[i] &= (~(ROAD | CROSSROAD));
+            }
+        }
+        /**
+         * Clear buildings from all surface tiles.
+         */
+        public void clearAllBuildings() {
+            for (int i = 0; i < surfaceWidth * surfaceHeight; i++) {
+                surfaceArray[i] &= (~BUILDING);
+            }
+        }
+        /**
+         * Clear all non-surface elements from all surface tiles.
+         * Reset paved surface features.
+         */
+        public void clearAllNonSurfaceElements() {
+            byte mask = BUILDING | ROAD | CROSSROAD;
+            for (int i = 0; i < surfaceWidth * surfaceHeight; i++) {
+                surfaceArray[i] &= (~mask);
+                if ((surfaceArray[i] & PAVED_FEATURE) != 0) {
+                    surfaceArray[i]  &= (~PAVED_FEATURE);
+                    surfaceArray[i]  |= SURFACE_FEATURE;
+                }
+            }
+        }
+        /**
+         * @return true if surface tile has pavement
+         */
+        public boolean hasPavement(Location loc) {
+            return (surfaceArray[getArrayIndexForLocation(loc.x, loc.y)] & PAVED_FEATURE) != 0;
+        }
+        /**
+         * @return true if surface tile has road
+         */
+        public boolean hasRoad(int x, int y) {
+            return (surfaceArray[getArrayIndexForLocation(x, y)] & ROAD) != 0;
+        }
+        /**
+         * @return true if surface tile has crossroad
+         */
+        public boolean hasCrossRoad(int x, int y) {
+            return (surfaceArray[getArrayIndexForLocation(x, y)] & CROSSROAD) != 0;
+        }
+        /**
+         * @return true if surface tile is in a state where a building can be put on it
+         */
+        public boolean isCellBuildable(int x, int y) {
+            int locCoordinateDiff = x - y;
+            int locCoordinateSum = x + y;
+            if (locCoordinateDiff < 0 || locCoordinateSum > 0
+                    || locCoordinateDiff > surfaceWidth - 2 || locCoordinateSum < -(surfaceHeight - 1) * 2) {
+                return false;
+            }
+            return (surfaceArray[getArrayIndexForLocation(x, y)] | WALKABLE) == WALKABLE;
+        }
     }
 }

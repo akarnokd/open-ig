@@ -159,7 +159,7 @@ public abstract class Planner {
         int status(AIPlanet p) {
             int value = 0;
             value += required(p.morale, 50) * 1000;
-            value += required(p.buildings.size(), 3) * 1000;
+            value += required(p.fetchBuildings().size(), 3) * 1000;
             if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
                 value += 20000;
             }
@@ -401,7 +401,7 @@ public abstract class Planner {
 
             final BuildingSelector selector,
             final BuildingOrder order) {
-        for (final AIBuilding b : planet.buildings) {
+        for (final AIBuilding b : planet.fetchBuildings()) {
             if (!b.enabled && selector.accept(planet, b)) {
                 if (planet.population > planet.statistics.workerDemand - b.getWorkers()) {
                     add(new Action0() {
@@ -416,7 +416,7 @@ public abstract class Planner {
         }
         // scan for the most affordable upgrade
         AIBuilding upgrade = null;
-        for (final AIBuilding b : planet.buildings) {
+        for (final AIBuilding b : planet.fetchBuildings()) {
             if (selector.accept(planet, b) && b.canUpgrade() && !b.isDamaged()
 
                     && b.type.cost <= world.money) {
@@ -516,7 +516,7 @@ public abstract class Planner {
             final BuildingSelector selector,
             final BuildingOrder order) {
         // try repairing existing
-        for (final AIBuilding b : planet.buildings) {
+        for (final AIBuilding b : planet.fetchBuildings()) {
             if (!b.repairing && b.isDamaged() && selector.accept(planet, b)) {
                 add(new Action0() {
                     @Override
@@ -629,7 +629,7 @@ public abstract class Planner {
      */
     public int count(AIPlanet planet, BuildingType bt) {
          int count = 0;
-         for (AIBuilding b : planet.buildings) {
+         for (AIBuilding b : planet.fetchBuildings()) {
              if (b.type == bt) {
                  count++;
              }
@@ -741,7 +741,7 @@ public abstract class Planner {
         }
         // check if there is a spaceport which we could get operational
         for (final AIPlanet planet : world.ownPlanets) {
-            for (final AIBuilding b : planet.buildings) {
+            for (final AIBuilding b : planet.fetchBuildings()) {
                 if (b.type.id.equals("MilitarySpaceport")) {
                     if (b.isDamaged() && !b.repairing) {
                         add(new Action0() {
@@ -774,9 +774,9 @@ public abstract class Planner {
             }
             // there was no room, so demolish a trader's spaceport somewhere
             for (final AIPlanet planet : planets) {
-                for (final AIBuilding b : planet.buildings) {
+                for (final AIBuilding b : planet.fetchBuildings()) {
                     if (b.type.id.equals("TradersSpaceport")) {
-                        planet.buildings.remove(b);
+                        planet.fetchBuildings().remove(b);
                         add(new Action0() {
                             @Override
                             public void invoke() {
@@ -1009,7 +1009,7 @@ public abstract class Planner {
             }
             boolean moraleOrPolice = false;
             if (checkMoraleBuilding) {
-                for (AIBuilding b : p.buildings) {
+                for (AIBuilding b : p.fetchBuildings()) {
                     if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
                         if (b.hasResource(BuildingType.RESOURCE_MORALE)
                                 || b.hasResource(BuildingType.RESOURCE_POLICE)) {
@@ -1039,7 +1039,7 @@ public abstract class Planner {
         planet.statistics.constructing = true;
 
         AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
-        planet.buildings.add(b);
+        planet.fetchBuildings().add(b);
 
         Planet.updateStatistics(planet.statistics, planet.owner, b.building);
         Planet.updateStatistics(world.global, planet.owner, b.building);

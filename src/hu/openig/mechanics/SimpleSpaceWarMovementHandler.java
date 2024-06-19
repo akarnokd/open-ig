@@ -13,6 +13,7 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.WarUnit;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -46,10 +47,15 @@ public class SimpleSpaceWarMovementHandler extends SimpleWarMovementHandler {
 
     @Override
     boolean ignoreObstacles(Location loc, WarUnit unit) {
-        SpacewarStructure sws = (SpacewarStructure) unit;
-        if (sws.kamikaze > 0 && unitsForPathfinding.get(loc) != null && unitsForPathfinding.get(loc).contains(sws.attackUnit)) {
+        boolean ignore = super.ignoreObstacles(loc, unit);
+        if (ignore) {
             return true;
         }
-        return super.ignoreObstacles(loc, unit);
+        SpacewarStructure sws = (SpacewarStructure) unit;
+        if (sws.kamikaze > 0) {
+            Set<WarUnit> wunits = unitsForPathfinding.get(loc);
+            return wunits != null && wunits.contains(sws.attackUnit);
+        }
+        return false;
     }
 }

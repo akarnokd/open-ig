@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -90,7 +91,16 @@ public class Player {
     /** The priority queue for the messages. */
     protected final PriorityQueue<Message> messageQueue = new PriorityQueue<>();
     /** The message history of the already displayed messages. */
-    public final List<Message> messageHistory = new ArrayList<>();
+    //public final RingQueue<Message> messageHistory = new RingQueue<>();
+    public final LinkedList<Message> messageHistory = new LinkedList<Message>() {
+        @Override
+        public void addFirst(Message msg) {
+            super.addFirst(msg);
+            if (super.size() > 1000) {
+                super.removeLast();
+            }
+        }
+    };
     /** The AI behavior mode. */
     public AIMode aiMode;
     /** The defensive ratio for AI player. Ratios sum up to 1. */
@@ -609,7 +619,7 @@ public class Player {
      * @param msg the message to add
      */
     public void addHistory(Message msg) {
-        messageHistory.add(msg);
+        messageHistory.addFirst(msg);
         sortHistory();
     }
     /** Sort the history according to timestamp and priority. */

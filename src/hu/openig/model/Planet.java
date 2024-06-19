@@ -85,6 +85,8 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
     public final Map<InventoryItem, Integer> timeToLive = new HashMap<>();
     /** The countdown for an earthquake lasting 10s of ingame minutes. */
     public int earthQuakeTTL;
+    /** Indicate if the planet has all surface featured paved. */
+    public boolean fullyPaved = false;
     /** The remaining time for a weather event. */
     public int weatherTTL;
     /** The persistent deployed ground units and turrets. */
@@ -460,6 +462,10 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
             Collection<? extends ResearchType> researches,
             BuildingType bt,
             boolean checkLimit) {
+        // if the building is not available for this race
+        if (!bt.tileset.containsKey(planet.race)) {
+            return false;
+        }
         // check if this planet type is on the exception list
         if (bt.raceExcept.containsKey(planet.race)) {
             if (bt.raceExcept.get(planet.race).contains(planet.type.type)) {
@@ -470,10 +476,6 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         }
         // check if the required research is available
         if (planet.owner != null && bt.research != null && !researches.contains(bt.research)) {
-            return false;
-        }
-        // if the building is not available for this race
-        if (!bt.tileset.containsKey(planet.race)) {
             return false;
         }
         boolean hubFound = false;
