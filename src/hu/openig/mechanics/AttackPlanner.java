@@ -440,7 +440,7 @@ public class AttackPlanner extends Planner {
             }
         }
         if (p.knowledge.ordinal() >= PlanetKnowledge.BUILDING.ordinal()) {
-            for (AIBuilding b : p.fetchBuildings()) {
+            for (AIBuilding b : p.buildings) {
                 if (b.type.kind.equals("Defensive")
 
                         || b.type.kind.equals("Gun")

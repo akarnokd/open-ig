@@ -116,9 +116,9 @@ public class EconomyPlanner extends Planner {
         // if hubble is in inventory
         if (hubble2 != null && planet.hasInventory(hubble2)) {
             // demolish remaining ground radars
-            for (final AIBuilding b : planet.fetchBuildings()) {
+            for (final AIBuilding b : planet.buildings) {
                 if (b.hasResource("radar")) {
-                    planet.fetchBuildings().remove(b);
+                    planet.buildings.remove(b);
                     add(new Action0() {
                         @Override
                         public void invoke() {
@@ -149,7 +149,7 @@ public class EconomyPlanner extends Planner {
 
         if (bestRadar != null) {
             // check if already present
-            for (AIBuilding b : planet.fetchBuildings()) {
+            for (AIBuilding b : planet.buildings) {
                 if (b.type == bestRadar) {
                     return false;
                 }
@@ -158,10 +158,10 @@ public class EconomyPlanner extends Planner {
 
                 && planet.findLocation(bestRadar) != null) {
                 // demolish undertech radars
-                for (final AIBuilding b : planet.fetchBuildings()) {
+                for (final AIBuilding b : planet.buildings) {
                     if (b.hasResource("radar")) {
                         if (b.getResource("radar") < bestRadar.getResource("radar")) {
-                            planet.fetchBuildings().remove(b);
+                            planet.buildings.remove(b);
                             add(new Action0() {
                                 @Override
                                 public void invoke() {
@@ -312,7 +312,6 @@ public class EconomyPlanner extends Planner {
                 if (p.statistics.constructing) {
                     continue;
                 }
-                p.fetchBuildings();
                 if (!p.buildingCounts.containsKey(bt)) {
                     if (world.money >= bt.cost) {
                         if (p.findLocation(bt) != null) {
@@ -340,7 +339,7 @@ public class EconomyPlanner extends Planner {
                         continue;
                     }
                     List<AIBuilding> toUpgrade = new ArrayList<>();
-                    for (final AIBuilding b : p.fetchBuildings()) {
+                    for (final AIBuilding b : p.buildings) {
                         if (b.type == bt && b.canUpgrade()) {
                             upgradeAvailable = true;
                         }
@@ -428,7 +427,6 @@ public class EconomyPlanner extends Planner {
                     continue;
                 }
                 for (BuildingType bt : factoryList) {
-                    p.fetchBuildings();
                     if (!p.buildingCounts.containsKey(bt)) {
                         if (world.money >= bt.cost) {
                             if (p.population >= Math.abs(p.statistics.nativeWorkerDemand) + Math.abs(bt.getResource("worker"))) {
@@ -451,7 +449,7 @@ public class EconomyPlanner extends Planner {
                     }
                     List<AIBuilding> toUpgrade = new ArrayList<>();
                     for (BuildingType bt : factoryList) {
-                        for (final AIBuilding b : p.fetchBuildings()) {
+                        for (final AIBuilding b : p.buildings) {
                             if (b.type == bt && b.canUpgrade() && world.money >= bt.cost
                                     && p.population >= Math.abs(p.statistics.nativeWorkerDemand) + Math.abs(bt.getResource("worker"))) {
                                 toUpgrade.add(b);
@@ -535,7 +533,7 @@ public class EconomyPlanner extends Planner {
                             if (p.statistics.constructing) {
                                 continue;
                             }
-                            for (AIBuilding b : p.fetchBuildings()) {
+                            for (AIBuilding b : p.buildings) {
                                 if (b.type == bt && b.upgradeLevel == i - 1 && world.money >= bt.cost) {
                                     world.money -= b.type.cost;
                                     final Planet p0 = p.planet;

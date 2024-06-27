@@ -257,7 +257,7 @@ public class StaticDefensePlanner extends Planner {
             }
         }
 
-        for (AIBuilding b : planet.fetchBuildings()) {
+        for (AIBuilding b : planet.buildings) {
             if (b.isComplete()) {
                 hasMultiply |= b.hasResource(BuildingType.RESOURCE_MULTIPLY);
                 hasCredit |= b.hasResource(BuildingType.RESOURCE_CREDIT);
@@ -518,9 +518,9 @@ public class StaticDefensePlanner extends Planner {
                     return true;
                 }
                 // if no room, make it by demolishing a traders spaceport
-                for (final AIBuilding b : planet.fetchBuildings()) {
+                for (final AIBuilding b : planet.buildings) {
                     if (b.type.id.equals("TradersSpaceport")) {
-                        planet.fetchBuildings().remove(b);
+                        planet.buildings.remove(b);
                         add(new Action0() {
                             @Override
                             public void invoke() {
@@ -620,7 +620,7 @@ public class StaticDefensePlanner extends Planner {
         if (bt != null) {
             int gunCount = 0;
             // count guns
-            for (AIBuilding b : planet.fetchBuildings()) {
+            for (AIBuilding b : planet.buildings) {
                 if (b.type.kind.equals(kind)) {
                     gunCount++;
                 }
@@ -634,7 +634,7 @@ public class StaticDefensePlanner extends Planner {
             } else {
 
                 // the current defense level and demolish lesser guns
-                for (final AIBuilding b : planet.fetchBuildings()) {
+                for (final AIBuilding b : planet.buildings) {
                     if (b.type.kind.equals(kind) && b.type.cost < bt.cost) {
 
                         // check if there would be room for the upgraded version
@@ -642,7 +642,7 @@ public class StaticDefensePlanner extends Planner {
                         Tile bs = b.tileset.normal;
 
                         if ((planet.findLocation(bt) != null) || (bs.width >= bts.width && bs.height >= bts.height)) {
-                            planet.fetchBuildings().remove(b);
+                            planet.buildings.remove(b);
                             add(new Action0() {
                                 @Override
                                 public void invoke() {

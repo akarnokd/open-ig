@@ -216,7 +216,7 @@ public class ColonyPlanner extends Planner {
      */
     int builtCount(AIPlanet planet) {
         int result = 0;
-        for (AIBuilding b : planet.fetchBuildings()) {
+        for (AIBuilding b : planet.buildings) {
             if (b.isComplete()) {
                 result++;
             }
@@ -229,7 +229,7 @@ public class ColonyPlanner extends Planner {
      * @return if action taken
      */
     boolean checkBootstrap(final AIPlanet planet) {
-        if (planet.fetchBuildings().size() < 2) {
+        if (planet.buildings.size() < 2) {
             if (manageBuildings(planet, livingSpace, costOrder, false)) {
                 return true;
             }
@@ -248,9 +248,9 @@ public class ColonyPlanner extends Planner {
      */
     boolean checkBuildingHealth(final AIPlanet planet) {
         // demolish severely damaged buildings, faster to create a new one
-        for (final AIBuilding b : planet.fetchBuildings()) {
+        for (final AIBuilding b : planet.buildings) {
             if (b.isDamaged() && !b.isConstructing() && b.health() < 0.5) {
-                planet.fetchBuildings().remove(b);
+                planet.buildings.remove(b);
                 add(new Action0() {
                     @Override
                     public void invoke() {
@@ -266,7 +266,7 @@ public class ColonyPlanner extends Planner {
             boolean anyConstruction = false;
             if (planet.statistics.constructing) {
                 anyConstruction = true;
-                for (final AIBuilding b : planet.fetchBuildings()) {
+                for (final AIBuilding b : planet.buildings) {
                     if (b.repairing) {
                         add(new Action0() {
                             @Override
@@ -283,13 +283,13 @@ public class ColonyPlanner extends Planner {
             }
         }
         // find and start repairing the cheapest damaged building per planet
-        for (final AIBuilding b : planet.fetchBuildings()) {
+        for (final AIBuilding b : planet.buildings) {
             if (b.repairing) {
                 return true; // don't let other things continue
             }
         }
         AIBuilding toRepair = null;
-        for (final AIBuilding b : planet.fetchBuildings()) {
+        for (final AIBuilding b : planet.buildings) {
             if (b.isDamaged() && !b.repairing) {
                 if (b.hasResource("repair")) {
                     toRepair = b;
@@ -317,7 +317,7 @@ public class ColonyPlanner extends Planner {
         // enable cheapest building if worker ratio is okay
         if (planet.statistics.workerDemand < planet.population) {
             AIBuilding min = null;
-            for (AIBuilding b : planet.fetchBuildings()) {
+            for (AIBuilding b : planet.buildings) {
                 if (!b.enabled) {
                     if (min == null || min.getWorkers() < b.getWorkers()) {
                         min = b;
@@ -619,7 +619,7 @@ public class ColonyPlanner extends Planner {
 
     boolean removeExcessBuilding(final AIPlanet planet, BuildingSelector selector, BuildingOrder order) {
         List<AIBuilding> candidates = new ArrayList<>();
-        for (AIBuilding b : planet.fetchBuildings()) {
+        for (AIBuilding b : planet.buildings) {
             if (!b.type.kind.equals("MainBuilding")
                     && selector.accept(planet, b)
                     && b.isComplete()) {
@@ -637,7 +637,7 @@ public class ColonyPlanner extends Planner {
             });
             double houseProvided = toRemove.getResource("house");
             if (planet.statistics.houseAvailable - houseProvided >= planet.population * 2 && planet.population >= 10000) {
-                planet.fetchBuildings().remove(toRemove);
+                planet.buildings.remove(toRemove);
                 planet.buildingCounts.put(toRemove.type, planet.buildingCounts.get(toRemove.type) - 1);
                 planet.statistics.houseAvailable -= (int)houseProvided;
                 add(new Action0() {
@@ -660,7 +660,7 @@ public class ColonyPlanner extends Planner {
      */
     List<AIBuilding> disableCandidates(AIPlanet planet) {
         List<AIBuilding> result = new ArrayList<>();
-        for (AIBuilding b : planet.fetchBuildings()) {
+        for (AIBuilding b : planet.buildings) {
             if (b.enabled && b.isComplete()
                     && !b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)
                     && b.getEnergy() < 0) {
@@ -756,7 +756,7 @@ public class ColonyPlanner extends Planner {
         // sell power plants if too much energy
         if (planet.statistics.energyAvailable > planet.statistics.baseEnergyDemand * 1.3
                 && !planet.statistics.constructing) {
-            for (final AIBuilding b : planet.fetchBuildings()) {
+            for (final AIBuilding b : planet.buildings) {
                 if (b.getEnergy() > 0 && planet.statistics.energyAvailable - b.getEnergy() > planet.statistics.energyDemand) {
                     add(new Action0() {
                         @Override
@@ -843,9 +843,9 @@ public class ColonyPlanner extends Planner {
         // if no room but have money for one
         if (roomFor == null && moneyFor != null) {
             // find a cheaper power plant and demolish it
-            for (final AIBuilding b : planet.fetchBuildings()) {
+            for (final AIBuilding b : planet.buildings) {
                 if (energy.accept(planet, b) && b.type.cost < moneyFor.cost) {
-                    planet.fetchBuildings().remove(b);
+                    planet.buildings.remove(b);
                     add(new Action0() {
                         @Override
                         public void invoke() {
@@ -860,7 +860,7 @@ public class ColonyPlanner extends Planner {
             // if no such building, demolish something with large enough footprint
             // except colony hub
             List<AIBuilding> candidates = new ArrayList<>();
-            for (final AIBuilding b : planet.fetchBuildings()) {
+            for (final AIBuilding b : planet.buildings) {
                 if (!b.type.kind.equals("MainBuilding") && !energy.accept(planet, b)) {
                     Tile b0 = b.tileset.normal;
                     if (b0.width >= b1.width && b0.height >= b1.height) {
@@ -871,7 +871,7 @@ public class ColonyPlanner extends Planner {
 
             if (!candidates.isEmpty()) {
                 final AIBuilding b = Collections.max(candidates, disableOrder);
-                planet.fetchBuildings().remove(b);
+                planet.buildings.remove(b);
                 add(new Action0() {
                     @Override
                     public void invoke() {
@@ -916,7 +916,7 @@ public class ColonyPlanner extends Planner {
      */
     boolean checkColonyHub(final AIPlanet planet) {
         boolean found = false;
-        for (Building b : planet.fetchBuildings()) {
+        for (Building b : planet.buildings) {
             if (b.type.kind.equals("MainBuilding")) {
                 found = true;
                 break;
@@ -937,7 +937,7 @@ public class ColonyPlanner extends Planner {
             return true;
         }
         // check planets with damaged colony hub
-        for (final AIBuilding b : planet.fetchBuildings()) {
+        for (final AIBuilding b : planet.buildings) {
             if (b.type.kind.equals("MainBuilding")) {
                 if (b.isDamaged() && !b.repairing) {
                     controls.actionRepairBuilding(planet.planet, b.building, true);
@@ -998,7 +998,7 @@ public class ColonyPlanner extends Planner {
      */
     boolean findDamaged(final AIPlanet current, final Func1<Building, Boolean> check) {
         AIBuilding cheapest = null;
-        for (AIBuilding b : current.fetchBuildings()) {
+        for (AIBuilding b : current.buildings) {
             if (check.invoke(b)) {
                 if (cheapest == null || cheapest.type.cost < b.type.cost) {
                     cheapest = b;
@@ -1007,7 +1007,7 @@ public class ColonyPlanner extends Planner {
         }
         if (cheapest != null) {
             final AIBuilding fcheapest = cheapest;
-            current.fetchBuildings().remove(cheapest); // do not sell twice
+            current.buildings.remove(cheapest); // do not sell twice
             add(new Action0() {
                 @Override
                 public void invoke() {
@@ -1024,7 +1024,7 @@ public class ColonyPlanner extends Planner {
      * @return true if a power plant is under construction
      */
     boolean powerPlantConstructing(AIPlanet p) {
-        for (AIBuilding b : p.fetchBuildings()) {
+        for (AIBuilding b : p.buildings) {
             if (b.isConstructing() && b.type.hasResource("energy") && b.type.getResource("energy") > 0) {
                 return true;
             }
@@ -1039,7 +1039,7 @@ public class ColonyPlanner extends Planner {
         }
         List<SurfaceFeature> features = new ArrayList<>();
         for (SurfaceFeature sf : planet.planet.surface.features) {
-            if (!planet.fetchSurfaceCells().hasPavement(sf.location)) {
+            if (!planet.surfaceCells.hasPavement(sf.location)) {
                 features.add(sf);
             }
         }
@@ -1060,7 +1060,7 @@ public class ColonyPlanner extends Planner {
 
                 for (int i = 0; i < candidate.tile.width; i++) {
                     for (int j = 0; j < candidate.tile.height; j++) {
-                        planet.fetchSurfaceCells().setPavement(candidate.location.x + i, candidate.location.y - j);
+                        planet.surfaceCells.setPavement(candidate.location.x + i, candidate.location.y - j);
                     }
                 }
 

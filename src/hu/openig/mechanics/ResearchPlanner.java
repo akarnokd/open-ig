@@ -214,9 +214,9 @@ public class ResearchPlanner extends Planner {
      */
     boolean demolishOneLabIf(int lab, int global, int local, final AIPlanet planet, final String resource) {
         if (lab < global && local > 0) {
-            for (AIBuilding b : new ArrayList<>(planet.fetchBuildings())) {
+            for (AIBuilding b : new ArrayList<>(planet.buildings)) {
                 if (b.type.resources.containsKey(resource)) {
-                    planet.fetchBuildings().remove(b);
+                    planet.buildings.remove(b);
                 }
             }
             applyActions.add(new Action0() {

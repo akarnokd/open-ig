@@ -424,7 +424,7 @@ public class ColonizationPlanner extends Planner {
                 break;
             }
             // if constructing here, return
-            for (AIBuilding b : pl.fetchBuildings()) {
+            for (AIBuilding b : pl.buildings) {
                 if (b.type.id.equals("MilitarySpaceport") && pl.statistics.constructing) {
                     return Pair.of(false, null);
                 }

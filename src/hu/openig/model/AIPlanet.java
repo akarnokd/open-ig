@@ -39,7 +39,7 @@ public class AIPlanet {
     /** The inventory items of the planet. */
     public final List<AIInventoryItem> inventory = new ArrayList<>();
     /** Building list. */
-    private ArrayList<AIBuilding> buildings;
+    public final List<AIBuilding> buildings = new ArrayList<>();
     /** The building counts per type, including under construction. */
     public final Map<BuildingType, Integer> buildingCounts = new HashMap<>();
     /** Copy of the object containing basic surface information for placements. */
@@ -82,8 +82,17 @@ public class AIPlanet {
             inventory.add(new AIInventoryItem(ii));
         }
 
+        surfaceCells = planet.surface.surfaceCells.copy();
+
         final int width = planet.surface.width;
         final int height = planet.surface.height;
+
+        for (Building b : planet.surface.buildings.iterable()) {
+            buildings.add(new AIBuilding(b));
+
+            Integer c = buildingCounts.get(b.type);
+            buildingCounts.put(b.type, c != null ? c + 1 : 1);
+        }
 
         hasSatelliteOfAI = hasSatelliteOf(world.player);
 
@@ -109,36 +118,9 @@ public class AIPlanet {
             }
             @Override
             protected PlanetSurface.SurfaceCellArray surfaceCellArray() {
-                return fetchSurfaceCells();
+                return surfaceCells;
             }
         };
-    }
-
-    /** Check if the copied building list is initialized and return it.
-     *  If the list is null copy all building's data from the original planet.
-     *  @return list of building on the planet
-     */
-    public ArrayList<AIBuilding> fetchBuildings() {
-        if (buildings == null) {
-            buildings = new ArrayList<>();
-            for (Building b : planet.surface.buildings.iterable()) {
-                buildings.add(new AIBuilding(b));
-
-                Integer c = buildingCounts.get(b.type);
-                buildingCounts.put(b.type, c != null ? c + 1 : 1);
-            }
-        }
-        return buildings;
-    }
-    /** Check if copy of the planet's surface cell array is available and return it.
-     *  If it is null copy surface cell array from the original planet.
-     *  @return the array containing basic information on surface cells
-     */
-    public PlanetSurface.SurfaceCellArray fetchSurfaceCells() {
-        if (surfaceCells == null) {
-            surfaceCells = planet.surface.surfaceCells.copy();
-        }
-        return surfaceCells;
     }
     /**
      * Try to find a suitable location for the given building type.
@@ -172,7 +154,7 @@ public class AIPlanet {
      * @return can be built here?
      */
     public boolean canBuild(BuildingType bt) {
-        return Planet.canBuild(planet, fetchBuildings(), world.availableResearch, bt, true);
+        return Planet.canBuild(planet, buildings, world.availableResearch, bt, true);
     }
     /**
      * Test if another instance of the building type can be built on this planet
@@ -182,7 +164,7 @@ public class AIPlanet {
      * @return can be built here?
      */
     public boolean canBuildReplacement(BuildingType bt) {
-        return Planet.canBuild(planet, fetchBuildings(), world.availableResearch, bt, false);
+        return Planet.canBuild(planet, buildings, world.availableResearch, bt, false);
     }
     /**
      * Returns the inventory count of the specified technology.
