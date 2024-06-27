@@ -235,6 +235,6 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
                 return false;
             }
         }
-        return ip;
+        return true;
     }
 }

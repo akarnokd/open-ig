@@ -38,14 +38,12 @@ public class AIPlanet {
     public int tradeIncome;
     /** The inventory items of the planet. */
     public final List<AIInventoryItem> inventory = new ArrayList<>();
-    /** Set of locations where no buildings may be placed. */
-    public final Map<Location, SurfaceEntity> nonbuildable = new HashMap<>();
     /** Building list. */
     public final List<AIBuilding> buildings = new ArrayList<>();
     /** The building counts per type, including under construction. */
     public final Map<BuildingType, Integer> buildingCounts = new HashMap<>();
-    /** Copy of the pavements set. */
-    public final Set<Location> pavements = new HashSet<>();
+    /** Copy of the object containing basic surface information for placements. */
+    public PlanetSurface.SurfaceCellArray surfaceCells;
     /** The placement helper. */
     public PlacementHelper placement;
     /** The current morale. */
@@ -83,8 +81,8 @@ public class AIPlanet {
         for (InventoryItem ii : planet.inventory.iterable()) {
             inventory.add(new AIInventoryItem(ii));
         }
-        nonbuildable.putAll(planet.surface.buildingmap);
-        this.pavements.addAll(planet.surface.pavements);
+
+        surfaceCells = planet.surface.surfaceCells.copy();
 
         final int width = planet.surface.width;
         final int height = planet.surface.height;
@@ -110,16 +108,6 @@ public class AIPlanet {
             }
 
             @Override
-            protected boolean cellInMap(int x, int y) {
-                return planet.surface.cellInMap(x, y);
-            }
-
-            @Override
-            protected Map<Location, SurfaceEntity> buildingmap() {
-                return nonbuildable;
-            }
-
-            @Override
             protected Map<Location, SurfaceEntity> basemap() {
                 return planet.surface.basemap;
             }
@@ -129,8 +117,8 @@ public class AIPlanet {
                 return new Buildings();
             }
             @Override
-            protected boolean hasPavement(Location loc) {
-                return pavements.contains(loc);
+            protected PlanetSurface.SurfaceCellArray surfaceCellArray() {
+                return surfaceCells;
             }
         };
     }

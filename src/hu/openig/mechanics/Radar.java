@@ -127,10 +127,8 @@ public final class Radar {
                 }
                 if (radar == 0) {
                     for (Building b : p.surface.buildings.iterable()) {
-                        if (b.isOperational()) {
-                            if (b.hasResource("radar")) {
-                                radar = Math.max(radar, (int)b.getResource("radar"));
-                            }
+                        if (b.hasResource("radar") && b.isOperational()) {
+                            radar = Math.max(radar, (int)b.getResource("radar"));
                         }
                     }
                     if (radar > 0) {

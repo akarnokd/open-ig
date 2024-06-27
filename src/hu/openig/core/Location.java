@@ -19,6 +19,8 @@ public final class Location {
     public final int x;
     /** The Y coordinate. */
     public final int y;
+    /** The neighbor locations list. */
+    private ArrayList<Location> neighbors;
     /** The cached hash code. */
     private final int hc;
     /** The location cache, where the first dimension is the X coordinate + 80,
@@ -26,10 +28,10 @@ public final class Location {
      * the second is Y coordinate + 320. */
     private static final Location[][] CACHE;
     static {
-        CACHE = new Location[320][320];
+        CACHE = new Location[320][360];
         for (int i = 0; i < CACHE.length; i++) {
             for (int j = 0; j < CACHE[i].length; j++) {
-                CACHE[i][j] = new Location(i - 80, -j);
+                CACHE[i][j] = new Location(i - 80, -j + 40);
             }
         }
     }
@@ -51,10 +53,10 @@ public final class Location {
      * @return the location object
      */
     public static Location of(int x, int y) {
-        if (x < -80 || x >= 80 || y < -159 || y > 0) {
+        if (x < -80 || x >= 80 || y < -159 || y > 40) {
             return new Location(x, y);
         }
-        return CACHE[x + 80][-y];
+        return CACHE[x + 80][-y + 40];
     }
     /**
      * {@inheritDoc}
@@ -100,16 +102,17 @@ public final class Location {
      * */
     public ArrayList<Location> getListOfNeighbors() {
 
-        ArrayList<Location> neighbors = new ArrayList<>();
-        neighbors.add(delta(-1, 0));
-        neighbors.add(delta(1, 0));
-        neighbors.add(delta(0, 1));
-        neighbors.add(delta(0, -1));
-        neighbors.add(delta(-1, -1));
-        neighbors.add(delta(-1, 1));
-        neighbors.add(delta(1, -1));
-        neighbors.add(delta(1, 1));
-
+        if (neighbors == null) {
+            neighbors = new ArrayList<>();
+            neighbors.add(delta(-1, 0));
+            neighbors.add(delta(1, 0));
+            neighbors.add(delta(0, 1));
+            neighbors.add(delta(0, -1));
+            neighbors.add(delta(-1, -1));
+            neighbors.add(delta(-1, 1));
+            neighbors.add(delta(1, -1));
+            neighbors.add(delta(1, 1));
+        }
         return neighbors;
     }
 }

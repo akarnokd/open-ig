@@ -84,7 +84,7 @@ public class Mission14 extends Mission {
             Player garthog = player("Garthog");
             for (SpacewarStructure s : war.structures(garthog)) {
                 s.flee = true;
-                war.move(s, Math.cos(s.angle) * 150, s.y);
+                war.move(s, Math.max(Math.cos(s.angle) * 150, Math.cos(s.angle) * (war.space().width + 150)), s.y);
             }
             return SpacewarScriptResult.CONTINUE;
         }

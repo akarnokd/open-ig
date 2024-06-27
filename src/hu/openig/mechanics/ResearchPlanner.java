@@ -302,7 +302,7 @@ public class ResearchPlanner extends Planner {
                 return AIResult.NO_AVAIL;
             }
             if (bt.cost <= world.money) {
-                Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
+                Point pt = planet.findLocation(bt);
                 if (pt != null) {
                     build(planet, bt);
                     return AIResult.SUCCESS;

@@ -294,9 +294,6 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
      * @return true if the place is passable
      */
     boolean isPassable(Location loc, WarUnit unit) {
-            if (ignoreObstacles(loc, unit)) {
-                return true;
-            }
             Set<WarUnit> wunits = unitsForPathfinding.get(loc);
             if (wunits == null) {
                 return true;
@@ -311,7 +308,7 @@ public abstract class SimpleWarMovementHandler extends WarMovementHandler {
                         || u.equals(unit)
                         || u.isDestroyed();
             }
-            return ip;
+            return ip || ignoreObstacles(loc, unit);
     }
 
     /**

@@ -277,16 +277,16 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 
         Planet pmin = null;
         for (Planet p : owner.planets.keySet()) {
-            double d = Math.hypot(p.x - x, p.y - y);
-            if (d < dmin && d <= owner.world.params().nearbyDistance()) {
+            int xDiff = p.x - (int)x;
+            int yDiff = p.y - (int)y;
+            int nearbyDistSqr = owner.world.params().nearbyDistance() * owner.world.params().nearbyDistance();
+            double d = xDiff * xDiff + yDiff * yDiff;
+            if (d < dmin && d <= nearbyDistSqr) {
                 dmin = d;
                 pmin = p;
             }
         }
-        if (pmin != null) {
-            return pmin;
-        }
-        return null;
+        return pmin;
     }
     /** @return the non-fighter and non-vehicular inventory items. */
     public List<InventoryItem> getSingleItems() {

@@ -17,7 +17,6 @@ import java.util.List;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
-import hu.openig.core.Location;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
@@ -203,10 +202,8 @@ public class ColonyPlanner extends Planner {
             world.money = 0L; // do not let money-related tasks to continue
             return true;
         }
-        if (!planet.statistics.constructing) {
-            if (checkPavement(planet)) {
-                return true;
-            }
+        if (!planet.statistics.constructing && !planet.planet.fullyPaved) {
+            return checkPavement(planet);
         }
         return false;
     }
@@ -1042,7 +1039,7 @@ public class ColonyPlanner extends Planner {
         }
         List<SurfaceFeature> features = new ArrayList<>();
         for (SurfaceFeature sf : planet.planet.surface.features) {
-            if (!planet.pavements.contains(sf.location)) {
+            if (!planet.surfaceCells.hasPavement(sf.location)) {
                 features.add(sf);
             }
         }
@@ -1063,7 +1060,7 @@ public class ColonyPlanner extends Planner {
 
                 for (int i = 0; i < candidate.tile.width; i++) {
                     for (int j = 0; j < candidate.tile.height; j++) {
-                        planet.pavements.add(Location.of(candidate.location.x + i, candidate.location.y - j));
+                        planet.surfaceCells.setPavement(candidate.location.x + i, candidate.location.y - j);
                     }
                 }
 
@@ -1072,14 +1069,14 @@ public class ColonyPlanner extends Planner {
                     @Override
                     public void invoke() {
                         if (planet.planet.owner == expectedOwner && expectedOwner.money() >= price) {
-                            if (!planet.planet.surface.pavements.contains(candidate.location)) {
+                            if (!planet.planet.surface.surfaceCells.hasPavement(candidate.location)) {
                                 expectedOwner.addMoney(-price);
                                 expectedOwner.statistics.moneySpent.value += price;
                                 expectedOwner.world.statistics.moneySpent.value += price;
 
                                 for (int i = 0; i < candidate.tile.width; i++) {
                                     for (int j = 0; j < candidate.tile.height; j++) {
-                                        planet.planet.surface.pavements.add(Location.of(candidate.location.x + i, candidate.location.y - j));
+                                        planet.planet.surface.surfaceCells.setPavement(candidate.location.x + i, candidate.location.y - j);
                                     }
                                 }
                                 log("AddPavement, Planet = %s, Location = %s, Price = %s", planet.planet.id, candidate.location, price);
@@ -1089,6 +1086,8 @@ public class ColonyPlanner extends Planner {
                 });
                 return true;
             }
+        } else {
+            planet.planet.fullyPaved = true;
         }
 
         return false;

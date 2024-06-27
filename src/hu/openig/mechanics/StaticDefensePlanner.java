@@ -626,9 +626,8 @@ public class StaticDefensePlanner extends Planner {
                 }
             }
             // if room, build one
-            boolean hasRoom = planet.findLocation(bt) != null;
             if (gunCount < Math.abs(bt.limit) && gunCount < limit) {
-                if (hasRoom) {
+                if (planet.findLocation(bt) != null) {
                     build(planet, bt);
                     return true;
                 }
@@ -642,7 +641,7 @@ public class StaticDefensePlanner extends Planner {
                         Tile bts = bt.tileset.get(planet.planet.race).normal;
                         Tile bs = b.tileset.normal;
 
-                        if (hasRoom || (bs.width >= bts.width && bs.height >= bts.height)) {
+                        if ((planet.findLocation(bt) != null) || (bs.width >= bts.width && bs.height >= bts.height)) {
                             planet.buildings.remove(b);
                             add(new Action0() {
                                 @Override

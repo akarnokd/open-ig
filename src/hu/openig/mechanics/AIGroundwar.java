@@ -67,7 +67,9 @@ public class AIGroundwar {
         if (!targets.isEmpty()) {
             attackRegular();
         }
-        handleMinelayers();
+        if (!minelayers.isEmpty()) {
+            handleMinelayers();
+        }
 
     }
     /**

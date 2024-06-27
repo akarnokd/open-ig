@@ -1099,7 +1099,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else {
                         if (pavementMode) {
                             Location loc = getLocationAt(e.x, e.y);
-                            if (!surface().pavements.contains(loc)) {
+                            if (!surface().surfaceCells.hasPavement(loc)) {
                                 SurfaceFeature se = findSurfaceFeature(loc);
                                 if (se != null) {
                                     int price = pavementPrice(se.tile);
@@ -1298,7 +1298,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 if (pavementMode) {
                     for (SurfaceFeature se : surface.features) {
-                        if (!surface.pavements.contains(se.location)) {
+                        if (!surface.surfaceCells.hasPavement(se.location)) {
 
                             int price = pavementPrice(se.tile);
                             String priceStr = String.format("%,d cr", price);
@@ -1422,7 +1422,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         void paveSurfaceFeature(SurfaceFeature sf) {
             for (int i = 0; i < sf.tile.width; i++) {
                 for (int j = 0; j < sf.tile.height; j++) {
-                    surface().pavements.add(Location.of(sf.location.x + i, sf.location.y - j));
+                    surface().surfaceCells.setPavement(sf.location.x + i, sf.location.y - j);
                 }
             }
         }
@@ -1490,7 +1490,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
                 for (SurfaceFeature sf : surface().features) {
-                    if (surface().pavements.contains(sf.location)) {
+                    if (surface().surfaceCells.hasPavement(sf.location)) {
                         continue;
                     }
                     if (sf.tile.width > 1 || sf.tile.height > 1) {
@@ -1722,10 +1722,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Rectangle renderingWindow = new Rectangle(0, 0, width, height);
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
-                for (int j = 0; j < surface.renderingLength.get(i) + 2; j++) {
+                for (int j = 0; j < surface.renderingLength.get(i); j++) {
                     int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
                     Location loc1 = Location.of(loc.x - j, loc.y);
-                    boolean isPaved = surface.pavements.contains(loc1);
+                    boolean isPaved = surface.surfaceCells.hasPavement(loc1);
                     boolean isBuilding = true;
                     SurfaceEntity se = surface.buildingmap.get(loc1);
                     if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
@@ -1784,7 +1784,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //                    } FIXME during battle only
             if (pavementMode) {
                 for (SurfaceFeature loc : surface.features) {
-                    if (!surface.pavements.contains(loc.location)) {
+                    if (!surface.surfaceCells.hasPavement(loc.location)) {
                         for (int i = 0; i < loc.tile.width; i++) {
                             for (int j = 0; j < loc.tile.height; j++) {
                                 int xp = x0 + Tile.toScreenX(loc.location.x + i, loc.location.y - j);

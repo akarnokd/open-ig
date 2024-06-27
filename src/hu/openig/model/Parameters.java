@@ -54,7 +54,7 @@ public class Parameters {
     protected int costToHitpoints = 10;
     /** What is considered a planet-nearby. */
     @LoadField
-    protected double nearbyDistance = 10;
+    protected int nearbyDistance = 10;
     /** The ratio between the fleet movement timer and speed() minute simulation time. */
     @LoadField
     protected int simulationRatio = 10;
@@ -158,7 +158,7 @@ public class Parameters {
      * What is considered a planet-nearby.
      * @return the distance
      */
-    public double nearbyDistance() {
+    public int nearbyDistance() {
         return nearbyDistance;
     }
     /**
