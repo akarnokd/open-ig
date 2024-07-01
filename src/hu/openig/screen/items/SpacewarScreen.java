@@ -3042,8 +3042,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             return true;
         }
-        ArrayList<Location> neighbors = loc.getListOfNeighbors();
-        for (Location neighbor: neighbors) {
+        for (Location neighbor : loc.getListOfNeighbors()) {
             if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
                 if (!cellInMap(neighbor)) {
                     return false;

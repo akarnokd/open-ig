@@ -107,7 +107,7 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
             return false;
         }
         //Check the surrounding cells ignoring fighters
-        ArrayList<Location> locationsToCheck = unit.getNextMove().getListOfNeighbors();
+        ArrayList<Location> locationsToCheck = new ArrayList<>(unit.getNextMove().getListOfNeighbors());
         locationsToCheck.remove(unit.location());
         locationsToCheck.removeAll(unit.location().getListOfNeighbors());
         for (Location loc : locationsToCheck) {
@@ -138,7 +138,7 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
         if (reservedCells.get(loc) != null && reservedCells.get(loc) != unit) {
             return true;
         }
-        ArrayList<Location> locationsToCheck = loc.getListOfNeighbors();
+        ArrayList<Location> locationsToCheck = new ArrayList<>(loc.getListOfNeighbors());
         // Do not check currently occupied locations.
         locationsToCheck.remove(unit.location());
         locationsToCheck.removeAll(unit.location().getListOfNeighbors());
