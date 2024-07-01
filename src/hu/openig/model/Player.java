@@ -952,7 +952,7 @@ public class Player {
      * @return true if the player has been defeated
      */
     public boolean isDefeated() {
-        return ownPlanets().isEmpty();
+        return ownPlanets().isEmpty() && ownFleets().isEmpty();
     }
     /**
      * Buy one unit of the given black market inventory item and optionally

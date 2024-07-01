@@ -749,7 +749,7 @@ public class CommonResources implements GameEnvironment {
 
             List<Player> ais = new ArrayList<>();
             for (final Player p : world.players.values()) {
-                if (p.ai != null) {
+                if (p.ai != null && !p.isDefeated()) {
                     if (prepareAI(p, wip)) {
                         ais.add(p);
                     }
