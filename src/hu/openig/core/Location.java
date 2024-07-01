@@ -9,6 +9,8 @@
 package hu.openig.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Immutable class/record representing an X,Y integral coordinate.
@@ -20,7 +22,7 @@ public final class Location {
     /** The Y coordinate. */
     public final int y;
     /** The neighbor locations list. */
-    private ArrayList<Location> neighbors;
+    private List<Location> neighbors;
     /** The cached hash code. */
     private final int hc;
     /** The location cache, where the first dimension is the X coordinate + 80,
@@ -100,10 +102,10 @@ public final class Location {
      * Returns a list of possible neighbors.
      * @return list of possible neighbors
      * */
-    public ArrayList<Location> getListOfNeighbors() {
+    public List<Location> getListOfNeighbors() {
 
         if (neighbors == null) {
-            neighbors = new ArrayList<>();
+            neighbors = new ArrayList<>(8);
             neighbors.add(delta(-1, 0));
             neighbors.add(delta(1, 0));
             neighbors.add(delta(0, 1));
@@ -112,6 +114,7 @@ public final class Location {
             neighbors.add(delta(-1, 1));
             neighbors.add(delta(1, -1));
             neighbors.add(delta(1, 1));
+            neighbors = Collections.unmodifiableList(neighbors);
         }
         return neighbors;
     }
