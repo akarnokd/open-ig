@@ -1194,6 +1194,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
     }
     /**
+     * Remove ships that are outside the screen.
+     */
+    void removeRetreatedStructures() {
+        for (SpacewarStructure s : ships()) {
+            if (!s.intersects(0, 0, space.width, space.height)) {
+                removeStructure(s);
+            }
+        }
+    }
+    /**
      * Check if all ships of the player has left the screen?
      * @param owner the owner
 
@@ -4127,6 +4137,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             askRepaint();
             return;
         }
+        removeRetreatedStructures();
 
         // chat switch to flee
         if (isEnemyFleeing != battle.enemyFlee) {
@@ -4681,8 +4692,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
         if (/* stopRetreat.visible && */playerRetreatedBeyondScreen(player())) {
             return other;
-        } else
-        if (playerRetreatedBeyondScreen(other)) {
+        } else if (playerRetreatedBeyondScreen(other)) {
             return player();
         }
         return null;

@@ -250,12 +250,12 @@ public final class Radar {
      */
     static List<Planet> findPlanetsInRange(World world, double x, double y, double range) {
         List<Planet> result = new ArrayList<>();
+        double rangeSqr = range * range;
         for (Planet p : world.planets.values()) {
-            if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
-                result.add(p);
-            }
+                if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < rangeSqr) {
+                    result.add(p);
+                }
         }
-
         return result;
     }
     /**

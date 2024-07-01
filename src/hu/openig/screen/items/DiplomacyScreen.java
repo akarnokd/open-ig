@@ -743,26 +743,31 @@ public class DiplomacyScreen extends WalkableScreen {
 
             if (!p2.noDiplomacy) {
                 OptionItem oi1 = new OptionItem();
+                oi1.label = "";
+                oi1.enabled = false;
                 boolean active = !p2.isDefeated();
-                if (player().offers.containsKey(p2.id) && active) {
-                    oi1.label = "!" + p2.shortName;
-                } else {
-                    oi1.label = " " + p2.shortName;
+                if (active) {
+                    if (player().offers.containsKey(p2.id)) {
+                        oi1.label = "!" + p2.shortName;
+                    } else {
+                        oi1.label = " " + p2.shortName;
+                    }
+                    oi1.userObject = p2;
+
+                    oi1.enabled = rel.full && last < now - limit;
+
+                    if (oi1.enabled && rel.wontTalk()) {
+                        rel.wontTalk(false);
+                    }
                 }
-                oi1.userObject = p2;
-
-                oi1.enabled = rel.full && last < now - limit
-
-                        && active;
-
-                if (oi1.enabled && rel.wontTalk()) {
-                    rel.wontTalk(false);
-                }
-
                 races.items.add(oi1);
 
                 OptionItem oi2 = new OptionItem();
-                oi2.label = Integer.toString((int)rel.value);
+                if (active) {
+                    oi2.label = Integer.toString((int)rel.value);
+                } else {
+                    oi2.label = "";
+                }
                 oi2.enabled = oi1.enabled;
                 stances.items.add(oi2);
             }
@@ -927,8 +932,8 @@ public class DiplomacyScreen extends WalkableScreen {
             }
 
             // paint stance matrix participants
-            int ox = 0;
-            int oy = 0;
+            int ox = 10;
+            int oy = 10;
             int dw = players.size() * cellSize;
             int dh = players.size() * cellSize;
             for (int i = 1; i <= players.size(); i++) {
@@ -938,6 +943,9 @@ public class DiplomacyScreen extends WalkableScreen {
                 int dx = ox + (i - 1) * cellSize + (cellSize - tw) / 2;
 
                 Player p = players.get(i - 1);
+                if (p.isDefeated()) {
+                    continue;
+                }
 
                 commons.text().paintTo(g2, dx, oy, textSize, p.color, n);
 
@@ -957,8 +965,14 @@ public class DiplomacyScreen extends WalkableScreen {
             int stanceHeight = 7;
             for (int i = 0; i < players.size(); i++) {
                 Player row = players.get(i);
+                if (row.isDefeated()) {
+                    continue;
+                }
                 for (int j = 0; j < players.size(); j++) {
                     Player col = players.get(j);
+                    if (col.isDefeated()) {
+                        continue;
+                    }
 
                     String stance = "-";
                     int st = -1;
