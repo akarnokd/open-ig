@@ -139,6 +139,9 @@
 			<type id='IonCannon' list=''/>
 			<type id='ColonyShip' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 		<!-- 
 		<fleet id='-1' x='366' y='442' name='Garthog flotta'>
 			<item id='-1' type='GarthogBattleship' count='1'/>
@@ -237,6 +240,9 @@
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
 		icon='starmap/fleets/dargslan_fleet'
@@ -263,6 +269,9 @@
 			<type id='HeavyTank' list=''/>
 			<type id='RocketLauncher2' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
 		icon='starmap/fleets/ecalep_fleet'

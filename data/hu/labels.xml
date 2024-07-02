@@ -3062,6 +3062,10 @@
 	<entry key='traits.engineers.desc'>Képzett mérnökök kijavítják a hajódat már a bolygóközi térben, de sokkal lassabban, mint egy katonai űrkikötővel rendelkező bolygón. Viszont a pajzs sokkal gyorsabban regenerálódik két csata között.</entry>
 	<entry key='traits.combat_engineers'>Harci mérnökök</entry>
 	<entry key='traits.combat_engineers.desc'>A mérnökeid elég bátrak, hogy csata közben is javítsák a hajód pajzsaid, feltéve hogy nem semmisült meg a pajzsgenerátor.</entry>
+	<entry key='traits.no_surrender'>Nincs visszavonulás!</entry>
+	<entry key='traits.no_surrender.desc'>Bolygó védelmi erőid a végsőkig harcolnak. Erődítményeid nem kapitulálnak súlyos sérülés esetén.</entry>
+	<entry key='traits.yes_surrender'>Visszavonulás!</entry>
+	<entry key='traits.yes_surrender.desc'>Bolygó védelmi erőid a legkisebb ellenállás láttán menekülőre fogják. Erődítményeid %.0f%% sérülésnél kapitulálnak.</entry>
 	<entry key='quickresearch.cost'>Kutatási költség: %1$,d cr</entry>
 	<entry key='skirmish.tech_level_max'>Maximum:</entry>
 	<entry key='planets.Achilles'>Achilles</entry>
@@ -3352,6 +3356,7 @@
 	<entry key='info.planetlist_SPACESHIP_FACTORY'>Űrhajógyár</entry>
 	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Felsz.gyár</entry>
 	<entry key='info.building_present'>van</entry>
+	<entry key='info.building_surrendered'>Kapitulált</entry>
 	<entry key='info.planetlist_WEAPONS_FACTORY'>Fegyv.gyár</entry>
 	<entry key='info.planetlist_BARRACKS'>Laktanyák</entry>
 	<entry key='info.planetlist_GUNS'>Ágyúk</entry>

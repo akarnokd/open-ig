@@ -1903,6 +1903,7 @@
   <entry key='hide_objectives'>Appuyez sur TAB pour montrer/cacher les objectifs.</entry>
   <entry key='incoming_message'>- Message -</entry>
   <entry key='info.building_present'>Présent</entry>
+  <entry key='info.building_surrendered'>Surrendered</entry>
   <entry key='info.details_BANK'>Banque</entry>
   <entry key='info.details_BARRACKS'>Baraquement</entry>
   <entry key='info.details_EQUIPMENT_FACTORY'>Us. d&#39;equi.</entry>

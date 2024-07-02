@@ -370,6 +370,7 @@
 	<entry key="info.details_TRADERS_SPACEPORT">Comerciantes</entry>
 	<entry key="info.planetlist_TRADERS_SPACEPORT">Comerciantes</entry>
 	<entry key="info.building_present">presente</entry>
+	<entry key='info.building_surrendered'>Surrendered</entry>
 	<entry key="fleet">Flota %s</entry>
 	<entry key="achievement.columbus">Columbus</entry>
 	<entry key="autosave">Autoguardado</entry>
@@ -1161,6 +1162,10 @@
 	<entry key="traits.rocks_and_sticks">Rocas y palos</entry>
 	<entry key="traits.master_astronomy">Dominar la astronomía</entry>
 	<entry key="traits.combat_engineers">Ingenieros de combate</entry>
+	<entry key='traits.no_surrender'>No Surrender!</entry>
+	<entry key='traits.no_surrender.desc'>Your garrison forces will fight to their last breath. Defensive building will not surrender when severely damaged.</entry>
+	<entry key='traits.yes_surrender'>Defense farce</entry>
+	<entry key='traits.yes_surrender.desc'>Your garrison forces fold at the slightest breeze. Defensive building will surrender at %.0f%% damage.</entry>
 	<entry key="languages.en">English / Inglés</entry>
 	<entry key="languages.fr">French / Francés</entry>
 	<entry key="skirmish.tax_base">Base imponible:</entry>

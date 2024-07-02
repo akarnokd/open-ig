@@ -106,6 +106,9 @@
 			<type id='GarthogDestroyer' list=''/>
 			<type id='GarthogBattleship' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
 		icon='starmap/fleets/morgath_fleet'
@@ -207,6 +210,9 @@
 			<type id='SullepDestroyer' list=''/>
 			<type id='SullepBattleship' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
 		icon='starmap/fleets/dargslan_fleet'
@@ -239,6 +245,9 @@
 			<type id='DargslanDestroyer' list=''/>
 			<type id='DargslanBattleship' list=''/>
 		</available>
+		<traits>
+			<trait id='NoSurrender'/>
+		</traits>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
 		icon='starmap/fleets/ecalep_fleet'

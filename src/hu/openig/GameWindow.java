@@ -89,6 +89,7 @@ import hu.openig.model.Screens;
 import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
+import hu.openig.model.TraitKind;
 import hu.openig.model.World;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
@@ -1821,8 +1822,8 @@ public class GameWindow extends JFrame implements GameControls {
                 }
                 // check surface for defensive structures
                 for (Building b : bi.targetPlanet.surface.buildings.iterable()) {
-                    if (b.isOperational() && "Defensive".equals(b.type.kind)) {
-                        groundBattle = true;
+                    if (b.isComplete() && "Defensive".equals(b.type.kind)) {
+                        groundBattle |= !BattleSimulator.buildingShouldSurrender(b, bi.targetPlanet.owner.traits.trait(TraitKind.SURRENDER));
                     }
                     if (b.isOperational() && "Gun".equals(b.type.kind)) {
                         spaceBattle = true;

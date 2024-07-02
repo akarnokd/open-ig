@@ -3151,6 +3151,10 @@
 	<entry key='traits.engineers.desc'>Fähige Ingenieure repariere Ihre Flotten auch ohne Militärraumhäfen, wenngleich auch langsamer. Zusätzlich regenerieren sich Schilde schneller zwischen Gefechten.</entry>
 	<entry key='traits.combat_engineers'>Pioniere</entry>
 	<entry key='traits.combat_engineers.desc'>Ihre Ingenieure sind fähig und mutig genug, auch während der Schlacht zu helfen. Solange Schildgeneratoren nicht zerstört sind, regenerieren sich Schilde während der Schlacht.</entry>
+    <entry key='traits.no_surrender'>No Surrender!</entry>
+    <entry key='traits.no_surrender.desc'>Your garrison forces will fight to their last breath. Defensive building will not surrender when severely damaged.</entry>
+    <entry key='traits.yes_surrender'>Defense farce</entry>
+    <entry key='traits.yes_surrender.desc'>Your garrison forces fold at the slightest breeze. Defensive building will surrender at %.0f%% damage.</entry>
 	
 	<entry key='quickresearch.cost'>Forschungskosten: %1$,d cr</entry>
 	<entry key='skirmish.tech_level_max'>Maximum:</entry>
@@ -3367,6 +3371,7 @@
 	<entry key='info.planetlist_SPACESHIP_FACTORY'>Raumschiff</entry>
 	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Ausrüstung</entry>
 	<entry key='info.building_present'>vorhanden</entry>
+    <entry key='info.building_surrendered'>Surrendered</entry>
 	<entry key='info.planetlist_WEAPONS_FACTORY'>Waffen</entry>
 	<entry key='info.planetlist_BARRACKS'>Barracken</entry>
 	<entry key='info.planetlist_GUNS'>Geschütze</entry>

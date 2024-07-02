@@ -3017,6 +3017,10 @@
 	<entry key='traits.engineers.desc'>Skilled engineers will repair your fleet without military spaceports, although at a much lower rate. However, your shields will regenerate faster between battles.</entry>
 	<entry key='traits.combat_engineers'>Combat engineers</entry>
 	<entry key='traits.combat_engineers.desc'>Your engineers are brave enough to help you fix and regenerate your shields during battles, so long as the shield generator isn't destroyed.</entry>
+    <entry key='traits.no_surrender'>No Surrender!</entry>
+    <entry key='traits.no_surrender.desc'>Your garrison forces will fight to their last breath. Defensive building will not surrender when severely damaged.</entry>
+    <entry key='traits.yes_surrender'>Defense farce</entry>
+    <entry key='traits.yes_surrender.desc'>Your garrison forces fold at the slightest breeze. Defensive building will surrender at %.0f%% damage.</entry>
 	<entry key='quickresearch.cost'>Research cost: %1$,d cr</entry>
 	<entry key='skirmish.tech_level_max'>Maximum:</entry>
 
@@ -3316,6 +3320,7 @@
 	<entry key='info.planetlist_SPACESHIP_FACTORY'>Spaceship</entry>
 	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Equipment</entry>
 	<entry key='info.building_present'>present</entry>
+    <entry key='info.building_surrendered'>Surrendered</entry>
 	<entry key='info.planetlist_WEAPONS_FACTORY'>Weapon</entry>
 	<entry key='info.planetlist_BARRACKS'>Barracks</entry>
 	<entry key='info.planetlist_GUNS'>Guns</entry>

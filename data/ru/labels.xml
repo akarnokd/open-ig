@@ -3072,6 +3072,10 @@
   <entry key='traits.weapon_mastery.desc'>Повреждения, наносимые в бою противнику увечены на %.0f%%.</entry>
   <entry key='traits.weapon_mocker'>Низкая скорость производства оружия</entry>
   <entry key='traits.weapon_mocker.desc'>Скорость производства оружия уменьшена на %.0f%%.</entry>
+  <entry key='traits.no_surrender'>No Surrender!</entry>
+  <entry key='traits.no_surrender.desc'>Your garrison forces will fight to their last breath. Defensive building will not surrender when severely damaged.</entry>
+  <entry key='traits.yes_surrender'>Defense farce</entry>
+  <entry key='traits.yes_surrender.desc'>Your garrison forces fold at the slightest breeze. Defensive building will surrender at %.0f%% damage.</entry>
   <entry key='videos.all_videos'>Все видеоролики</entry>
   <entry key='videos.back'>Назад</entry>
   <entry key='videos.name'>Название</entry>
@@ -3332,6 +3336,7 @@
 	<entry key='info.planetlist_SPACESHIP_FACTORY'>Spaceship</entry>
 	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Equipment</entry>
 	<entry key='info.building_present'>present</entry>
+    <entry key='info.building_surrendered'>Surrendered</entry>
 	<entry key='info.planetlist_WEAPONS_FACTORY'>Weapon</entry>
 	<entry key='info.planetlist_BARRACKS'>Barracks</entry>
 	<entry key='info.planetlist_GUNS'>Guns</entry>
