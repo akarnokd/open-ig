@@ -42,5 +42,7 @@ public enum TraitKind {
     /** Regenerate shields faster, repair ships without military spaceport. */
     ENGINEERS,
     /** Regenerate shields during combat. */
-    COMBAT_ENGINEERS
+    COMBAT_ENGINEERS,
+    /** Groundwar fortifications surrender rate. */
+    SURRENDER
 }

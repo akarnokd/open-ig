@@ -32,6 +32,8 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarStructure;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 
@@ -948,11 +950,32 @@ public final class BattleSimulator {
             return true;
         }
         for (Building b : planet.surface.buildings.iterable()) {
-            if (b.isOperational() && b.type.kind.equals("Defensive")) {
-                return true;
+            if (b.isComplete() && b.type.kind.equals("Defensive")) {
+                if (!buildingShouldSurrender(b, planet.owner.traits.trait(TraitKind.SURRENDER))) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+    /**
+     * @param building the building to check
+     * @param t the trait affecting surrender
+
+     * @return true if the building in question should surrender.
+
+     */
+    public static boolean buildingShouldSurrender(Building building, Trait t) {
+        double surrenderThreshold = 90;
+        if (t != null &&  t.kind == TraitKind.SURRENDER) {
+            surrenderThreshold = t.value;
+        }
+        if (surrenderThreshold == 0) {
+            return false;
+        } else if (building.hitpoints > building.type.hitpoints * ((100 - surrenderThreshold) / 100)) {
+            return false;
+        }
+        return true;
     }
     /**
      * Check if the planet has bunker.

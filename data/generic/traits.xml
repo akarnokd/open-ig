@@ -227,4 +227,22 @@
 		cost='4'
 	>
 	</trait>
+	<trait
+			id='NoSurrender'
+			kind='SURRENDER'
+			label='traits.no_surrender'
+			description='traits.no_surrender.desc'
+			cost='0'
+			value='0'
+	>
+	</trait>
+	<trait
+			id='YesSurrender'
+			kind='SURRENDER'
+			label='traits.yes_surrender'
+			description='traits.yes_surrender.desc'
+			cost='-1'
+			value='50'
+	>
+	</trait>
 </traits>

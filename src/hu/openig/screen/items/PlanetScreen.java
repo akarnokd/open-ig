@@ -199,6 +199,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     final List<GroundwarUnit> units = new ArrayList<>();
     /** The guns. */
     final List<GroundwarGun> guns = new ArrayList<>();
+    /** The buildings with the guns and if they have surrendered. */
+    final Map<Building, Boolean> fortifications = new HashMap<>();
     /** The user is dragging a selection box. */
     boolean selectionMode;
     /** The current animating explosions. */
@@ -373,7 +375,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         close0(simulator);
                         simulator = null;
                     }
-                    doAddGuns();
+                    doInitFortifications();
                     doAddUnits();
                     movementHandler = new GroundWarMovementHandler(commons.pool, 28, SIMULATION_DELAY, units, surface().width, surface().height, surface().placement);
                     movementHandler.initUnits();
@@ -1549,19 +1551,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 int ux = r.x + (r.width - uw) / 2;
                 int uy = r.y + h - commons.colony().upgrade.getHeight() - 4;
 
-                String percent = null;
-                int color = 0xFF8080FF;
-                if (b.isConstructing()) {
-                    percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
-                } else
-                if (b.hitpoints < b.type.hitpoints) {
-                    percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+                String buildingHealth = null;
+                int color1 = 0xFF8080FF;
+                int color2 = 0x00D4FC84;
+                Boolean surrendered = fortifications.get(b);
+                if (surrendered != null && surrendered) {
                     if (!blink) {
-                        color = 0xFFFF0000;
+                        color2 = 0xFFFCF828;
+                    } else {
+                        color2 = 0xFFFC2828;
+                    }
+                    buildingHealth = get("info.building_surrendered");;
+                } else if (b.isConstructing()) {
+                    buildingHealth = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+                } else if (b.hitpoints < b.type.hitpoints) {
+                    buildingHealth = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+                    if (!blink) {
+                        color1 = 0xFFFF0000;
                     }
                 }
-                if (percent != null) {
-                    int pw = commons.text().getTextWidth(10, percent);
+                if (buildingHealth != null) {
+                    int pw = commons.text().getTextWidth(10, buildingHealth);
                     int px = r.x + (r.width - pw) / 2;
                     int py = uy - 14;
 
@@ -1572,8 +1582,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         g2.setComposite(compositeSave);
                     }
 
-                    commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
-                    commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
+                    commons.text().paintTo(g2, px + 1, py + 1, 10, color1, buildingHealth);
+                    commons.text().paintTo(g2, px, py, 10, color2, buildingHealth);
                 }
                 if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
                     for (int i = 1; i <= b.upgradeLevel; i++) {
@@ -1612,9 +1622,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         int ey = r.y + h + 13;
                         String offline = get("buildings.offline");
                         int w = commons.text().getTextWidth(10, offline);
-                        color = 0xFF8080FF;
+                        color1 = 0xFF8080FF;
                         if (!blink) {
-                            color = 0xFFFF0000;
+                            color1 = 0xFFFF0000;
                         }
                         int ex = r.x + (r.width - w) / 2;
                         if (config.buildingTextBackgrounds) {
@@ -1624,8 +1634,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             g2.setComposite(compositeSave);
                         }
 
-                        commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
-                        commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+                        commons.text().paintTo(g2, ex + 1, ey + 1, 10, color1, offline);
+                        commons.text().paintTo(g2, ex, ey, 10, color2, offline);
 
                         if (b.repairing) {
                             g2.drawImage(commons.colony().repair[(animation % 3)], ex + w + 3, ey, null);
@@ -4061,10 +4071,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         return result;
     }
     /** Add guns for the buildings. */
-    void doAddGuns() {
+    void doInitFortifications() {
         guns.clear();
         for (Building b : planet().surface.buildings.iterable()) {
             if (b.type.kind.equals("Defensive") && b.isComplete()) {
+                if (BattleSimulator.buildingShouldSurrender(b, planet().owner.traits.trait(TraitKind.SURRENDER))) {
+                    fortifications.put(b, true);
+                } else {
+                    fortifications.put(b, false);
+                }
                 List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
                 int n = b.hitpoints * 2 < b.type.hitpoints ? turrets.size() / 2 : turrets.size();
                 for (int j = 0; j < turrets.size(); j++) {
@@ -4829,8 +4844,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         int attackerCount = 0;
         int defenderCount = 0;
-        for (GroundwarGun g : guns) {
-            if (g.building.enabled && g.building.assignedEnergy != 0) {
+        for (Boolean surrendered : fortifications.values()) {
+            if (!surrendered) {
                 defenderCount++;
             }
         }
@@ -4886,8 +4901,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int hpBefore = b.hitpoints;
         int maxHp = world().getHitpoints(b.type, planet().owner, false);
         b.hitpoints = (int)Math.max(0, b.hitpoints - 1L * damage * b.type.hitpoints / maxHp);
-        // if damage passes the half mark
         if ("Defensive".equals(b.type.kind)) {
+            // if damage passes the half mark
             if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
                 int count = world().battle.getTurrets(b.type.id, planet().race).size() / 2;
                 int i = guns.size() - 1;
@@ -4899,6 +4914,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                     i--;
                 }
+            }
+            Boolean surrendered = fortifications.get(b);
+            if (surrendered != null && !surrendered && BattleSimulator.buildingShouldSurrender(b, planet().owner.traits.trait(TraitKind.SURRENDER))) {
+                fortifications.put(b, true);
             }
         }
         // if building got destroyed
@@ -4912,6 +4931,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             if (battle != null && "Defensive".equals(b.type.kind)) {
                 battle.defenderFortificationLosses++;
+                fortifications.remove(b);
+
             }
             effectSound(SoundType.EXPLOSION_LONG);
             destroyBuilding(b);
@@ -5358,12 +5379,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (!g.building.enabled) {
             return;
         }
-        // underpowered guns will not fire
-        double powerRate = 1d * g.building.assignedEnergy / g.building.getEnergy();
-        double indexRate = (g.index + 0.5) / g.count;
-        if (indexRate >= powerRate) {
-            g.fireAnimPhase = 0;
+        if (fortifications.get(g.building)) {
             return;
+        }
+        // only half of the guns will fire on underpowered building that are not severely damaged
+        if (g.building.hitpoints * 2 > g.building.type.hitpoints && g.building.getEfficiency() == 0) {
+            int halvedCount = world().battle.getTurrets(g.building.type.id, planet().race).size() / 2;
+            if (g.index >= halvedCount) {
+                g.fireAnimPhase = 0;
+                return;
+            }
         }
 
         if (g.fireAnimPhase > 0) {
@@ -6186,7 +6211,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         });
 
-        doAddGuns();
+        doInitFortifications();
         deployNonPlayerVehicles();
 
         preparingGroundBattle = false;
