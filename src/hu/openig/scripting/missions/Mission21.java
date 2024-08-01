@@ -249,6 +249,7 @@ public class Mission21 extends Mission {
                 battle.messageText = label("battlefinish.mission-21.32");
                 battle.rewardText = label("battlefinish.mission-21.32_bonus");
                 player.setAvailable(research("Destroyer2"));
+                player.populateProductionHistory();
             }
         }
     }
