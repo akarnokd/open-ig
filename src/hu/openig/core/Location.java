@@ -105,16 +105,16 @@ public final class Location {
     public List<Location> getListOfNeighbors() {
 
         if (neighbors == null) {
-            neighbors = new ArrayList<>(8);
-            neighbors.add(delta(-1, 0));
-            neighbors.add(delta(1, 0));
-            neighbors.add(delta(0, 1));
-            neighbors.add(delta(0, -1));
-            neighbors.add(delta(-1, -1));
-            neighbors.add(delta(-1, 1));
-            neighbors.add(delta(1, -1));
-            neighbors.add(delta(1, 1));
-            neighbors = Collections.unmodifiableList(neighbors);
+            List<Location> neighborsList = new ArrayList<>(8);
+            neighborsList.add(delta(-1, 0));
+            neighborsList.add(delta(1, 0));
+            neighborsList.add(delta(0, 1));
+            neighborsList.add(delta(0, -1));
+            neighborsList.add(delta(-1, -1));
+            neighborsList.add(delta(-1, 1));
+            neighborsList.add(delta(1, -1));
+            neighborsList.add(delta(1, 1));
+            neighbors = Collections.unmodifiableList(neighborsList);
         }
         return neighbors;
     }

@@ -3988,10 +3988,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             if (exp.next()) {
                 explosions.remove(exp);
             } else if (exp.isMiddle() && exp.target != null && exp.target.isDestroyed()) {
-                structures.remove(exp.target);
-                if ((exp.target.type == StructureType.SHIP && exp.target.count == 0) || exp.target.type == StructureType.STATION) {
-                    movementHandler.removeUnit(exp.target);
-                }
+                removeStructure(exp.target);
             }
         }
 
@@ -4299,64 +4296,65 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
     }
     /**
-     * Handle and rockets.
-     * @param ship the ship
+     * Handle rockets.
+     * @param rocket the reocket
      */
-    void handleRocket(SpacewarStructure ship) {
-        if (ship.ttl-- < 0) {
-            createLoss(ship);
-            createStructureExplosion(ship, false);
-            structures.remove(ship);
+    void handleRocket(SpacewarStructure rocket) {
+        if (rocket.ttl-- < 0) {
+            createLoss(rocket);
+            createStructureExplosion(rocket, false);
+            structures.remove(rocket);
             return;
         }
-        if (ship.attackUnit != null && !ship.attackUnit.isDestroyed()) {
-            rotateStep(ship, ship.attackUnit.x, ship.attackUnit.y);
+        if (rocket.attackUnit != null && !rocket.attackUnit.isDestroyed()) {
+            rotateStep(rocket, rocket.attackUnit.x, rocket.attackUnit.y);
 
-            double d = Math.hypot(ship.x - ship.attackUnit.x, ship.y - ship.attackUnit.y);
-            if (d < 80 && ship.attackUnit.ecmLevel > 0) {
-                if (scrambled.add(ship)) {
+            double d = Math.hypot(rocket.x - rocket.attackUnit.x, rocket.y - rocket.attackUnit.y);
+            if (d < 80 && rocket.attackUnit.ecmLevel > 0) {
+                if (scrambled.add(rocket)) {
                     double p = ModelUtils.random();
 
-                    int anti = ship.ecmLevel;
-                    int ecm = ship.attackUnit.ecmLevel;
+                    int anti = rocket.ecmLevel;
+                    int ecm = rocket.attackUnit.ecmLevel;
 
                     boolean newTarget = world().battle.getAntiECMProbability(world().difficulty, anti, ecm) <= p;
 
                     if (newTarget) {
-                        chooseNewTarget(ship);
+                        chooseNewTarget(rocket);
                     }
                 }
             }
         }
-        if (moveMissileStep(ship)) {
-            SpacewarStructure parent = rocketParent.get(ship);
+        if (moveMissileStep(rocket)) {
+            SpacewarStructure parent = rocketParent.get(rocket);
             if (parent == null) {
-                parent = ship;
+                parent = rocket;
             }
-            if (ship.type == StructureType.MULTI_ROCKET) {
-                doMultiRocketExplosion(parent, ship);
+            if (rocket.type == StructureType.MULTI_ROCKET) {
+                doMultiRocketExplosion(parent, rocket);
             } else {
                 damageTarget(
                         parent,
-                        ship.attackUnit,
-                        ship.kamikaze,
-                        ship.destruction,
-                        ship.techId,
-                        ship.owner.id);
+                        rocket.attackUnit,
+                        rocket.kamikaze,
+                        rocket.destruction,
+                        rocket.techId,
+                        rocket.owner.id);
             }
-            createLoss(ship);
-            createStructureExplosion(ship, true);
-            if (ship.type == StructureType.VIRUS_BOMB
-                    && (ship.attackUnit.type == StructureType.PROJECTOR || ship.attackUnit.type == StructureType.SHIELD)) {
-                battle.infectPlanet = ship.attackUnit.planet;
+            createLoss(rocket);
+            createStructureExplosion(rocket, false);
+            structures.remove(rocket);
+            if (rocket.type == StructureType.VIRUS_BOMB
+                    && (rocket.attackUnit.type == StructureType.PROJECTOR || rocket.attackUnit.type == StructureType.SHIELD)) {
+                battle.infectPlanet = rocket.attackUnit.planet;
             }
         } else
-        if (ship.attackUnit != null && ship.attackUnit.isDestroyed()) {
-            ship.attackUnit = null;
+        if (rocket.attackUnit != null && rocket.attackUnit.isDestroyed()) {
+            rocket.attackUnit = null;
         }
-        if (ship.attackUnit == null && !ship.intersects(0, 0, space.width, space.height)) {
-            createLoss(ship);
-            structures.remove(ship);
+        if (rocket.attackUnit == null && !rocket.intersects(0, 0, space.width, space.height)) {
+            createLoss(rocket);
+            structures.remove(rocket);
         }
     }
     /**
@@ -4536,11 +4534,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         int loss0 = target.loss;
 
-        if (target.damage(damage)) {
+        if (!target.isDestroyed() && target.damage(damage)) {
 
             battle.spaceLosses.add(target);
             soundsToPlay.add(target.destruction);
-            createStructureExplosion(target, true);
+            createStructureExplosion(target, target.isDestroyed());
             if (target.type == StructureType.SHIELD) {
                 dropGroundShields();
             }
@@ -4997,7 +4995,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     @Override
     public void removeStructure(SpacewarStructure sws) {
         structures.remove(sws);
-        movementHandler.removeUnit(sws);
+        if (sws.type == StructureType.SHIP || sws.type == StructureType.STATION) {
+            movementHandler.removeUnit(sws);
+        }
     }
     @Override
     public BattleInfo battle() {
