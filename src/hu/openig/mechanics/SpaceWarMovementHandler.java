@@ -78,18 +78,16 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
         SpacewarStructure sws = (SpacewarStructure) unit;
         if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             return super.reserveCellFor(unit);
-        } else {
-            return reserveCellForCapitalShip(unit);
         }
+        return reserveCellForCapitalShip(unit);
     }
     @Override
     boolean isCellReserved(Location loc, WarUnit unit) {
         SpacewarStructure sws = (SpacewarStructure) unit;
         if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             return super.isCellReserved(loc, unit);
-        } else {
-            return isCellReservedForCapitalShip(loc, unit);
         }
+        return isCellReservedForCapitalShip(loc, unit);
     }
     /**
      * Reserve the next movement cell for the capital ship.
@@ -155,10 +153,8 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
         SpacewarStructure sws = (SpacewarStructure) unit;
         if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             return isPassableForFighter(loc, unit);
-        } else {
-            boolean ip = isPassableForCapitalShip(loc, unit);
-            return ip;
         }
+        return isPassableForCapitalShip(loc, unit);
     }
 
     /**

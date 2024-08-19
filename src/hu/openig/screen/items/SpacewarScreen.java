@@ -772,7 +772,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         return result;
     }
     /**
-     * @return Returns a list of the currently selected structures.
+     * Clears the selection of structures.
      */
     void clearSelection() {
         for (SpacewarStructure s : structures) {

@@ -257,8 +257,8 @@ public class DefaultAIControls implements AIControls {
             return b.location();
         }
         ArrayList<Location> corners = new ArrayList<>();
-        corners.add(Location.of(0,0));
-        corners.add(Location.of(-planet.surface.height + 1,-planet.surface.height + 1));
+        corners.add(Location.of(0, 0));
+        corners.add(Location.of(-planet.surface.height + 1, -planet.surface.height + 1));
         corners.add(Location.of(planet.surface.width - planet.surface.height + 1, - planet.surface.height - planet.surface.width + 1));
         corners.add(Location.of(planet.surface.width - 1, -planet.surface.width + 1));
         return corners.get((new Random()).nextInt(4));

@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.249'>
+  <module id='Game' version='0.95.250'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.250' date='2024-08-19'>
+        <item category='Spacewar' issues='1159'>Fixed a crash and slowdown caused by multiple fatal hits on a spaceship or structure. By @hemoridos</item>
+      </entry>
       <entry version='0.95.249' date='2024-08-01'>
         <item category='Internal' issues='1152,1153'>Various bugfixes and optimizations. By @hemoridos</item>
         <item category='UI,Diplomacy' issues='1154'>Diplomacy screen no longer shows defeated empires. By @hemoridos</item>
@@ -304,7 +307,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.249.jar' sha1='73338333746D89A882DDC3AFF8174B854660B827'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.250.jar' sha1='6A980F150BC423F93C719F87A78212B33539667C'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240801a2.zip' sha1='3D7925BD62DDDB70DE0CD69C6E9B9704B2132E55'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240607a.zip' sha1='E5E626A18FF968CF646A041D333B3C664394D848'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

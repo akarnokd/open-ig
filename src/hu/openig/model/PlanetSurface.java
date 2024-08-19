@@ -945,6 +945,7 @@ public class PlanetSurface {
         public SurfaceCellArray() { }
         /**
          * Create a copy of this object.
+         * @return the copy
          * */
         public SurfaceCellArray copy() {
             SurfaceCellArray copyObject = new SurfaceCellArray();
@@ -1089,24 +1090,35 @@ public class PlanetSurface {
             }
         }
         /**
+         * Check if a location has pavement.
+         * @param loc the location
          * @return true if surface tile has pavement
          */
         public boolean hasPavement(Location loc) {
             return (surfaceArray[getArrayIndexForLocation(loc.x, loc.y)] & PAVED_FEATURE) != 0;
         }
         /**
+         * Check if a coordinate has road.
+         * @param x the X coordinate
+         * @param y the Y coordinate
          * @return true if surface tile has road
          */
         public boolean hasRoad(int x, int y) {
             return (surfaceArray[getArrayIndexForLocation(x, y)] & ROAD) != 0;
         }
         /**
+         * Check if a tile has a crossroad.
+         * @param x the X coordinate
+         * @param y the Y coordinate
          * @return true if surface tile has crossroad
          */
         public boolean hasCrossRoad(int x, int y) {
             return (surfaceArray[getArrayIndexForLocation(x, y)] & CROSSROAD) != 0;
         }
         /**
+         * Check if a cell is buildable.
+         * @param x the X coordinate
+         * @param y the Y coordinate
          * @return true if surface tile is in a state where a building can be put on it
          */
         public boolean isCellBuildable(int x, int y) {
