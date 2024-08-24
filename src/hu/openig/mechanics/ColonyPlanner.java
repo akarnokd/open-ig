@@ -1034,7 +1034,7 @@ public class ColonyPlanner extends Planner {
 
     boolean checkPavement(final AIPlanet planet) {
         // consider only when the player is very rich
-        if (world.money < 1000 * 1000) {
+        if (world.money < 350 * 1000) {
             return false;
         }
         List<SurfaceFeature> features = new ArrayList<>();
