@@ -567,7 +567,7 @@ public class ColonyPlanner extends Planner {
                 return value.hasResource("police");
             }
         };
-        if (planet.population * 101L > planet.statistics.policeAvailable * 100L) {
+        if (planet.population > planet.statistics.policeAvailable) {
             return manageBuildings(planet, police, costOrder, true);
         }
         return false;
