@@ -2076,16 +2076,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
                         int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
                         Location loc1 = Location.of(loc.x - j, loc.y);
+                        boolean isPaved = surface.surfaceCells.hasPavement(loc1);
+                        boolean isBuilding = true;
                         SurfaceEntity se = surface.buildingmap.get(loc1);
                         if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
                             se = surface.basemap.get(loc1);
+                            isBuilding = false;
                         }
                         if (se != null) {
                             getImage(se, true, loc1, cell);
                             int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
                             if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
-                                if (cell.image != null) {
-                                    g2.drawImage(cell.image, x, yref, null);
+                                if (isPaved && !isBuilding) {
+                                    int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                                    g2.drawImage(areaPaved, x, yp, null);
+                                } else {
+                                    if (cell.image != null) {
+                                        g2.drawImage(cell.image, x, yref, null);
+                                    }
                                 }
                             }
                         } else {

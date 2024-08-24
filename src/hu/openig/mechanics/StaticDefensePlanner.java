@@ -504,31 +504,16 @@ public class StaticDefensePlanner extends Planner {
      */
     boolean checkMilitarySpaceport(final AIPlanet planet) {
         if (world.money > 100000
-
                 && world.money >= world.autoBuildLimit
                 && checkPlanetPreparedness()) {
             final BuildingType bt = findBuilding("MilitarySpaceport");
             int spaceportLimit = Math.min(world.global.planetCount, (int)(world.money / (world.global.planetCount * 1.5 * bt.cost + world.autoBuildLimit) + 1));
             if (planet.statistics.militarySpaceportCount == 0
-
                     && spaceportLimit > world.global.militarySpaceportCount) {
                 Point pt = planet.findLocation(bt);
                 if (pt != null) {
                     build(planet, bt);
                     return true;
-                }
-                // if no room, make it by demolishing a traders spaceport
-                for (final AIBuilding b : planet.buildings) {
-                    if (b.type.id.equals("TradersSpaceport")) {
-                        planet.buildings.remove(b);
-                        add(new Action0() {
-                            @Override
-                            public void invoke() {
-                                controls.actionDemolishBuilding(planet.planet, b.building);
-                            }
-                        });
-                        return true;
-                    }
                 }
             }
         }
