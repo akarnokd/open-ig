@@ -617,6 +617,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void clearGroundBattle() {
         battlePlacements.clear();
         guns.clear();
+        fortifications.clear();
         units.clear();
         mines.clear();
         minelayers.clear();
@@ -4081,6 +4082,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Add guns for the buildings. */
     void doInitFortifications() {
         guns.clear();
+        fortifications.clear();
         for (Building b : planet().surface.buildings.iterable()) {
             if (b.type.kind.equals("Defensive") && b.isComplete()) {
                 if (BattleSimulator.buildingShouldSurrender(b, planet().owner.traits.trait(TraitKind.SURRENDER))) {
