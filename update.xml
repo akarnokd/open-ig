@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.251'>
+  <module id='Game' version='0.95.252'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.252' date='2024-08-24'>
+        <item category='Groundwar' issues='1161'>More fixes to resolve the unending groundwar issue.</item>
+      </entry>
       <entry version='0.95.251' date='2024-08-24'>
         <item category='AI'>AI will no longer demolish and rebuild a traders spaceport if there is no more room for a military spaceport.</item>
         <item category='AI'>AI will no longer keep building new buildings if there are disabled buildings of the same type.</item>
@@ -315,7 +318,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.251.jar' sha1='9A737D35270417A8DF9EF7F393573C1475A72258'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.252.jar' sha1='A2920F8BBB579075451967C76A0F5651CAAE1D2B'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240801a2.zip' sha1='3D7925BD62DDDB70DE0CD69C6E9B9704B2132E55'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240607a.zip' sha1='E5E626A18FF968CF646A041D333B3C664394D848'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
