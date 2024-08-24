@@ -132,7 +132,6 @@ public class SpaceWarMovementHandler extends SimpleSpaceWarMovementHandler {
      */
     boolean isCellReservedForCapitalShip(Location loc, WarUnit unit) {
         //Check the surrounding cells ignoring fighters
-        SpacewarStructure sws = (SpacewarStructure) unit;
         if (reservedCells.get(loc) != null && reservedCells.get(loc) != unit) {
             return true;
         }

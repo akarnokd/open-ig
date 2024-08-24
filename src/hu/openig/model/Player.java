@@ -93,6 +93,7 @@ public class Player {
     /** The message history of the already displayed messages. */
     //public final RingQueue<Message> messageHistory = new RingQueue<>();
     public final LinkedList<Message> messageHistory = new LinkedList<Message>() {
+        private static final long serialVersionUID = 1169176041378412461L;
         @Override
         public void addFirst(Message msg) {
             super.addFirst(msg);

@@ -390,17 +390,15 @@ public abstract class Planner {
         }
         return manageRepair(planet, selector, order);
     }
+
     /**
-     * Try to choose an upgrade option.
+     * See if there are disabled buildings of the target type and try enabling them instead of
+     * building more or upgrading.
      * @param planet the target planet
      * @param selector the building selector
-     * @param order the building order
-     * @return true if action taken
+     * @return true if there were disabled buildings
      */
-    public final boolean manageUpgrade(final AIPlanet planet,
-
-            final BuildingSelector selector,
-            final BuildingOrder order) {
+    public final boolean tryEnableBuilding(final AIPlanet planet, final BuildingSelector selector) {
         for (final AIBuilding b : planet.buildings) {
             if (!b.enabled && selector.accept(planet, b)) {
                 if (planet.population > planet.statistics.workerDemand - b.getWorkers()) {
@@ -414,11 +412,26 @@ public abstract class Planner {
                 return true;
             }
         }
+        return false;
+    }
+
+    /**
+     * Try to choose an upgrade option.
+     * @param planet the target planet
+     * @param selector the building selector
+     * @param order the building order
+     * @return true if action taken
+     */
+    public final boolean manageUpgrade(final AIPlanet planet,
+            final BuildingSelector selector,
+            final BuildingOrder order) {
+        if (tryEnableBuilding(planet, selector)) {
+            return true;
+        }
         // scan for the most affordable upgrade
         AIBuilding upgrade = null;
         for (final AIBuilding b : planet.buildings) {
             if (selector.accept(planet, b) && b.canUpgrade() && !b.isDamaged()
-
                     && b.type.cost <= world.money) {
                 if (upgrade == null || order.compare(b, upgrade) < 0) {
                     upgrade = b;
@@ -432,7 +445,6 @@ public abstract class Planner {
                 @Override
                 public void invoke() {
                     controls.actionUpgradeBuilding(planet.planet, fupgrade, fupgrade.upgradeLevel + 1);
-
                 }
             });
             return true;
@@ -449,6 +461,9 @@ public abstract class Planner {
     public final AIResult manageConstruction(final AIPlanet planet,
             final BuildingSelector selector,
             final BuildingOrder order) {
+        if (tryEnableBuilding(planet, selector)) {
+            return AIResult.SUCCESS;
+        }
         // try building a new one
         List<BuildingType> createCandidates = new ArrayList<>();
         int moneyFor = 0;
