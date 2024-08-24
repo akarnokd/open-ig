@@ -174,7 +174,7 @@ public class Building implements HasLocation {
      * @return is the building destroyed?
      */
     public boolean isDestroyed() {
-        return hitpoints == 0 && buildProgress > 0;
+        return hitpoints <= 0 && buildProgress > 0;
     }
     /** Make the building fully built. */
     public void makeFullyBuilt() {

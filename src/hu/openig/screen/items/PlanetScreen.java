@@ -4852,8 +4852,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         int attackerCount = 0;
         int defenderCount = 0;
-        for (Boolean surrendered : fortifications.values()) {
-            if (!surrendered) {
+        for (Map.Entry<Building, Boolean> surrendered : fortifications.entrySet()) {
+            if (!surrendered.getKey().isDestroyed() && !surrendered.getValue()) {
                 defenderCount++;
             }
         }
