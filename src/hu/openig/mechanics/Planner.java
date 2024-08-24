@@ -1062,7 +1062,9 @@ public abstract class Planner {
         add(new Action0() {
             @Override
             public void invoke() {
-                controls.actionPlaceBuilding(planet.planet, bt);
+                if (planet.owner.money() >= bt.cost) {
+                    controls.actionPlaceBuilding(planet.planet, bt);
+                }
             }
         });
     }
