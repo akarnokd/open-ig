@@ -3690,4 +3690,5 @@
 	<entry key='buildings.vocational_institute.desc'>With the help of well trained workforce, factories on the planet will increase their output by 1.5x and worker requirements of other buildings will be decreased too.</entry>
 	<entry key='buildings.university'>University</entry>
 	<entry key='buildings.university.desc'>With the help of well trained scientists, research centers on the planet will work 1.5x faster and worker requirements of other buildings will be decreased too.</entry>
+    <entry key='equipment.upgrade_toggle_info.tooltip'>Toggle the list of equipments and the amount you have to produce in order to fully upgrade the current fleet or planet.[n]Shortcut: [c=FFFFFFFF]U[/c]</entry>
 </labels>

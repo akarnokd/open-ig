@@ -152,6 +152,9 @@ public class EquipmentGFX {
     /** Upgrade everything button. */
     @Btn2(name = "equipment/button_upgrade_all")
     public BufferedImage[] upgradeAll;
+    /** Upgrade info toggle button. */
+    @Btn2(name = "equipment/button_upgrade_info_toggle")
+    public BufferedImage[] upgradeInfoToggle;
     /** No flagship. */
     @Img(name = "equipment/label_no_flagship")
     public BufferedImage noFlagship;

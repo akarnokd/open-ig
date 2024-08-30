@@ -257,6 +257,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
     boolean planetVisible;
     /** Upgrade all medium and large ships with the available best equipment. */
     UIImageButton upgradeAll;
+    /** Toggle the display of demands for newer equipment. */
+    UIImageButton upgradeInfoToggle;
     /** The global planet statistics. */
     private PlanetStatistics statistics;
     /** Displays a demands for newer equipment. */
@@ -826,6 +828,14 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             }
         };
 
+        upgradeInfoToggle = new UIImageButton(commons.equipment().upgradeInfoToggle);
+        upgradeInfoToggle.onClick = new Action0() {
+            @Override
+            public void invoke() {
+                upgradeVisible = !upgradeVisible;
+            }
+        };
+
         add(leftFighterCells);
         add(rightFighterCells);
         add(leftTankCells);
@@ -1115,6 +1125,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         deleteButton.location(sell.x - sell.width * 3 / 2, sell.y);
 
         upgradeAll.location(deleteButton.location());
+        upgradeInfoToggle.location(deleteButton.location().x + upgradeAll.width + 2, deleteButton.location().y);
 
     }
     @Override
@@ -1520,6 +1531,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
     void updateFleet(Fleet f) {
         // -----------------------------
         setTooltip(upgradeAll, "equipment.upgrade_fleet.tooltip");
+        setTooltip(upgradeInfoToggle, "equipment.upgrade_toggle_info.tooltip");
         // -----------------------------
 
         ResearchType rt = research();
@@ -1754,10 +1766,9 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
                 sell.visible(false);
             }
             upgradeAll.visible(own && secondary == null && ps.hasMilitarySpaceport
-
                     && mayUpgradeAll(f)
-
             );
+            upgradeInfoToggle.visible(upgradeAll.visible());
 
             if (configure.selectedSlot != null) {
                 addOne.visible(
@@ -1778,6 +1789,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
                 removeOne.visible(false);
                 sell.visible(false);
                 upgradeAll.visible(false);
+                upgradeInfoToggle.visible(false);
             }
         } else {
             addButton.visible(false);
@@ -1786,6 +1798,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             removeOne.visible(false);
             sell.visible(false);
             upgradeAll.visible(false);
+            upgradeInfoToggle.visible(false);
         }
 
         splitButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
@@ -1800,6 +1813,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 
         // -----------------------------
         setTooltip(upgradeAll, "equipment.upgrade_planet.tooltip");
+        setTooltip(upgradeInfoToggle, "equipment.upgrade_toggle_info.tooltip");
         // -----------------------------
 
         PlanetStatistics ps = planet().getStatistics();
@@ -1810,6 +1824,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         notYourPlanet.visible(!own);
         noPlanetNearby.visible(false);
         upgradeAll.visible(own && mayUpgradeAll(planet()));
+        upgradeInfoToggle.visible(upgradeAll.visible());
 
         if (planetShown != planet() || lastSelection != player().selectionMode) {
             planetShown = planet();

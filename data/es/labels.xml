@@ -3621,4 +3621,5 @@
 	<entry key="buildings.vocational_institute.desc">Con la ayuda de mano de obra bien formada, las fábricas del planeta aumentarán su producción en 1,5 veces y las necesidades de mano de obra de otros edificios también disminuirán.</entry>
 	<entry key="buildings.university">Universidad</entry>
 	<entry key="buildings.university.desc">Con la ayuda de científicos bien formados, los centros de investigación del planeta funcionarán 1,5 veces más rápido y las necesidades de mano de obra de otros edificios también disminuirán.</entry>
+    <entry key='equipment.upgrade_toggle_info.tooltip'>Toggle the list of equipments and the amount you have to produce in order to fully upgrade the current fleet or planet.[n]Shortcut: [c=FFFFFFFF]U[/c]</entry>
 </labels>
