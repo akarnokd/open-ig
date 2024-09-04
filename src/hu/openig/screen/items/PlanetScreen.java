@@ -311,6 +311,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     double xViewRatio = 0;
     /** The ratio of the Y coordinates of the center of the rendering screen and the center of the planet surface. */
     double yViewRatio = 0;
+    /** Did any event happen that requires a surface visual update. */
+    private boolean surfaceVisualUpdateNeeded = true;
+    /** Should the minimap on the radar panel be redrawn. */
+    boolean drawRadarImage = true;
+    /** Should the planet surface be redrawn. */
+    boolean drawSurfaceImage = true;
+    /** The currently rendered planet. */
+    private Planet renderedPlanet = null;
 
     @Override
     public void onFinish() {
@@ -812,6 +820,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @author akarnokd, Mar 27, 2011
      */
     class SurfaceRenderer extends UIComponent {
+        /** Image buffer for storing the currently rendered planet surface. */
+        private BufferedImage planetSurfaceImage;
         /** The current scaling factor. */
         double scale = 1;
         /** The offset X. */
@@ -1238,6 +1248,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (!commons.simulation.paused() && battle != null) {
                 calculateObjectPositionInterpolation();
             }
+            // Did we switch planet?
+            if (renderedPlanet == null || renderedPlanet != planet()) {
+                surfaceVisualUpdateNeeded = true;
+                renderedPlanet = planet();
+            }
+
             PlanetStatistics ps = update(surface);
 
             float alphaSave = alpha;
@@ -1478,9 +1494,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 ur.height = bi.getHeight();
 
                 for (Building b : surface().buildings.iterable()) {
-                    if (u.y <= b.location.y - b.tileset.normal.height
-                            || u.x < b.location.x
-                            ) {
+                    if (u.y <= b.location.y - b.tileset.normal.height || u.x < b.location.x) {
                         continue;
                     }
                     Rectangle bur = buildingRectangle(b);
@@ -1718,19 +1732,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
         }
+
         /**
-         * Draw surface tiles and battle units.
-         * @param g2 the graphics context
+         * Draw surface tiles into a buffered image that can be resused..
          * @param surface the surface object
          * @param x0 the base x offset
          * @param y0 the base y offset
+         * @return a buffered image with a rendered planet surface.
          */
-        void drawTiles(Graphics2D g2, PlanetSurface surface, int x0, int y0) {
-            Rectangle br = surface.boundingRectangle;
-            g2.setColor(Color.YELLOW);
-            g2.drawRect(br.x, br.y, br.width, br.height);
-
-            Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+        BufferedImage drawPlanetSurfaceImage(PlanetSurface surface, int x0, int y0) {
+            BufferedImage surfaceImage = new BufferedImage(surface.boundingRectangle.width, surface.boundingRectangle.height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D surfaceGraphics = surfaceImage.createGraphics();
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
                 for (int j = 0; j < surface.renderingLength.get(i); j++) {
@@ -1746,30 +1758,77 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (se != null) {
                         getImage(se, false, loc1, cell);
                         int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-                        if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-                            if (isPaved && !isBuilding) {
-                                int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
-                                g2.drawImage(areaPaved, x, yp, null);
-                            } else {
-                                if (cell.image != null) {
-                                    g2.drawImage(cell.image, x, yref, null);
+                        if (isPaved && !isBuilding) {
+                            int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                            surfaceGraphics.drawImage(areaPaved, x, yp, null);
+                        } else {
+                            if (cell.image != null) {
+                                surfaceGraphics.drawImage(cell.image, x, yref, null);
+                            }
+                        }
+                    }
+                }
+            }
+            surfaceGraphics.dispose();
+            return surfaceImage;
+        }
+        /**
+         * Draw surface tiles and battle units.
+         * @param g2 the graphics context
+         * @param surface the surface object
+         * @param x0 the base x offset
+         * @param y0 the base y offset
+         */
+        void drawTiles(Graphics2D g2, PlanetSurface surface, int x0, int y0) {
+            Rectangle br = surface.boundingRectangle;
+            g2.setColor(Color.YELLOW);
+            g2.drawRect(br.x, br.y, br.width, br.height);
+
+            Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+            drawSurfaceImage = surfaceVisualUpdateNeeded;
+            if (battle != null) {
+                if (drawSurfaceImage) {
+                    planetSurfaceImage = drawPlanetSurfaceImage(surface, x0, y0);
+                    g2.drawImage(planetSurfaceImage, 0, 0, null);
+                    drawSurfaceImage = false;
+                } else {
+                    g2.drawImage(planetSurfaceImage, 0, 0, null);
+                }
+            }
+            for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+                Location loc = surface.renderingOrigins.get(i);
+                for (int j = 0; j < surface.renderingLength.get(i); j++) {
+                    Location loc1 = Location.of(loc.x - j, loc.y);
+                    int x = x0 + Tile.toScreenX(loc1.x, loc1.y);
+                    int y = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                    SurfaceEntity se = surface.buildingmap.get(loc1);
+                    if (battle == null) {
+                        boolean isPaved = surface.surfaceCells.hasPavement(loc1);
+                        boolean isBuilding = true;
+                        if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+                            se = surface.basemap.get(loc1);
+                            isBuilding = false;
+                        }
+                        if (se != null) {
+                            getImage(se, false, loc1, cell);
+                            int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+                            if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
+                                if (isPaved && !isBuilding) {
+                                    int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                                    g2.drawImage(areaPaved, x, yp, null);
+                                } else {
+                                    if (cell.image != null) {
+                                        g2.drawImage(cell.image, x, yref, null);
+                                    }
                                 }
                             }
                         }
-                        // add smoke
-                        if (se.building != null) {
-                            drawBuildingSmokeFire(g2, x0, y0, loc1, se);
-                        }
-                        // place guns on buildings or roads
-                        if ((se.building != null
-                                && "Defensive".equals(se.building.type.kind))
-                                || se.type == SurfaceEntityType.ROAD) {
-                            drawGuns(g2, loc.x - j, loc.y);
-                        }
                     }
-
+                    if (se != null && se.building != null) {
+                            // add smoke
+                            drawBuildingSmokeFire(g2, x0, y0, loc1, se);
+                    }
                     if (showDebug) {
-                        int y = y0 + Tile.toScreenY(loc1.x, loc1.y);
                         Graphics2D gt = (Graphics2D) g2.create();
                         Font font = new Font("Serif", Font.PLAIN, 6);
                         gt.setFont(font);
@@ -1790,6 +1849,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //          if (battle != null) { FIXME during battle only
             drawMine(g2);
             drawUnits(g2);
+            drawGuns(g2);
             drawExplosions(g2);
             drawRockets(g2);
 //                    } FIXME during battle only
@@ -2021,8 +2081,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @author akarnokd, Mar 27, 2011
      */
     class RadarRender extends UIComponent {
-        /** The jammer frame counter. */
-        int jammerCounter;
+        /** Image buffer for storing the currently rendered radar minimap. */
+        BufferedImage radarMapImage = null;
+
         /** The pre-rendered noise. */
         BufferedImage[] noises = new BufferedImage[0];
         /** Prepare the noise images. */
@@ -2040,6 +2101,74 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
         }
+        /**
+         * Draw symbolic surface tiles into a buffered image that can be reused for radar drawing.
+         * @param surface the surface object
+         * @param x0 the base x offset
+         * @param y0 the base y offset
+         * @param g2 graphics object to draw to. If not given the minimap is rendered to an image.
+         * @return a buffered image with a rendered minimap.
+         */
+        BufferedImage drawRadarSurfaceImage(PlanetSurface surface, int x0, int y0, Graphics2D g2) {
+            Rectangle br = surface.boundingRectangle;
+            BufferedImage radarMapImage = null;
+            Graphics2D surfaceGraphics;
+            if (g2 != null) {
+                surfaceGraphics = (Graphics2D) g2.create();
+            } else {
+                radarMapImage = new BufferedImage(br.width, br.height, BufferedImage.TYPE_INT_ARGB);
+                surfaceGraphics = radarMapImage.createGraphics();
+            }
+            // transform the minimap neatly to the middle of the radar panel
+            surfaceGraphics.shear(0.0225, 0);
+            surfaceGraphics.rotate(-0.051678, br.width / 2.0f, br.height / 2.0f);
+            surfaceGraphics.translate(-(x0 + Tile.toScreenX(0, 0)) / 4, 0);
+            BufferedImage empty = areaEmpty.getStrip(0);
+            for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+                Location loc = surface.renderingOrigins.get(i);
+                for (int j = 0; j < surface.renderingLength.get(i); j++) {
+                    int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+                    int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+                    Location loc1 = Location.of(loc.x - j, loc.y);
+                    SurfaceEntity se = surface.buildingmap.get(loc1);
+                    if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+                        se = surface.basemap.get(loc1);
+                    }
+                    if (se != null) {
+                        getImage(se, true, loc1, cell);
+                        int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+                        if (surface.surfaceCells.hasPavement(loc1) && !surface.surfaceCells.hasBuilding(loc1)) {
+                            int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                            surfaceGraphics.drawImage(areaPaved, x, yp, null);
+                        } else {
+                            if (cell.image != null) {
+                                surfaceGraphics.drawImage(cell.image, x, yref, null);
+                            }
+                        }
+                    } else {
+                        surfaceGraphics.drawImage(empty, x, y, null);
+                    }
+                }
+            }
+            //Draw rectangle around the minimap
+            int rectX0 = x0 + Tile.toScreenX(0,0 );
+            int rectY0 = y0 + Tile.toScreenY(0,0 );
+            int rectX1 = x0 + Tile.toScreenX(surface.width, -surface.width);
+            int rectY1 = y0 + Tile.toScreenY(surface.width, -surface.width);
+            int rectX2 = x0 + Tile.toScreenX(-surface.height + surface.width, -surface.height - surface.width);
+            int rectY2 = y0 + Tile.toScreenY(-surface.height + surface.width, -surface.height - surface.width);
+            int rectX3 = x0 + Tile.toScreenX(-surface.height, -surface.height);
+            int rectY3 = y0 + Tile.toScreenY(-surface.height, -surface.height);
+            surfaceGraphics.setColor(Color.ORANGE);
+            surfaceGraphics.setStroke(new BasicStroke(15.0f));
+            surfaceGraphics.drawLine(rectX0, rectY0, rectX1, rectY1);
+            surfaceGraphics.drawLine(rectX1, rectY1, rectX2, rectY2);
+            surfaceGraphics.drawLine(rectX2, rectY2, rectX3, rectY3);
+            surfaceGraphics.drawLine(rectX3, rectY3, rectX0, rectY0);
+            surfaceGraphics.dispose();
+            return radarMapImage;
+        }
+
         @Override
         public void draw(Graphics2D g2) {
             RenderTools.setInterpolation(g2, true);
@@ -2059,51 +2188,36 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float scalex = width * 1.0f / br.width;
             float scaley = height * 1.0f / br.height;
             float scale = Math.min(scalex, scaley);
-            g2.translate(-(br.width * scale - width) / 2, -(br.height * scale - height) / 2);
-            g2.scale(scale, scale);
 
             int x0 = surface.baseXOffset;
             int y0 = surface.baseYOffset;
 
-            g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
-            g2.fillRect(br.x, br.y, br.width, br.height);
 
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
-                BufferedImage empty = areaEmpty.getStrip(0);
-                Rectangle renderingWindow = new Rectangle(0, 0, width, height);
-                for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-                    Location loc = surface.renderingOrigins.get(i);
-                    for (int j = 0; j < surface.renderingLength.get(i); j++) {
-                        int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-                        int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
-                        Location loc1 = Location.of(loc.x - j, loc.y);
-                        boolean isPaved = surface.surfaceCells.hasPavement(loc1);
-                        boolean isBuilding = true;
-                        SurfaceEntity se = surface.buildingmap.get(loc1);
-                        if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
-                            se = surface.basemap.get(loc1);
-                            isBuilding = false;
-                        }
-                        if (se != null) {
-                            getImage(se, true, loc1, cell);
-                            int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-                            if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
-                                if (isPaved && !isBuilding) {
-                                    int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
-                                    g2.drawImage(areaPaved, x, yp, null);
-                                } else {
-                                    if (cell.image != null) {
-                                        g2.drawImage(cell.image, x, yref, null);
-                                    }
-                                }
-                            }
-                        } else {
-                            if (renderingWindow.intersects(x * scale, y * scale, 57 * scale, 27 * scale)) {
-                                g2.drawImage(empty, x, y, null);
-                            }
-                        }
+                int scaledWidth = (int)(br.width * scale);
+                int scaledHeight = (int)(br.height * scale);
+                if (battle != null) {
+                    drawRadarImage = surfaceVisualUpdateNeeded;
+                    if (drawRadarImage) {
+                        BufferedImage scaledImg = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+
+                        Graphics2D scaledSurfaceGraphics = scaledImg.createGraphics();
+                        scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, x0, y0, null), 0, 0, scaledWidth, scaledHeight, null);
+                        scaledSurfaceGraphics.dispose();
+                        radarMapImage = scaledImg;
+                        drawRadarImage = false;
                     }
+                    g2.drawImage(radarMapImage, -(scaledWidth - width) / 2, -(scaledHeight - height) / 2, null);
+
+                    g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
+                    g2.scale(scale, scale);
+
+                } else {
+                    g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
+                    g2.scale(scale, scale);
+                    drawRadarSurfaceImage(surface, x0, y0, g2);
                 }
+
                 g2.setColor(Color.RED);
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
                     if (buildingBox != null) {
@@ -2131,13 +2245,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
             if (!jammed) {
+                Graphics2D unitIndicators = (Graphics2D) g2.create();
+                unitIndicators.shear(0.0225, 0);
+                unitIndicators.rotate(-0.051678, br.width / 2.0f, br.height / 2.0f);
+                unitIndicators.translate(-(x0 + Tile.toScreenX(0, 0)) / 4, 0);
                 for (GroundwarUnit u : units) {
                     if (blink) {
                         int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
                         int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
-
-                        g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
-                        g2.fillRect(px, py, 40, 40);
+                        unitIndicators.setColor(u.owner == player() ? Color.GREEN : Color.RED);
+                        unitIndicators.fillRect(px, py, 40, 40);
+                        unitIndicators.dispose();
                     }
                 }
             }
@@ -2869,7 +2987,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
 
         planet().demolish(currentBuilding);
-
+        surfaceVisualUpdateNeeded = true;
         doAllocation();
         buildingBox = null;
         doSelectBuilding(null);
@@ -2878,12 +2996,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Action for the Active button. */
     void doActive() {
         currentBuilding.enabled = false;
+        surfaceVisualUpdateNeeded = true;
         doSelectBuilding(currentBuilding);
         doAllocation();
     }
     /** Action for the Offline button. */
     void doOffline() {
         currentBuilding.enabled = true;
+        surfaceVisualUpdateNeeded = true;
         doSelectBuilding(currentBuilding);
         doAllocation();
     }
@@ -3431,6 +3551,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 commons.control().displayError(get("message.not_enough_money"));
             }
         }
+        surfaceVisualUpdateNeeded = true;
     }
     @Override
     public void onInitialize() {
@@ -3750,6 +3871,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         addThis();
     }
     @Override
+    public void draw(Graphics2D g2) {
+        drawRadarImage = surfaceVisualUpdateNeeded;
+        drawSurfaceImage = surfaceVisualUpdateNeeded;
+        super.draw(g2);
+        surfaceVisualUpdateNeeded = false;
+    }
+    @Override
     public void onResize() {
         base.setBounds(0, 20, getInnerWidth(), getInnerHeight() - 38);
         window.setBounds(base.x + 20, base.y, base.width - 40, base.height);
@@ -3898,6 +4026,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             setBuildingList(0);
 
             effectSound(SoundType.DEPLOY_BUILDING);
+            surfaceVisualUpdateNeeded = true;
         } else {
             if (player().money() < player().currentBuilding.cost) {
                 buttonSound(SoundType.NOT_AVAILABLE);
@@ -4295,36 +4424,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
      * Draw guns at the specified location.
      * @param g2 the graphics context
-     * @param cx the cell X coordinate
-     * @param cy the cell Y coordinate
-
      */
-    void drawGuns(Graphics2D g2, int cx, int cy) {
+    void drawGuns(Graphics2D g2) {
         int x0 = planet().surface.baseXOffset;
         int y0 = planet().surface.baseYOffset;
         for (GroundwarGun u : guns) {
-            if (u.rx - 1 == cx && u.ry - 1 == cy) {
-                int px = (x0 + Tile.toScreenX(u.rx, u.ry));
-                int py = (y0 + Tile.toScreenY(u.rx, u.ry));
-                BufferedImage img = u.get();
+            int px = (x0 + Tile.toScreenX(u.rx, u.ry));
+            int py = (y0 + Tile.toScreenY(u.rx, u.ry));
+            BufferedImage img = u.get();
 
-                int ux = px + (54 - 90) / 2 + u.model.px;
-                int uy = py + (28 - 55) / 2 + u.model.py;
+            int ux = px + (54 - 90) / 2 + u.model.px;
+            int uy = py + (28 - 55) / 2 + u.model.py;
+            g2.drawImage(img, ux, uy, null);
 
-                g2.drawImage(img, ux, uy, null);
-
-                if (u.attack != null && showCommand && (showDebug || u.owner == player())) {
-                    Point gp = centerOf(u.attack);
-                    Point up = centerOf(u);
-                    g2.setColor(Color.RED);
-                    g2.drawLine(gp.x, gp.y, up.x, up.y);
-                }
+            if (u.attack != null && showCommand && (showDebug || u.owner == player())) {
+                Point gp = centerOf(u.attack);
+                Point up = centerOf(u);
+                g2.setColor(Color.RED);
+                g2.drawLine(gp.x, gp.y, up.x, up.y);
             }
         }
 
     }
     /**
-     * Draw explosions for the given cell.
+     * Draw explosions.
      * @param g2 the graphics context
      */
     void drawExplosions(Graphics2D g2) {
@@ -4911,9 +5034,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int hpBefore = b.hitpoints;
         int maxHp = world().getHitpoints(b.type, planet().owner, false);
         b.hitpoints = (int)Math.max(0, b.hitpoints - 1L * damage * b.type.hitpoints / maxHp);
-        if ("Defensive".equals(b.type.kind)) {
-            // if damage passes the half mark
-            if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
+        // if damage passes the half mark
+        if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
+            surfaceVisualUpdateNeeded = true;
+            if ("Defensive".equals(b.type.kind)) {
                 int count = world().battle.getTurrets(b.type.id, planet().race).size() / 2;
                 int i = guns.size() - 1;
                 while (i >= 0 && count > 0) {
@@ -4925,6 +5049,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     i--;
                 }
             }
+        }
+        if ("Defensive".equals(b.type.kind)) {
             Boolean surrendered = fortifications.get(b);
             if (surrendered != null && !surrendered && BattleSimulator.buildingShouldSurrender(b, planet().owner.traits.trait(TraitKind.SURRENDER))) {
                 fortifications.put(b, true);
@@ -4946,6 +5072,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             effectSound(SoundType.EXPLOSION_LONG);
             destroyBuilding(b);
+            surfaceVisualUpdateNeeded = true;
         }
         if (!"Defensive".equals(b.type.kind)) {
             doAllocation();
@@ -5979,6 +6106,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     public void initiateBattle(BattleInfo battle) {
         this.battle = battle;
+        surfaceVisualUpdateNeeded = true;
 
         player().currentPlanet = battle.targetPlanet;
 
@@ -6235,6 +6363,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         movementHandler = new GroundWarMovementHandler(commons.pool, 28, SIMULATION_DELAY, units, surface().width, surface().height, surface().placement);
         movementHandler.initUnits();
         commons.simulation.resume();
+        surfaceVisualUpdateNeeded = true;
     }
     /**
      * Place or remove an unit at the given location if the UI is in deploy mode.

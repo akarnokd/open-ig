@@ -1116,6 +1116,14 @@ public class PlanetSurface {
             return (surfaceArray[getArrayIndexForLocation(x, y)] & CROSSROAD) != 0;
         }
         /**
+         * Check if a location has building on it.
+         * @param loc the location
+         * @return true if surface tile has building on it
+         */
+        public boolean hasBuilding(Location loc) {
+            return (surfaceArray[getArrayIndexForLocation(loc.x, loc.y)] & BUILDING) != 0;
+        }
+        /**
          * Check if a cell is buildable.
          * @param x the X coordinate
          * @param y the Y coordinate
