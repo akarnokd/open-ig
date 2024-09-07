@@ -2151,8 +2151,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
             //Draw rectangle around the minimap
-            int rectX0 = x0 + Tile.toScreenX(0,0 );
-            int rectY0 = y0 + Tile.toScreenY(0,0 );
+            int rectX0 = x0 + Tile.toScreenX(0, 0);
+            int rectY0 = y0 + Tile.toScreenY(0, 0);
             int rectX1 = x0 + Tile.toScreenX(surface.width, -surface.width);
             int rectY1 = y0 + Tile.toScreenY(surface.width, -surface.width);
             int rectX2 = x0 + Tile.toScreenX(-surface.height + surface.width, -surface.height - surface.width);
@@ -4470,6 +4470,44 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         BufferedImage result = new BufferedImage(is.width, is.height, BufferedImage.TYPE_INT_ARGB);
         boolean wasCollision = false;
 
+        //Check if the bounding rectangle touches any pixels in the tile image.
+        int xLowerLeft = is.x;
+        int yLowerLeft = is.y + is.height;
+        int xLowerRight = is.x + is.width;
+        int yLowerRight = yLowerLeft;
+        //check the bottom line
+        boolean possibleCollision = false;
+        int buildingImagePointYIndex = (yLowerRight - tr.y) * t.imageWidth;
+        for (int dx = 0; dx <= is.width / 2; dx += 4) {
+            if ((t.image[buildingImagePointYIndex + xLowerLeft + dx - tr.x] & 0xFF000000) != 0) {
+                possibleCollision = true;
+                break;
+            }
+            if ((t.image[buildingImagePointYIndex + xLowerRight - dx - tr.x] & 0xFF000000) != 0) {
+                possibleCollision = true;
+                break;
+            }
+        }
+        // the sides
+        if (!possibleCollision) {
+            int buildingImagePointXIndexLeft = xLowerLeft - tr.x;
+            int buildingImagePointXIndexRight = xLowerRight - tr.x;
+            for (int dy = 0; dy <= is.height; dy += 4) {
+                buildingImagePointYIndex = (is.y - tr.y + dy) * t.imageWidth;
+                if ((t.image[buildingImagePointYIndex + buildingImagePointXIndexLeft] & 0xFF000000) != 0) {
+                    possibleCollision = true;
+                    break;
+                }
+                if ((t.image[buildingImagePointYIndex + buildingImagePointXIndexRight] & 0xFF000000) != 0) {
+                    possibleCollision = true;
+                    break;
+                }
+            }
+        }
+        if (!possibleCollision) {
+            return null;
+        }
+
         for (int y = is.y; y < is.y + is.height; y++) {
             for (int x = is.x; x < is.x + is.width; x++) {
                 int urgb = bi.getRGB(x - ur.x, y - ur.y);
@@ -5578,7 +5616,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
     }
     /**
-     * Returns the center cell op the given building.
+     * Returns the center cell of the given building.
      * @param b the building
      * @return the location of the center cell
      */
