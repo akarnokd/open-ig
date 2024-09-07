@@ -2478,7 +2478,7 @@ public class World implements ModelLookup {
             if (xground.has("alternative")) {
                 BufferedImage ai = rl.getImage(xground.get("alternative"));
                 ge.alternative = ImageUtils.split(ai, ai.getWidth() / nx, ai.getHeight() / ny);
-                trimTransparencyOnSides(ge.normal);
+                trimTransparencyOnSides(ge.alternative);
             } else {
                 ge.alternative = ge.normal;
             }
