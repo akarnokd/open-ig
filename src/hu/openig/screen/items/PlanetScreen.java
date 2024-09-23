@@ -361,6 +361,32 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 rep = true;
             }
             break;
+        case KeyEvent.VK_U:
+            if (currentBuilding != null) {
+                doUpgrade(currentBuilding.type.upgrades.size());
+                e.consume();
+            }
+            break;
+        case KeyEvent.VK_DELETE:
+            if (e.isControlDown()) {
+                Iterator<Building> list = surface().buildings.iterable().iterator();
+                if (list.hasNext()) {
+                    doSelectBuilding(list.next());
+                    if (list.hasNext()) {
+                        if (currentBuilding.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+                            doSelectBuilding(list.next());
+                        }
+                        doDemolish();
+                    }
+                }
+                e.consume();
+            } else {
+                if (currentBuilding != null) {
+                    doDemolish();
+                    e.consume();
+                }
+            }
+            break;
         case KeyEvent.VK_R:
             if (e.isControlDown()) {
                 if (planet().weatherTTL <= 0) {
@@ -3523,7 +3549,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param j level
      */
     void doUpgrade(int j) {
-        if (currentBuilding != null && currentBuilding.upgradeLevel < j) {
+        if (currentBuilding != null && currentBuilding.upgradeLevel < j && !currentBuilding.isConstructing()) {
             int delta = (j - currentBuilding.upgradeLevel) * currentBuilding.type.cost;
             if (player().money() >= delta) {
                 player().addMoney(-delta);
