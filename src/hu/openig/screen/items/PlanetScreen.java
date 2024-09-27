@@ -385,16 +385,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         case KeyEvent.VK_DELETE:
             if (planet().owner == player() && battle == null) {
                 if (e.isControlDown()) {
-                    int index = 0;
-                    for(Building b : new ArrayList<>(surface().buildings.list())) {
-                        if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
-                            doSelectBuilding(b);
-                            doDemolish(index++ != 0);
+                    if (e.isShiftDown()) {
+                        int index = 0;
+                        for(Building b : new ArrayList<>(surface().buildings.list())) {
+                            if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+                                doSelectBuilding(b);
+                                doDemolish(index++ != 0);
+                            }
                         }
-                    }
-                } else {
-                    if (currentBuilding != null) {
-                        doDemolish();
+                    } else {
+                        if (currentBuilding != null) {
+                            if (!currentBuilding.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+                                doDemolish();
+                            } else {
+                                buttonSound(SoundType.NOT_AVAILABLE);
+                            }
+                        }
                     }
                 }
                 e.consume();
