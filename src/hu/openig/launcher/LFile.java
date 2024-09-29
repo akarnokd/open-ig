@@ -8,8 +8,7 @@
 
 package hu.openig.launcher;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 
 /**
  * The list of files to download from a specific location.
@@ -42,12 +41,16 @@ public class LFile extends LBaseItem {
      * @throws MalformedURLException on malformed data
      */
     public String name() throws MalformedURLException {
-        URL u = new URL(url);
-        String fn = u.getFile();
-        int idx = fn.lastIndexOf("/");
-        if (idx >= 0) {
-            fn = fn.substring(idx + 1);
+        try {
+            URL u = new URI(url).toURL();
+            String fn = u.getFile();
+            int idx = fn.lastIndexOf("/");
+            if (idx >= 0) {
+                fn = fn.substring(idx + 1);
+            }
+            return fn;
+        } catch (URISyntaxException ex) {
+            throw (MalformedURLException)(new MalformedURLException().initCause(ex));
         }
-        return fn;
     }
 }

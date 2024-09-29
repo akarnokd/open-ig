@@ -2074,7 +2074,12 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
             setFileProgress(0, -1, 0);
 
             LFile lf = files.get(i);
-            URL u = new URL(lf.url + "?x=" + System.currentTimeMillis());
+            URL u;
+            try {
+                u = new URI(lf.url + "?x=" + System.currentTimeMillis()).toURL();
+            } catch (URISyntaxException ex) {
+                throw (MalformedURLException)(new MalformedURLException().initCause(ex));
+            }
             String fn = u.getPath();
             int idx = fn.lastIndexOf("/");
             if (idx >= 0) {
