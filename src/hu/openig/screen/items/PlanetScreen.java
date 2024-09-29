@@ -361,6 +361,51 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 rep = true;
             }
             break;
+        case KeyEvent.VK_U:
+            if (planet().owner == player() && battle == null) {
+                if (e.isControlDown()) {
+                    if (e.isShiftDown()) {
+                        for(Building b : new ArrayList<>(surface().buildings.list())) {
+                            doSelectBuilding(b);
+                            doUpgrade(b.type.upgrades.size());
+                        }
+                    } else {
+                        if (currentBuilding != null) {
+                            doUpgrade(currentBuilding.type.upgrades.size());
+                        }
+                    }
+                } else {
+                    if (currentBuilding != null) {
+                        doUpgrade(currentBuilding.upgradeLevel + 1);
+                    }
+                }
+                e.consume();
+            }
+            break;
+        case KeyEvent.VK_DELETE:
+            if (planet().owner == player() && battle == null) {
+                if (e.isControlDown()) {
+                    if (e.isShiftDown()) {
+                        int index = 0;
+                        for(Building b : new ArrayList<>(surface().buildings.list())) {
+                            if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+                                doSelectBuilding(b);
+                                doDemolish(index++ != 0);
+                            }
+                        }
+                    } else {
+                        if (currentBuilding != null) {
+                            if (!currentBuilding.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+                                doDemolish();
+                            } else {
+                                buttonSound(SoundType.NOT_AVAILABLE);
+                            }
+                        }
+                    }
+                }
+                e.consume();
+            }
+            break;
         case KeyEvent.VK_R:
             if (e.isControlDown()) {
                 if (planet().weatherTTL <= 0) {
@@ -2969,6 +3014,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     /** Demolish the selected building. */
     void doDemolish() {
+        doDemolish(false);
+    }
+
+    void doDemolish(boolean silent) {
         boolean fortif = false;
         for (GroundwarGun g : new ArrayList<>(guns)) {
             if (g.building == currentBuilding) {
@@ -2991,7 +3040,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         doAllocation();
         buildingBox = null;
         doSelectBuilding(null);
-        effectSound(SoundType.DEMOLISH_BUILDING);
+        if (!silent) {
+            effectSound(SoundType.DEMOLISH_BUILDING);
+        }
     }
     /** Action for the Active button. */
     void doActive() {
@@ -3523,7 +3574,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param j level
      */
     void doUpgrade(int j) {
-        if (currentBuilding != null && currentBuilding.upgradeLevel < j) {
+        if (currentBuilding != null && currentBuilding.upgradeLevel < j && !currentBuilding.isConstructing()) {
             int delta = (j - currentBuilding.upgradeLevel) * currentBuilding.type.cost;
             if (player().money() >= delta) {
                 player().addMoney(-delta);
