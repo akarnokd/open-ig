@@ -984,13 +984,16 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         this.morale = 50;
         this.lastMorale = 50;
         this.lastPopulation = 5000;
-        this.autoBuild = world.env.config().autoBuildForNewPlanets;
         this.owner.planets.put(this, PlanetKnowledge.BUILDING);
         this.owner.currentPlanet = this;
 
         this.owner.statistics.planetsColonized.value++;
 
         this.owner.colonizationTargets.remove(this.id);
+
+        if (owner == world.player) {
+            this.autoBuild = world.env.config().autoBuildForNewPlanets;
+        }
 
         // uninstall satellites
         this.removeOwnerSatellites();
