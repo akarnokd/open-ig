@@ -1917,6 +1917,7 @@
 	<entry key='planet.install_satellite_2'>telepíts valamilyen műholdat!</entry>
 	<entry key='message.not_enough_money'>Nincs elég pénzed!</entry>
 	<entry key='settings.auto_repair_limit'>Automatikus javítás pénzkorlát</entry>
+	<entry key='settings.autobuild_for_new_planets'>Auto-Építés bolygók elfoglalása/kolonizálása esetén</entry>
 	<entry key='message.cant_build_there'>Oda nem építkezhetsz!</entry>
 	<entry key='spacewar.ship_status'>Hajó állapota</entry>
 	<entry key='spacewar.ship_owner' >Tulajdonos   : %s</entry>
