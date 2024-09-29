@@ -159,7 +159,7 @@ public class AITrader implements AIManager {
         for (DiplomaticRelation dr0 : world.relations) {
             if (dr0.first == player || dr0.second == player) {
                 if (dr0.tradeAgreement) {
-                    if (dr0.first.equals(world.player.id)) {
+                    if (dr0.first.id.equals(world.player.id)) {
                         drs.add(dr0.second);
                     } else {
                         drs.add(dr0.first);
