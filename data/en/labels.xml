@@ -1843,6 +1843,7 @@
   <entry key='settings.audio_video'>Audio/Video</entry>
   <entry key='settings.auto_repair'>Auto-Repair buildings</entry>
   <entry key='settings.auto_repair_limit'>Auto-repair money limit</entry>
+  <entry key='settings.autobuild_for_new_planets'>Auto-Build for conquered/colonized planets</entry>
   <entry key='settings.autobattle'>Automatic battle</entry>
   <entry key='settings.autobuild_limit'>Auto-Build credit limit</entry>
   <entry key='settings.back'>Back</entry>

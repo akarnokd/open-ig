@@ -13,6 +13,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.core.SaveMode;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.Cursors;
 import hu.openig.model.FileItem;
 import hu.openig.model.Screens;
@@ -812,8 +813,12 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         UICheckBox automaticBattle;
         /** Auto build label. */
         UILabel autoRepairLabel;
+        /** Automatically set AI for newly acquired planets label. */
+        UILabel setAutoBuildForNewPlanetsLabel;
         /** Auto-build credit limit. */
         UISpinner autoRepairLimit;
+        /** Automatically set AI for newly acquired planets. */
+        UISpinner setAutoBuildForNewPlanets;
         /** Slow down simulation time when incoming attack is detected. */
         UICheckBox slowOnAttack;
         /** The time step for the simulation. */
@@ -989,6 +994,47 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             };
             autoRepairLabel = new UILabel(get("settings.auto_repair_limit"), 14, commons.text());
 
+            final UIImageButton abprev = new UIImageButton(commons.common().moveLeft);
+            abprev.setDisabledPattern(commons.common().disabledPattern);
+            abprev.setHoldDelay(250);
+            final UIImageButton abnext = new UIImageButton(commons.common().moveRight);
+            abnext.setDisabledPattern(commons.common().disabledPattern);
+            abnext.setHoldDelay(250);
+
+            abprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    int a = config.autoBuildForNewPlanets.ordinal() - 1;
+                    if (a < 0) {
+                        a = AutoBuild.values().length - 1;
+                    }
+                    config.autoBuildForNewPlanets = AutoBuild.values()[a];
+                    doRepaint();
+                }
+            };
+            abnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    int a = config.autoBuildForNewPlanets.ordinal() + 1;
+                    if (a >= AutoBuild.values().length) {
+                        a = 0;
+                    }
+                    config.autoBuildForNewPlanets = AutoBuild.values()[a];
+                    doRepaint();
+                }
+            };
+
+            setAutoBuildForNewPlanets = new UISpinner(14, abprev, abnext, commons.text());
+            setAutoBuildForNewPlanets.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return get("autobuild." + config.autoBuildForNewPlanets);
+                }
+            };
+            setAutoBuildForNewPlanetsLabel = new UILabel(get("settings.autobuild_for_new_planets"), 14, commons.text());
+
             slowOnAttack = new UICheckBox(get("settings.slow_on_attack"), 14, commons.common().checkmark, commons.text());
             slowOnAttack.onChange = new Action0() {
                 @Override
@@ -1125,6 +1171,11 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             dy += ddy;
             targetSpecificRockets.location(10, dy + 8);
             dy += ddy;
+            setAutoBuildForNewPlanetsLabel.location(10, dy + 8);
+            dy += ddy;
+            setAutoBuildForNewPlanets.width = 300;
+            setAutoBuildForNewPlanets.location(20, dy);
+            dy += (ddy + 10);
             autoRepair.location(10, dy + 8);
             dy += ddy;
             autoRepairLabel.location(10, dy + 8);

@@ -747,6 +747,11 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         }
 
         autoBuild = AutoBuild.OFF;
+
+        if (owner == world.player) {
+            autoBuild = world.env.config().autoBuildForNewPlanets;
+        }
+        
         allocation = ResourceAllocationStrategy.DEFAULT;
         tax = TaxLevel.MODERATE;
 
@@ -985,6 +990,10 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         this.owner.statistics.planetsColonized.value++;
 
         this.owner.colonizationTargets.remove(this.id);
+
+        if (owner == world.player) {
+            this.autoBuild = world.env.config().autoBuildForNewPlanets;
+        }
 
         // uninstall satellites
         this.removeOwnerSatellites();

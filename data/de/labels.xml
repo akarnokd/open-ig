@@ -55,6 +55,7 @@
 	<entry key='settings.autobattle'>Automatischer Kampf</entry>
 	<entry key='settings.radarunion'>Radarregionen vereinen</entry>
 	<entry key='settings.auto_repair_limit'>Autoreparatur Geld begrenzen</entry>
+	<entry key='settings.autobuild_for_new_planets'>Auto-Build for conquered/colonized planets</entry>
 	<entry key='settings.save_name'>Name für Spielstand:</entry>
 	<entry key='settings.classic_controls'>Klassische Steuerung</entry>
 	<entry key='settings.swap_mouse_buttons'>Maustasten tauschen</entry>
