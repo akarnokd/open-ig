@@ -792,7 +792,7 @@ public final class AnimPlay {
 
                 n, /* Runtime.getRuntime().availableProcessors() ,*/
                 2000, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(n),
+                new LinkedBlockingQueue<>(n),
                 // in case of rejection, simply do a blocking put onto the queue
                 new RejectedExecutionHandler() {
                     @Override

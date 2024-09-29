@@ -187,7 +187,7 @@ public final class GalaxyGenerator {
             sl.clear();
 
             for (PlanetCandidate pc : multiNamedPlanets) {
-                multiNamesMap.put(pc, new ArrayList<PlanetCandidate>());
+                multiNamesMap.put(pc, new ArrayList<>());
             }
         }
 

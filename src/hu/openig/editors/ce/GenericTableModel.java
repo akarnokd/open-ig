@@ -33,7 +33,7 @@ public abstract class GenericTableModel<T> extends AbstractTableModel implements
      * Initializes the table with an empty list.
      */
     public GenericTableModel() {
-        this(new ArrayList<T>());
+        this(new ArrayList<>());
     }
     /**
      * Initializes the table by taking over the supplied item list.

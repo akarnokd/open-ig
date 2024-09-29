@@ -152,7 +152,7 @@ public class World implements ModelLookup {
             new ThreadPoolExecutor(Math.min(4, Runtime.getRuntime().availableProcessors()),
 
                     Integer.MAX_VALUE, 1, TimeUnit.SECONDS,
-                    new LinkedBlockingQueue<Runnable>(),
+                    new LinkedBlockingQueue<>(),
                     new ThreadFactory() {
                 /** The thread count. */
                 final AtomicInteger count = new AtomicInteger();

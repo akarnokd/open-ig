@@ -365,7 +365,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (planet().owner == player() && battle == null) {
                 if (e.isControlDown()) {
                     if (e.isShiftDown()) {
-                        for(Building b : new ArrayList<>(surface().buildings.list())) {
+                        for (Building b : new ArrayList<>(surface().buildings.list())) {
                             doSelectBuilding(b);
                             doUpgrade(b.type.upgrades.size());
                         }
@@ -387,7 +387,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (e.isControlDown()) {
                     if (e.isShiftDown()) {
                         int index = 0;
-                        for(Building b : new ArrayList<>(surface().buildings.list())) {
+                        for (Building b : new ArrayList<>(surface().buildings.list())) {
                             if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
                                 doSelectBuilding(b);
                                 doDemolish(index++ != 0);

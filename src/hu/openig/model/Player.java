@@ -163,7 +163,7 @@ public class Player {
         this.world = world;
         this.id = id;
         for (ResearchMainCategory cat : ResearchMainCategory.values()) {
-            production.put(cat, new LinkedHashMap<ResearchType, Production>());
+            production.put(cat, new LinkedHashMap<>());
         }
     }
     /** @return the socual ratio for AI player. Ratios sum up to 1. */
@@ -435,7 +435,7 @@ public class Player {
      */
     public boolean add(ResearchType rt) {
         if (!availableResearch.containsKey(rt.id)) {
-            availableResearch.put(rt, new ArrayList<ResearchType>()) ;
+            availableResearch.put(rt, new ArrayList<>()) ;
             return true;
         }
         return false;

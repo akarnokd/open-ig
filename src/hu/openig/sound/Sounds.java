@@ -136,7 +136,7 @@ public class Sounds {
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(
                 channels, channels, 5, TimeUnit.SECONDS,
 
-                new LinkedBlockingQueue<Runnable>(channels),
+                new LinkedBlockingQueue<>(channels),
                 new ThreadFactory() {
                     /** The thread numbering. */
                     final AtomicInteger tid = new AtomicInteger();
@@ -161,7 +161,7 @@ public class Sounds {
         // initialize the sound pool
         for (AudioFormatType aft : soundFormat.values()) {
             if (!soundPool.containsKey(aft)) {
-                soundPool.put(aft, new LinkedBlockingQueue<SourceDataLine>());
+                soundPool.put(aft, new LinkedBlockingQueue<>());
             }
         }
     }

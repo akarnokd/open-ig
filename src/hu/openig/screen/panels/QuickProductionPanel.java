@@ -356,7 +356,7 @@ public class QuickProductionPanel extends UIContainer {
             prods = Collections.emptyList();
         }
         while (lines.size() <= column) {
-            lines.add(new ArrayList<ProductionSimpleLine>());
+            lines.add(new ArrayList<>());
         }
         boolean changed = false;
         int w = 0;
@@ -406,7 +406,7 @@ public class QuickProductionPanel extends UIContainer {
             currProds = Collections.emptySet();
         }
         while (historyLines.size() <= column) {
-            historyLines.add(new ArrayList<ProductionHistoryLine>());
+            historyLines.add(new ArrayList<>());
         }
         boolean changed = false;
         int w = 0;

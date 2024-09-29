@@ -250,7 +250,7 @@ public class QuickResearchPanel extends UIContainer {
         // collect startable researches
         Map<ResearchMainCategory, List<Pair<ResearchType, Integer>>> columns = new LinkedHashMap<>();
         for (ResearchMainCategory mcat : ResearchMainCategory.values()) {
-            columns.put(mcat, new ArrayList<Pair<ResearchType, Integer>>());
+            columns.put(mcat, new ArrayList<>());
         }
 
         PlanetStatistics ps = evaluatePlanetsForResearch();
@@ -287,7 +287,7 @@ public class QuickResearchPanel extends UIContainer {
             });
 
             if (researches.size() == i) {
-                researches.add(new ArrayList<QuickResearchLabel>());
+                researches.add(new ArrayList<>());
             }
             List<QuickResearchLabel> catlist = researches.get(i);
 

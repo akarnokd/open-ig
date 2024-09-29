@@ -245,7 +245,7 @@ public class BuildingModel {
                                 String except = r.get("except", null);
                                 if (except != null && !except.isEmpty()) {
                                     synchronized (b.raceExcept) {
-                                        b.raceExcept.put(rid, new HashSet<String>(Arrays.asList(except.split("\\s*,\\s*"))));
+                                        b.raceExcept.put(rid, new HashSet<>(Arrays.asList(except.split("\\s*,\\s*"))));
                                     }
                                 }
                             }
