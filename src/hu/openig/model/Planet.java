@@ -984,6 +984,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         this.morale = 50;
         this.lastMorale = 50;
         this.lastPopulation = 5000;
+        this.autoBuild = world.env.config().autoBuildForNewPlanets;
         this.owner.planets.put(this, PlanetKnowledge.BUILDING);
         this.owner.currentPlanet = this;
 
