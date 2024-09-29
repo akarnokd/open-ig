@@ -151,6 +151,10 @@ public class Configuration {
     @LoadSave
     @LoadSaveGame
     public boolean automaticBattle = false;
+    /** Autobuild default. */
+    @LoadSave
+    @LoadSaveGame
+    public AutoBuild autoBuildForNewPlanets = AutoBuild.OFF;
     /** Repair limit. */
     @LoadSave
     @LoadSaveGame

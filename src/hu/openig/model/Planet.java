@@ -747,6 +747,11 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         }
 
         autoBuild = AutoBuild.OFF;
+
+        if (owner == world.player) {
+            autoBuild = world.env.config().autoBuildForNewPlanets;
+        }
+        
         allocation = ResourceAllocationStrategy.DEFAULT;
         tax = TaxLevel.MODERATE;
 
