@@ -1514,7 +1514,7 @@
 	<entry key="mission-11.attack">Ataque inminente de Garthog</entry>
 	<entry key="mission-14.virus_carriers">Detener a los portadores del virus</entry>
 	<entry key="settings.auto_repair_limit">Límite de dinero para reparación de automóviles</entry>
-	<entry key='settings.autobuild_for_new_planets'>Auto-Build for conquered/colonized planets</entry>
+	<entry key='settings.autobuild_for_new_planets'>Default Auto-Build mode</entry>
 	<entry key="settings.autobuild_limit">Límite de crédito Auto-Build</entry>
 	<entry key="spacewar.statistics_ground">Unidades de tierra : %6d</entry>
 	<entry key="spacewar.statistics_guns">Cañones de tierra : %6d</entry>

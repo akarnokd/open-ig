@@ -2549,7 +2549,7 @@
   <entry key='settings.audio_video'>Audio/Vidéo</entry>
   <entry key='settings.auto_repair'>Réparer les bâtiments automatiquement</entry>
   <entry key='settings.auto_repair_limit'>Limite crédits pour réparations</entry>
-  <entry key='settings.autobuild_for_new_planets'>Auto-Build for conquered/colonized planets</entry>
+  <entry key='settings.autobuild_for_new_planets'>Default Auto-Build mode</entry>
   <entry key='settings.autobattle'>Batailles automatiques</entry>
   <entry key='settings.autobuild_limit'>Limite crédits pour construct.</entry>
   <entry key='settings.back'>Retour</entry>

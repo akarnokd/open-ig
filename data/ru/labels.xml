@@ -2360,7 +2360,7 @@
   <entry key='settings.audio_video'>Звук/Видео</entry>
   <entry key='settings.auto_repair'>Авторемонт сооружений</entry>
   <entry key='settings.auto_repair_limit'>Авторемонт до не менее</entry>
-  <entry key='settings.autobuild_for_new_planets'>Auto-Build for conquered/colonized planets</entry>
+  <entry key='settings.autobuild_for_new_planets'>Default Auto-Build mode</entry>
   <entry key='settings.autobattle'>Автоматический бой</entry>
   <entry key='settings.autobuild_limit'>Автозастройка до не менее</entry>
   <entry key='settings.back'>Назад</entry>
