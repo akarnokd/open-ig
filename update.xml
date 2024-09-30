@@ -50,7 +50,7 @@
         <item category='UI' issues='1174'>Add new upgrade shortcut keys to the colony screen: U/Ctrl+U/Ctrl+Shift+U to upgrade one/max/every building. By @deejayy</item>
         <item category='UI' issues='1174'>Add new demolish shortcut keys to the colony screen: Ctrl+Delete/Ctrl+Shift+Delete to demolish one/every building except colony hub. By @deejayy</item>
         <item category='AI'>Small fix to the Trader AI when the player has a trade agreement with another empire.</item>
-        <item category='UI'>Option to specify the default auto-build settings for when colonizing or conquering a planet. By @deejayy</item>
+        <item category='UI' issues='1175'>Option to specify the default auto-build settings for when colonizing or conquering a planet. By @deejayy</item>
       </entry>
       <entry version='0.95.252' date='2024-08-24'>
         <item category='Groundwar' issues='1161'>More fixes to resolve the unending groundwar issue.</item>
