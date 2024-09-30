@@ -46,7 +46,7 @@
         <item category='System'>The game now requires Java 8 or newer to work!</item>
         <item category='UI'>Add an upgrade info button to the equipment screen to see what and how many items to produce for a max upgrade.</item>
         <item category='Groundwar,Performance' issues='1170'>Improved performance of the groundwar rendering. By @hemoridos</item>
-        <item category='Groundwar,Performance' issues='1171'>Fix for alternate ground unit images not properly optimized for obscurity rendering.</item>
+        <item category='Groundwar,Performance' issues='1171'>Fix for alternate ground unit images not properly optimized for obscurity rendering. By @hemoridos</item>
         <item category='UI' issues='1174'>Add new upgrade shortcut keys to the colony screen: U/Ctrl+U/Ctrl+Shift+U to upgrade one/max/every building. By @deejayy</item>
         <item category='UI' issues='1174'>Add new demolish shortcut keys to the colony screen: Ctrl+Delete/Ctrl+Shift+Delete to demolish one/every building except colony hub. By @deejayy</item>
         <item category='AI'>Small fix to the Trader AI when the player has a trade agreement with another empire.</item>
