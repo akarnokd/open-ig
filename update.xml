@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.253'>
+  <module id='Game' version='0.95.255'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.255' date='2024-09-30'>
+        <item category='System'>Fix a release issue.</item>
+      </entry>
       <entry version='0.95.253' date='2024-09-30'>
         <item category='System'>The game now requires Java 8 or newer to work!</item>
         <item category='UI'>Add an upgrade info button to the equipment screen to see what and how many items to produce for a max upgrade.</item>
@@ -328,7 +331,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.254.jar' sha1='AF3B96334E9C9C67C5DE43054A19E735965AF95C'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.255.jar' sha1='F502BD0369DFB92B60B3E196BA57CE93D8C169C0'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240930a2.zip' sha1='BCB4BE3242EF22AD050903FEDC9A48F515C95416'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
