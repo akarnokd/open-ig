@@ -2905,11 +2905,11 @@
 	<entry key="statusbar.notification.tooltip">Benachrichtigungen[n][c=FFFFFFFF]Rechte Maustaste[/c]: Nachrichtenhistorie anzeigen oder ausblenden</entry>
 	<entry key="statusbar.notification.clear.tooltip">Nachrichtenhistorie leeren</entry>
 	<entry key="statusbar.menu.tooltip">Menü anzeigen[n]Halten Sie die Maustaste und lassen Sie sie über dem gewünschten Eintrag los.</entry>
-	<entry key="buildings.upgrade.none">Gebäude hat keine Verbesserungen.</entry>
-	<entry key="buildings.upgrade.has">Gebäude hat Verbesserungen.[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.upgrade.cost">Verbesserungen kaufen[n][c=FFFFFF00]%s[/c][n][c=%s]Aufrüstungskosten: %,d cr[/c]</entry>
-	<entry key="buildings.upgrade.bought">Erworbene Verbesserungen[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.demolish.tooltip">Gebäude abreissen[n][c=FFFFFFFF]Erstattung: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.none">Gebäude hat keine Verbesserungen.[n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.has">Gebäude hat Verbesserungen.[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.cost">Verbesserungen kaufen[n][c=FFFFFF00]%s[/c][n][c=%s]Aufrüstungskosten: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.bought">Erworbene Verbesserungen[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.demolish.tooltip">Gebäude abreissen[n][c=FFFFFFFF]Erstattung: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Demolish[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Demolish all except Colony Hub</entry>
 	<entry key="colony.zoom.tooltip">Zoom[n][c=FFFFFFFF]Linke Maustaste[/c]: vergrößern[n][c=FFFFFFFF]Rechte Maustaste[/c]: verkleinern[n][c=FFFFFFFF]Mittlere Maustaste[/c]: Standard wiederherstellen und zentrieren</entry>
 	<entry key="colony.prev.tooltip">Springe zum vorherigen Planeten: [c=%08X]%s[/c][n]Kurzwahl: [c=FFFFFFFF]MINUS[/c]</entry>
 	<entry key="colony.next.tooltip">Springe zum nächsten Planeten: [c=%08X]%s[/c][n]Kurzwahl: [c=FFFFFFFF]PLUS[/c]</entry>

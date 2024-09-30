@@ -1635,7 +1635,7 @@
 	<entry key="tech.piratedestroyer.description">Destructor relativamente débil</entry>
 	<entry key="test.q2.a3">Suposiciones extravagantes.</entry>
 	<entry key="achievement.bela_the_4th.desc">Has reconstruido a Aquiles</entry>
-	<entry key="buildings.upgrade.none">El edificio no tiene mejoras.</entry>
+	<entry key="buildings.upgrade.none">El edificio no tiene mejoras.[n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
 	<entry key="info.warnings.damage.tooltip">Construcción en curso.</entry>
 	<entry key="achievements.counts">Estado: %d de %d (%.1f%%)</entry>
 	<entry key="research.resume">Reanudar la actividad investigadora.</entry>
@@ -1942,7 +1942,7 @@
 	<entry key="chat.vo.7.n1">Esta es la nave Lisa2 en una ruta comercial.</entry>
 	<entry key="chat.vo.8.n1">Este es el barco Leila en una ruta comercial.</entry>
 	<entry key="quickresearch.more_planets">Consejo: coloniza o conquista más planetas.</entry>
-	<entry key="buildings.upgrade.bought">Actualización comprada[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.upgrade.bought">Actualización comprada[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
 	<entry key="colony.starmap.tooltip">Starmap[n]Atajo: [c=FFFFFFFF]F2[/c]</entry>
 	<entry key="diplomacy.Garthog.DIPLOMATIC_RELATIONS.NEUTRAL.26">Preferimos pasar de esto, Almirante.</entry>
 	<entry key="multiplayer.settings.you_missing">Por favor, añade también al usuario organizador.</entry>
@@ -2065,7 +2065,7 @@
 	<entry key="chat.bo.4.n1">De acuerdo. La nave BX12 abandona el planeta.</entry>
 	<entry key="chat.bo.5.n1">De acuerdo. La nave Max4 está abandonando el planeta.</entry>
 	<entry key="achievement.a_pirate_in_need.desc">Decidiste ayudar al pirata atacado</entry>
-	<entry key="buildings.upgrade.has">El edificio tiene mejoras.[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.upgrade.has">El edificio tiene mejoras.[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
 	<entry key="diplomacy.Garthog.ALLY.NEUTRAL.56">¡No lucharemos tus batallas en tu lugar!</entry>
 	<entry key="diplomacy.Garthog.SURRENDER.NEUTRAL.66">De hecho, no tenemos más remedio que rendirnos.</entry>
 	<entry key="tech.garthogdestroyer2.description">Mejores armas y cañones, hipervelocidad más rápida.</entry>
@@ -2296,7 +2296,7 @@
 	<entry key="diplomacy.Ecalep.ALLIANCE.77">La República de Escalpe busca una alianza con el Imperio.</entry>
 	<entry key="mapeditor.cleanup_result">Resultados de la limpieza: Total = %d, Edificios = %d, Superficies = %d</entry>
 	<entry key="message.cant_attack_that_planet">¡Necesitas al menos un satélite de reconocimiento para atacar el planeta %s!</entry>
-	<entry key="buildings.demolish.tooltip">Demoler edificio[n][c=FFFFFFFF]Dinero devuelto: %,d cr[/c]</entry>
+	<entry key="buildings.demolish.tooltip">Demoler edificio[n][c=FFFFFFFF]Dinero devuelto: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Demolish[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Demolish all except Colony Hub</entry>
 	<entry key="diplomacy.Garthog.MONEY.NEUTRAL.37">Decidimos ofrecer %s créditos para ayudar al Imperio Garthog.</entry>
 	<entry key="diplomacy.Morgath.terminate.72">Gracias por su tiempo Otros asuntos requieren mi atención.</entry>
 	<entry key="diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29">Huelo que se puede obtener un beneficio. El Combinado se moverá contigo.</entry>
@@ -2484,7 +2484,7 @@
 	<entry key="diplomacy.Sullep.SURRENDER.73">El Círculo de Clanes cree que eres honorable. Nos rendiremos ante ti.</entry>
 	<entry key="mission-24.first_contact.desc">Hemos oído hablar de los Dargslan. Averigua quiénes son y dónde están.</entry>
 	<entry key="chat.vi.5.n2">Este planeta está infectado por un virus. Está bajo bloqueo. ¡Date la vuelta!</entry>
-	<entry key="buildings.upgrade.cost">Comprar mejora[n][c=FFFFFF00]%s[/c][n][c=%s]Coste de la mejora: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.cost">Comprar mejora[n][c=FFFFFF00]%s[/c][n][c=%s]Coste de la mejora: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
 	<entry key="diplomacy.Garthog.DIPLOMATIC_RELATIONS.AGGRESSIVE.3">Quien no está con nosotros está contra nosotros, Consejero. Espero que me entienda.</entry>
 	<entry key="tech.garthogfighter3.description">El Caza Mk3 mejorado nos permite enfrentarnos a otras razas con más facilidad.</entry>
 	<entry key="chat.merchant4.n5">¡Oye! ¡Seguro que a tu comandante no le gustará saber de este comportamiento!</entry>

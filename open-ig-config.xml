@@ -14,7 +14,7 @@
 <entry key="hostPorts-count">0</entry>
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
-<entry key="height">522</entry>
+<entry key="height">928</entry>
 <entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
 <entry key="timestep">30</entry>
@@ -75,7 +75,7 @@
 <entry key="computerVoiceNotify">true</entry>
 <entry key="aiGroundAttackGetCloser">true</entry>
 <entry key="swapMouseButtons">false</entry>
-<entry key="width">656</entry>
+<entry key="width">1200</entry>
 <entry key="ignore-count">0</entry>
 <entry key="disableOpenGL">false</entry>
 <entry key="customCursors">true</entry>

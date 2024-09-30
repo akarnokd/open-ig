@@ -280,7 +280,7 @@
   <entry key='buildings.colony_hub.desc'>Le centre de colonie est le bâtiment préfabriqué placé automatiquement sur une planète par un vaisseau colon. Vous ne pouvez bâtir d&#39;autres structures que si vous avez un centre.</entry>
   <entry key='buildings.computer_dev_center'>Informatique</entry>
   <entry key='buildings.computer_dev_center.desc'>Le centre de recherche informatique augmente les compétences informatiques de votre colonie, ce qui améliore vos capacités d&#39;expansion.</entry>
-  <entry key='buildings.demolish.tooltip'>Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c]</entry>
+  <entry key='buildings.demolish.tooltip'>Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Demolish[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Demolish all except Colony Hub</entry>
   <entry key='buildings.equipment_factory'>Usine d&#39;équipement</entry>
   <entry key='buildings.equipment_factory.desc'>L&#39;usine d&#39;équipement augmente la capacité de production d&#39;équipement de la colonie.</entry>
   <entry key='buildings.factory.upgrade_1'>Augmente la capacité à 125%, le coût en énergie et le besoin en ouvriers à 150%.</entry>
@@ -376,11 +376,11 @@
   <entry key='buildings.traders_spaceport.desc'>Les spatio-ports commerciaux, les usines de traitement auto, les robots dockers et la corporation des marchands spatiaux font du spatio-port d&#39;échanges une précieuse source de revenus.</entry>
   <entry key='buildings.traders_spaceport.upgrade_1'>Augmente les gains de crédits, le coût en énergie et le besoin en ouvriers à 125%.</entry>
   <entry key='buildings.traders_spaceport.upgrade_2'>Augmente les gains de crédits, le coût en énergie et le besoin en ouvriers à 150%.</entry>
-  <entry key='buildings.upgrade.bought'>Purchased upgrade[n][c=FFFFFF00]%s[/c]</entry>
-  <entry key='buildings.upgrade.cost'>Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c]</entry>
+  <entry key='buildings.upgrade.bought'>Purchased upgrade[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+  <entry key='buildings.upgrade.cost'>Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
   <entry key='buildings.upgrade.default.description'>Restaurer le niveau par défaut.</entry>
-  <entry key='buildings.upgrade.has'>Building has upgrades.[n][c=FFFFFF00]%s[/c]</entry>
-  <entry key='buildings.upgrade.none'>Building has no upgrades.</entry>
+  <entry key='buildings.upgrade.has'>Building has upgrades.[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+  <entry key='buildings.upgrade.none'>Building has no upgrades.[n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
   <entry key='buildings.water_vaporator'>Extracteur d&#39;eau</entry>
   <entry key='buildings.water_vaporator.desc'>Les extracteurs d&#39;humidité extraient l&#39;humidité de l&#39;air pour alimenter les réserves d&#39;eau. Les planètes arides ont besoin d&#39;extracteurs pour éviter une croissance démographique lente.</entry>
   <entry key='buildings.weapon_factory'>Usine d&#39;armes</entry>

@@ -230,7 +230,7 @@
   <entry key='buildings.colony_hub.desc'>Центр Колонии автоматически устанавливается на планету кораблем-колонизатором. Строительство других сооружений на планете возможно только при наличии Центра Колонии.</entry>
   <entry key='buildings.computer_dev_center'>НИИ Компьютерный</entry>
   <entry key='buildings.computer_dev_center.desc'>Компьютерный Научно-исследовательский институт занимается компьютерными технологиями.</entry>
-  <entry key='buildings.demolish.tooltip'>Демонтировать сооружение[n][c=FFFFFFFF]Возврат денег: %,d cr[/c]</entry>
+  <entry key='buildings.demolish.tooltip'>Демонтировать сооружение[n][c=FFFFFFFF]Возврат денег: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Demolish[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Demolish all except Colony Hub</entry>
   <entry key='buildings.equipment_factory'>Завод оборудования</entry>
   <entry key='buildings.equipment_factory.desc'>Завод оборудования производит оборудование для колонии и флота.</entry>
   <entry key='buildings.factory.upgrade_1'>Увеличивает производство на 125%, потребность в энергии и рабочих до 150%.</entry>
@@ -324,11 +324,11 @@
   <entry key='buildings.traders_spaceport.desc'>Торговые космопорты оборудованы средствами погрузки-разгрузки (роботы-докеры) и торговыми ангарами, что увеличивает товарооборот в колонии.</entry>
   <entry key='buildings.traders_spaceport.upgrade_1'>Увеличение доходов, потребность в энергии и рабочих до 125%.</entry>
   <entry key='buildings.traders_spaceport.upgrade_2'>Увеличение доходов, потребность в энергии и рабочих до 150%.</entry>
-  <entry key='buildings.upgrade.bought'>Улучшение выполнено на[n][c=FFFFFF00]%s[/c]</entry>
-  <entry key='buildings.upgrade.cost'>Улечшение выполнено на[n][c=FFFFFF00]%s[/c][n][c=%s]Стоимость улучшения: %,d кр[/c]</entry>
+  <entry key='buildings.upgrade.bought'>Улучшение выполнено на[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+  <entry key='buildings.upgrade.cost'>Улечшение выполнено на[n][c=FFFFFF00]%s[/c][n][c=%s]Стоимость улучшения: %,d кр[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
   <entry key='buildings.upgrade.default.description'>Удалить все улучшения.</entry>
-  <entry key='buildings.upgrade.has'>Сооружение улучшено.[n][c=FFFFFF00]%s[/c]</entry>
-  <entry key='buildings.upgrade.none'>Сооружение не улучшалось.</entry>
+  <entry key='buildings.upgrade.has'>Сооружение улучшено.[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+  <entry key='buildings.upgrade.none'>Сооружение не улучшалось.[n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
   <entry key='buildings.water_vaporator'>Увлажнитель</entry>
   <entry key='buildings.water_vaporator.desc'>Увлажнитель получает питьевую воду из атмосферы. Планетам с малым количеством воды необходимы увлажнители для устойчивого роста населения.</entry>
   <entry key='buildings.weapon_factory'>Завод оружия</entry>

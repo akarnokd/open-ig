@@ -2725,11 +2725,11 @@
 	<entry key="statusbar.notification.tooltip">Értesítések[n][c=FFFFFFFF]Jobb egérgomb[/c]: értesítési történet megjelenítése vagy elrejtése</entry>
 	<entry key="statusbar.notification.clear.tooltip">Értesítés történet törlése</entry>
 	<entry key="statusbar.menu.tooltip">Menü megjelenítése[n]Tartsd nyomva bármelyik egérgombot,[n]majd engedd fel a kívánt menüpont felett.</entry>
-	<entry key="buildings.upgrade.none">Az épület nincs fejlesztve.</entry>
-	<entry key="buildings.upgrade.has">Az épület fejlesztve van.[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.upgrade.cost">Fejlesztés megvásárlása[n][c=FFFFFF00]%s[/c][n][c=%s]Fejlesztési ár: %,d cr[/c]</entry>
-	<entry key="buildings.upgrade.bought">Megvásárolt fejlesztés[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.demolish.tooltip">Épület lerombolása[n][c=FFFFFFFF]Visszakapott pénz: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.none">Az épület nincs fejlesztve.[n]Gyorsbillentyűk:[n]    [c=FFFFFFFF]U[/c] - Egy szint fejlesztése[n]    [c=FFFFFFFF]CTRL+U[/c] - Maximum fejlesztés[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Kolónia maximumra fejlesztése</entry>
+	<entry key="buildings.upgrade.has">Az épület fejlesztve van.[n][c=FFFFFF00]%s[/c][n]Gyorsbillentyűk:[n]    [c=FFFFFFFF]U[/c] - Egy szint fejlesztése[n]    [c=FFFFFFFF]CTRL+U[/c] - Maximum fejlesztés[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Kolónia maximumra fejlesztése</entry>
+	<entry key="buildings.upgrade.cost">Fejlesztés megvásárlása[n][c=FFFFFF00]%s[/c][n][c=%s]Fejlesztési ár: %,d cr[/c][n]Gyorsbillentyűk:[n]    [c=FFFFFFFF]U[/c] - Egy szint fejlesztése[n]    [c=FFFFFFFF]CTRL+U[/c] - Maximum fejlesztés[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Kolónia maximumra fejlesztése</entry>
+	<entry key="buildings.upgrade.bought">Megvásárolt fejlesztés[n][c=FFFFFF00]%s[/c][n]Gyorsbillentyűk:[n]    [c=FFFFFFFF]U[/c] - Egy szint fejlesztése[n]    [c=FFFFFFFF]CTRL+U[/c] - Maximum fejlesztés[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Kolónia maximumra fejlesztése</entry>
+	<entry key="buildings.demolish.tooltip">Épület lerombolása[n][c=FFFFFFFF]Visszakapott pénz: %,d cr[/c][n]Gyorsbillentyűk:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Épület lebontása[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Minden épület lebontása, kivéve főépület</entry>
 	<entry key="colony.zoom.tooltip">Felszín nagyítása vagy kicsinyítése[n][c=FFFFFFFF]Bal egérgomb[/c]: nagyítás[n][c=FFFFFFFF]Jobb egérgomb[/c]: kicsinyítés[n][c=FFFFFFFF]Középső egérgomb[/c]: normál nagyítás és középre igazítás</entry>
 	<entry key="colony.prev.tooltip">Ugrás az előző bolygóra: [c=%08X]%s[/c][n]Gyorsbillentyű: [c=FFFFFFFF]MÍNUSZ[/c]</entry>
 	<entry key="colony.next.tooltip">Ugrás a következő bolygóra: [c=%08X]%s[/c][n]Gyorsbillentyű: [c=FFFFFFFF]PLUSZ[/c]</entry>

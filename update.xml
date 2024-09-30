@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.252'>
+  <module id='Game' version='0.95.253'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,16 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.253' date='2024-09-30'>
+        <item category='System'>The game now requires Java 8 or newer to work!</item>
+        <item category='UI'>Add an upgrade info button to the equipment screen to see what and how many items to produce for a max upgrade.</item>
+        <item category='Groundwar,Performance' issues='1170'>Improved performance of the groundwar rendering. By @hemoridos</item>
+        <item category='Groundwar,Performance' issues='1171'>Fix for alternate ground unit images not properly optimized for obscurity rendering.</item>
+        <item category='UI' issues='1174'>Add new upgrade shortcut keys to the colony screen: U/Ctrl+U/Ctrl+Shift+U to upgrade one/max/every building. By @deejayy</item>
+        <item category='UI' issues='1174'>Add new demolish shortcut keys to the colony screen: Ctrl+Delete/Ctrl+Shift+Delete to demolish one/every building except colony hub. By @deejayy</item>
+        <item category='AI'>Small fix to the Trader AI when the player has a trade agreement with another empire.</item>
+        <item category='UI'>Option to specify the default auto-build settings for when colonizing or conquering a planet. By @deejayy</item>
+      </entry>
       <entry version='0.95.252' date='2024-08-24'>
         <item category='Groundwar' issues='1161'>More fixes to resolve the unending groundwar issue.</item>
       </entry>
@@ -318,8 +328,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.252.jar' sha1='A2920F8BBB579075451967C76A0F5651CAAE1D2B'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240801a2.zip' sha1='3D7925BD62DDDB70DE0CD69C6E9B9704B2132E55'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.253.jar' sha1='751009CFD33DEEEFD3D09C01F73B74A92037063D'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240930a2.zip' sha1='BCB4BE3242EF22AD050903FEDC9A48F515C95416'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240607a.zip' sha1='E5E626A18FF968CF646A041D333B3C664394D848'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

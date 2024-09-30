@@ -2677,11 +2677,11 @@
 	<entry key="statusbar.notification.tooltip">Notifications[n][c=FFFFFFFF]Right mouse button[/c]: Show or hide notification history</entry>
 	<entry key="statusbar.notification.clear.tooltip">Clear notification history</entry>
 	<entry key="statusbar.menu.tooltip">Show menu[n]Hold down the mouse button and release it over the desired entry.</entry>
-	<entry key="buildings.upgrade.none">Building has no upgrades.</entry>
-	<entry key="buildings.upgrade.has">Building has upgrades.[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.upgrade.cost">Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c]</entry>
-	<entry key="buildings.upgrade.bought">Purchased upgrade[n][c=FFFFFF00]%s[/c]</entry>
-	<entry key="buildings.demolish.tooltip">Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.none">Building has no upgrades.[n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.has">Building has upgrades.[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.cost">Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.upgrade.bought">Purchased upgrade[n][c=FFFFFF00]%s[/c][n]Shortcuts:[n]    [c=FFFFFFFF]U[/c] - Upgrade one level[n]    [c=FFFFFFFF]CTRL+U[/c] - Upgrade to maximum[n]    [c=FFFFFFFF]CTRL+SHIFT+U[/c] - Upgrade colony to maximum</entry>
+	<entry key="buildings.demolish.tooltip">Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c][n]Shortcuts:[n]    [c=FFFFFFFF]CTRL+DELETE[/c] - Demolish[n]    [c=FFFFFFFF]CTRL+SHIFT+DELETE[/c] - Demolish all except Colony Hub</entry>
 	<entry key="colony.zoom.tooltip">Zoom in or out of the surface[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out[n][c=FFFFFFFF]Middle mouse button[/c]: normal zoom and center view</entry>
 	<entry key="colony.prev.tooltip">Jump to previous planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]MINUS[/c]</entry>
 	<entry key="colony.next.tooltip">Jump to next planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]PLUS[/c]</entry>
