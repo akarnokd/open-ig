@@ -161,8 +161,9 @@ public class Mission3 extends Mission {
         if (stage == M3.RUNNING) {
             final Fleet fi = findTaggedFleet("Mission-3-Carrier", player);
             Planet sansterling = planet("San Sterling");
+            double d = Math.hypot(fi.x - sansterling.x, fi.y - sansterling.y);
 
-            if (fi.x <= sansterling.x + 15 && fi.y <= sansterling.y + 15) {
+            if (d < 15) {
                 world.env.speed1();
                 world.env.stopMusic();
                 world.env.playVideo("interlude/merchant_attacked", new Action0() {
@@ -202,6 +203,12 @@ public class Mission3 extends Mission {
             if (fi != null) {
                 if (!player.explorationOuterLimit.contains(fi.x, fi.y)) {
                     addMission("Mission-3-Success", 0);
+                } else {
+                    Planet centronom = planet("Centronom");
+                    double d = Math.hypot(fi.x - centronom.x, fi.y - centronom.y);
+                    if (d < 5) {
+                        addMission("Mission-3-Success", 0);
+                    }
                 }
             }
         }
