@@ -162,9 +162,7 @@ public class Mission3 extends Mission {
             final Fleet fi = findTaggedFleet("Mission-3-Carrier", player);
             Planet sansterling = planet("San Sterling");
 
-            double d = Math.hypot(fi.x - sansterling.x, fi.y - sansterling.y);
-
-            if (d < 15) {
+            if (fi.x <= sansterling.x + 15 && fi.y <= sansterling.y + 15) {
                 world.env.speed1();
                 world.env.stopMusic();
                 world.env.playVideo("interlude/merchant_attacked", new Action0() {
