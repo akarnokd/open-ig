@@ -954,6 +954,12 @@ public class PlanetSurface {
             copyObject.surfaceArray = this.surfaceArray.clone();
             return copyObject;
         }
+
+        public void scale(int factor) {
+            surfaceWidth *= factor;
+            surfaceHeight *= factor;
+            surfaceArray = new byte[surfaceWidth * surfaceHeight];
+        }
         /**
          * Calculate the unique array index for the specified coordinates.
          * The even isometric surface columns are shifted up when calculating the index for each tile location.

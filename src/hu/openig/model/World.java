@@ -3402,6 +3402,8 @@ public class World implements ModelLookup {
                     ps.features = new ArrayList<>(features.size() * pscale * pscale);
 
                     ps.setSize(w0 * pscale, h0 * pscale);
+                    ps.surfaceCells.scale(pscale);
+
                     for (int i = 0; i < pscale; i++) {
                         for (int j = 0; j < pscale; j++) {
                             for (Map.Entry<Location, SurfaceEntity> e : map.entrySet()) {

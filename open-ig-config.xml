@@ -21,7 +21,7 @@
 <entry key="scaleAllScreens">false</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
-<entry key="maximized">false</entry>
+<entry key="maximized">true</entry>
 <entry key="classicControls">false</entry>
 <entry key="allowWeather">false</entry>
 <entry key="fullScreen">false</entry>
