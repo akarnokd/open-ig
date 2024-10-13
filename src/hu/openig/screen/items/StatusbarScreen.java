@@ -498,7 +498,9 @@ public class StatusbarScreen extends ScreenBase {
         time.bounds(top.x + 331, top.y + 3, 42, 14);
 
         year.text("" + world().time.get(GregorianCalendar.YEAR));
-        month.text("" + world().time.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, new Locale(commons.language())));
+        @SuppressWarnings("deprecation")
+        Locale locale = new Locale(commons.language());
+        month.text("" + world().time.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, locale));
         day.text("" + world().time.get(GregorianCalendar.DATE));
         time.text(String.format("%02d:%02d",
                 world().time.get(GregorianCalendar.HOUR_OF_DAY),
