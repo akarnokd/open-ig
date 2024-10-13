@@ -3398,6 +3398,8 @@ public class World implements ModelLookup {
 
                     List<SurfaceFeature> features = ps.features;
                     Map<Location, SurfaceEntity> map = ps.basemap;
+                    Set<Location> xclude = ps.deploymentExclusions;
+                    ps.deploymentExclusions = new HashSet<>();
                     ps.basemap = new HashMap<>(map.size() * pscale * pscale);
                     ps.features = new ArrayList<>(features.size() * pscale * pscale);
 
@@ -3466,7 +3468,13 @@ public class World implements ModelLookup {
                                         ps.surfaceCells.initEmptySurface(loc3.x, loc3.y);
                                     }
                                 }
+                            }
+                            for (Location locx : xclude) {
+                                int x2 = locx.x + i * w0 - j * h0;
+                                int y2 = locx.y - i * w0 - j * h0;
 
+                                Location loc2x = Location.of(x2, y2);
+                                ps.deploymentExclusions.add(loc2x);
                             }
                         }
                     }

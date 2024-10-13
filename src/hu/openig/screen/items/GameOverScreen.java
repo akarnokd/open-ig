@@ -72,6 +72,7 @@ public class GameOverScreen extends ScreenBase {
                 hideSecondary();
                 commons.control().displayStatusbar();
                 commons.nongame = false;
+                commons.playMusic();
             }
         };
         loadButton = new UIGenericButton(get("win.load"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);

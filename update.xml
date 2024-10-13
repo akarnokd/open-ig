@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.258'>
+  <module id='Game' version='0.95.259'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,10 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.259' date='2024-10-13'>
+        <item category='Campaign' issue='1181'>Play music again after finishing the main campaign and selecting continue.</item>
+        <item category='Skirmish,Groundwar'>Fix deployment exclusion locations not scaling with the planet in skirmish.</item>
+      </entry>
       <entry version='0.95.258' date='2024-10-12'>
         <item category='Skirmish' issue='1180'>Fix a crash when using planet scaling settings.</item>
       </entry>
@@ -340,7 +344,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.258.jar' sha1='CA1DA798B354FE54D5F5C1EC620961011B7FA22A'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.259.jar' sha1='1CA475E91FFD68A9D0DBC2CBFC5CC04C96419E20'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240930a2.zip' sha1='BCB4BE3242EF22AD050903FEDC9A48F515C95416'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
