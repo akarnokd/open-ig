@@ -747,14 +747,15 @@ public class DiplomacyScreen extends WalkableScreen {
                 oi1.enabled = false;
                 boolean active = !p2.isDefeated();
                 if (active) {
-                    if (player().offers.containsKey(p2.id)) {
+                    boolean hasOffer = player().offers.containsKey(p2.id);
+                    if (hasOffer) {
                         oi1.label = "!" + p2.shortName;
                     } else {
                         oi1.label = " " + p2.shortName;
                     }
                     oi1.userObject = p2;
 
-                    oi1.enabled = rel.full && last < now - limit;
+                    oi1.enabled = rel.full && (hasOffer || last < now - limit);
 
                     if (oi1.enabled && rel.wontTalk()) {
                         rel.wontTalk(false);
