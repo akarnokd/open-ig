@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.260'>
+  <module id='Game' version='0.95.261'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.261' date='2024-12-05'>
+        <item category='UI'>Show the upgrade info button more consistently.</item>
+      </entry>
       <entry version='0.95.260' date='2024-11-03'>
         <item category='Diplomacy' issue='1184'>Fix for receiving a diplomatic call being non-interactable at times.</item>
       </entry>
@@ -347,7 +350,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.260.jar' sha1='9F1DF3ACEDB1334F37C4CAE13E41CC2C4CECD389'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.261.jar' sha1='AC07E65ED41F347CCAF14815DA5190FFA3FE8DA7'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240930a2.zip' sha1='BCB4BE3242EF22AD050903FEDC9A48F515C95416'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

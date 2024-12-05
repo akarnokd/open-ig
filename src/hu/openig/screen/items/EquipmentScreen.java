@@ -1768,7 +1768,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             upgradeAll.visible(own && secondary == null && ps.hasMilitarySpaceport
                     && mayUpgradeAll(f)
             );
-            upgradeInfoToggle.visible(upgradeAll.visible());
+            upgradeInfoToggle.visible(own && secondary == null && ps.hasMilitarySpaceport);
 
             if (configure.selectedSlot != null) {
                 addOne.visible(
@@ -1824,7 +1824,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         notYourPlanet.visible(!own);
         noPlanetNearby.visible(false);
         upgradeAll.visible(own && mayUpgradeAll(planet()));
-        upgradeInfoToggle.visible(upgradeAll.visible());
+        upgradeInfoToggle.visible(own);
 
         if (planetShown != planet() || lastSelection != player().selectionMode) {
             planetShown = planet();
