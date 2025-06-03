@@ -124,6 +124,8 @@ public class AIWorld {
     public final Set<BuildingType> availableBuildings = new HashSet<>();
     /** Maps each resource to a set of buildings that can provide it. */
     public final Map<String, Set<BuildingType>> availableResourceBuildings = new HashMap<>();
+    /** The number of defensive buildings (guns, barracks) the AI can build on a planet. */
+    public final Map<Difficulty, Integer> aiDefensiveLimits = new HashMap<>();
     /**
      * Assign the values to this world from the real world.
      * @param player the player
@@ -269,6 +271,8 @@ public class AIWorld {
                 }
             }
         }
+        aiDefensiveLimits.clear();
+        aiDefensiveLimits.putAll(player.aiDefensiveLimits);
     }
     /**
      * Returns or calculates the planet statistics.

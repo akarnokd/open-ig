@@ -154,6 +154,8 @@ public class Player {
     public Date blackMarketRestock;
     /** True if this player was originally designated in the campaign/skirmish to be the user's player. */
     public boolean isMainPlayer;
+    /** The number of defensive buildings (guns, barracks) the AI can build on a planet. */
+    public final Map<Difficulty, Integer> aiDefensiveLimits = new HashMap<>();
     /**
      * Create a player for the world under the given id.
      * @param world the world
@@ -165,6 +167,9 @@ public class Player {
         for (ResearchMainCategory cat : ResearchMainCategory.values()) {
             production.put(cat, new LinkedHashMap<>());
         }
+        aiDefensiveLimits.put(Difficulty.EASY, 1);
+        aiDefensiveLimits.put(Difficulty.NORMAL, 3);
+        aiDefensiveLimits.put(Difficulty.HARD, 5);
     }
     /** @return the socual ratio for AI player. Ratios sum up to 1. */
     public double aiSocialRatio() {

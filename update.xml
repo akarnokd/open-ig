@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.261'>
+  <module id='Game' version='0.95.262'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.262' date='2025-06-03'>
+        <item category='Balance'>Garthogs will no longer rebuild their lost barracks and guns in the campaign for easy and normal difficulties. On hard, they will only build at most one of each.</item>
+      </entry>
       <entry version='0.95.261' date='2024-12-05'>
         <item category='UI'>Show the upgrade info button more consistently.</item>
       </entry>
@@ -350,8 +353,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.261.jar' sha1='AC07E65ED41F347CCAF14815DA5190FFA3FE8DA7'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20240930a2.zip' sha1='BCB4BE3242EF22AD050903FEDC9A48F515C95416'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.262.jar' sha1='2951A322B6F344FFC62D4AA40F6B1C39250413D7'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20250603a2.zip' sha1='C46F6BD33AB780DD809312FDB89E654EAF189D41'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

@@ -134,11 +134,8 @@ public class StaticDefensePlanner extends Planner {
         List<Pred0> actions = new ArrayList<>();
 
         // FIX ME how many barracks to build per difficulty
-        int defenseLimit = 1;
-        if (world.difficulty == Difficulty.NORMAL) {
-            defenseLimit = 3;
-        }
-        if (world.difficulty == Difficulty.HARD || p == world.mainPlayer) {
+        int defenseLimit = world.aiDefensiveLimits.get(world.difficulty);
+        if (p == world.mainPlayer) {
             defenseLimit = 5;
         }
         final int fdefenseLimit = defenseLimit;
@@ -593,6 +590,10 @@ public class StaticDefensePlanner extends Planner {
      * @return true if action taken
      */
     boolean checkBuildingKind(final AIPlanet planet, String kind, int limit) {
+        if (limit <= 0) {
+            return false;
+        }
+
         // find the best available gun technology
         BuildingType bt = null;
         for (BuildingType bt0 : p.world.buildingModel.buildings.values()) {

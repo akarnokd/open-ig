@@ -8,11 +8,12 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.model.BattleInfo;
-import hu.openig.model.SpacewarWorld;
+import hu.openig.core.Difficulty;
+import hu.openig.model.*;
+import hu.openig.utils.XElement;
 
 /**
- * This mission manages the wife videos and various generic achievements.
+ * This mission manages the wife videos, various generic achievements and the Garthog defense strength.
  * @author akarnokd, Feb 4, 2012
  */
 public class Mission26 extends Mission {
@@ -59,6 +60,17 @@ public class Mission26 extends Mission {
                 && battle.targetFleet.owner == player("Traders")
                 && battle.targetFleet.inventory.isEmpty()) {
             world.achievement("achievement.embargo");
+        }
+    }
+
+    @Override
+    protected void initSettings(XElement in) {
+        super.initSettings(in);
+        Player garthog = player("Garthog");
+        if (garthog != null) {
+            garthog.aiDefensiveLimits.put(Difficulty.EASY, 0);
+            garthog.aiDefensiveLimits.put(Difficulty.NORMAL, 0);
+            garthog.aiDefensiveLimits.put(Difficulty.HARD, 1);
         }
     }
 }
