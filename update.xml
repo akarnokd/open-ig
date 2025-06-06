@@ -43,7 +43,7 @@
     </notes>
     <release-details>
       <entry version='0.95.262' date='2025-06-03'>
-        <item category='Balance'>Garthogs will no longer rebuild their lost barracks and guns in the campaign for easy and normal difficulties. On hard, they will only build at most one of each.</item>
+        <item category='Balance' issue='1187'>Garthogs will no longer rebuild their lost barracks and guns in the campaign for easy and normal difficulties. On hard, they will only build at most one of each.</item>
       </entry>
       <entry version='0.95.261' date='2024-12-05'>
         <item category='UI'>Show the upgrade info button more consistently.</item>
