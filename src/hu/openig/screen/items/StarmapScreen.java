@@ -2153,8 +2153,8 @@ public class StarmapScreen extends ScreenBase {
      * @return true if within limits
      */
     boolean checkExplorationLimits(int mx, int my) {
+        Point2D.Double pt = toMapCoordinates(mx, my);
         if (!showAll) {
-            Point2D.Double pt = toMapCoordinates(mx, my);
             if (player().explorationInnerLimit != null) {
                 return player().explorationInnerLimit.contains(pt);
             }
@@ -2162,7 +2162,9 @@ public class StarmapScreen extends ScreenBase {
                 return !player().explorationOuterLimit.contains(pt);
             }
         }
-        return false;
+        int w = commons.starmap().background.getWidth();
+        int h = commons.starmap().background.getHeight();
+        return !(pt.x >= 0 && pt.y >= 0 && pt.x <= w && pt.y <= h);
     }
     /**
      * Mouse down event handler.

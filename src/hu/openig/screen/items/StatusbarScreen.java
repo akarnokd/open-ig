@@ -281,8 +281,10 @@ public class StatusbarScreen extends ScreenBase {
         quickResearchButton.onRightClick = new Action0() {
             @Override
             public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                displaySecondary(Screens.RESEARCH);
+                if (!commons.battleMode) {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    displaySecondary(Screens.RESEARCH);
+                }
             }
         };
         quickProductionButton = new QuickPanelButton(commons, "00000", MENU_ICON_WIDTH);
@@ -296,8 +298,10 @@ public class StatusbarScreen extends ScreenBase {
         quickProductionButton.onRightClick = new Action0() {
             @Override
             public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                displaySecondary(Screens.PRODUCTION);
+                if (!commons.battleMode) {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    displaySecondary(Screens.PRODUCTION);
+                }
             }
         };
 
