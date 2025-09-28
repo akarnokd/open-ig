@@ -1,248 +1,250 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <traits initial-points='8'>
-	<!-- Give the user more points. 
-	<trait
-		id='Debug'
-		kind='TRAIT_DEBUG'
-		label='traits.debug'
-		description='traits.debug.desc'
-		cost='-100'>
-	</trait>-->
-	<trait 
-		id='PreWarp' 
-		kind='PRE_WARP' 
-		label='traits.pre_warp' 
-		description='traits.pre_warp.desc' 
-		cost='-10'
-		value='6'>
-	</trait>
-	<!-- +10% speed on ship construction. -->
-	<trait 
-		id='ShipBuilder' 
-		kind='SHIP_PRODUCTION' 
-		label='traits.ship_builder' 
-		description='traits.ship_builder.desc' 
-		cost='1'
-		value='125'>
-		<exclude id='ShipMocker'/>
-	</trait>
-	<!-- -10% speed on ship construction. -->
-	<trait 
-		id='ShipMocker' 
-		kind='SHIP_PRODUCTION'
-		label='traits.ship_mocker'
-		description='traits.ship_mocker.desc'
-		cost='-1'
-		value='75'>
-		<exclude id='ShipBuilder'/>
-	</trait>
-	<trait 
-		id='EquipmentBuilder' 
-		kind='EQUIPMENT_PRODUCTION' 
-		label='traits.equipment_builder' 
-		description='traits.equipment_builder.desc' 
-		cost='1'
-		value='125'>
-		<exclude id='EquipmentMocker'/>
-	</trait>
-	<!-- -10% speed on ship construction. -->
-	<trait 
-		id='EquipmentMocker' 
-		kind='EQUIPMENT_PRODUCTION'
-		label='traits.equipment_mocker'
-		description='traits.equipment_mocker.desc'
-		cost='-1'
-		value='75'>
-		<exclude id='EquipmentBuilder'/>
-	</trait>
-	<trait 
-		id='WeaponBuilder' 
-		kind='WEAPON_PRODUCTION' 
-		label='traits.weapon_builder' 
-		description='traits.weapon_builder.desc' 
-		cost='1'
-		value='125'>
-		<exclude id='WeaponMocker'/>
-	</trait>
-	<!-- -10% speed on ship construction. -->
-	<trait 
-		id='WeaponMocker' 
-		kind='WEAPON_PRODUCTION'
-		label='traits.weapon_mocker'
-		description='traits.weapon_mocker.desc'
-		cost='-1'
-		value='75'>
-		<exclude id='WeaponBuilder'/>
-	</trait>
-	<trait
-		id="Fertile"
-		kind='FERTILE'
-		label='traits.fertile'
-		description='traits.fertile.desc'
-		cost='2'
-		value='50'>
-		<exclude id='Infertile'/>
-	</trait>
-	<trait
-		id='Infertile'
-		kind='FERTILE'
-		label='traits.infertile'
-		description='traits.infertile.desc'
-		cost='-2'
-		value='-50'
-	>
-		<exclude id='Fertile'/>
-	</trait>
-	<trait
-		id='BankMastery'
-		kind='TAX'
-		label='traits.bank_mastery'
-		description='traits.bank_mastery.desc'
-		cost='3'
-		value='33'
-	>
-		<exclude id='MonetaryAnalphabetism'/>
-	</trait>
-	<trait
-		id='MonetaryAnalphabetism'
-		kind='TAX'
-		label='traits.monetary_analphabetism'
-		description='traits.monetary_analphabetism.desc'
-		cost='-3'
-		value='-33'
-	>
-		<exclude id='BankMastery'/>
-	</trait>
-	<trait
-		id='Turtle'
-		kind='SPACE_DEFENSE'
-		label='traits.turtle'
-		description='traits.turtle.desc'
-		cost='2'
-		value='15'
-	>
-		<exclude id='Jelly'/>
-	</trait>
-	<trait
-		id='Jelly'
-		kind='SPACE_DEFENSE'
-		label='traits.jelly'
-		description='traits.jelly.desc'
-		cost='-2'
-		value='-15'
-	>
-		<exclude id='Turtle'/>
-	</trait>
-	<trait
-		id='WeaponMastery'
-		kind='WEAPONS'
-		label='traits.weapon_mastery'
-		description='traits.weapon_mastery.desc'
-		cost='3'
-		value='15'
-	>
-		<exclude id='RocksAndSticks'/>
-	</trait>
-	<trait
-		id='RocksAndSticks'
-		kind='WEAPONS'
-		label='traits.rocks_and_sticks'
-		description='traits.rocks_and_sticks.desc'
-		cost='-3'
-		value='-15'
-	>
-		<exclude id='WeaponMastery'/>
-	</trait>
-	<trait
-		id='MasterScientists'
-		kind='SCIENCE'
-		label='traits.master_scientists'
-		description='traits.master_scientists.desc'
-		cost='3'
-		value='-33'
-	>
-		<exclude id='SlowComprehension'/>
-	</trait>
-	<trait
-		id='SlowComprehension'
-		kind='SCIENCE'
-		label='traits.slow_comprehension'
-		description='traits.slow_comprehension.desc'
-		cost='-3'
-		value='33'
-	>
-		<exclude id='MasterScientists'/>
-	</trait>
-	<trait
-		id='Astronomers'
-		kind='ASTRONOMER'
-		label='traits.astronomers'
-		description='traits.astronomers.desc'
-		cost='1'
-	>
-		<exlcude id='MasterAstronomy'/>
-	</trait>
-	<trait
-		id='MasterAstronomy'
-		kind='ASTRONOMER_PLUS'
-		label='traits.master_astronomy'
-		description='traits.master_astronomy.desc'
-		cost='5'
-	>
-		<exclude id='Astronomers'/>
-	</trait>
-	<trait
-		id='FantasticNegotiator'
-		kind='DIPLOMACY'
-		label='traits.fantastic_negotiator'
-		description='traits.fantastic_negotiator.desc'
-		cost='1'
-		value='50'
-	>
-		<exclude id='Undiplomatic'/>
-	</trait>
-	<trait
-		id='Undiplomatic'
-		kind='DIPLOMACY'
-		label='traits.undiplomatic'
-		description='traits.undiplomatic.desc'
-		cost='-1'
-		value='-50'
-	>
-		<exclude id='FantasticNegotiator'/>
-	</trait>
-	<trait
-		id='Engineers'
-		kind='ENGINEERS'
-		label='traits.engineers'
-		description='traits.engineers.desc'
-		cost='2'
-	>
-	</trait>
-	<trait
-		id='CombatEngineers'
-		kind='COMBAT_ENGINEERS'
-		label='traits.combat_engineers'
-		description='traits.combat_engineers.desc'
-		cost='4'
-	>
-	</trait>
-	<trait
-			id='NoSurrender'
-			kind='SURRENDER'
-			label='traits.no_surrender'
-			description='traits.no_surrender.desc'
-			cost='0'
-			value='0'
-	>
-	</trait>
-	<trait
-			id='YesSurrender'
-			kind='SURRENDER'
-			label='traits.yes_surrender'
-			description='traits.yes_surrender.desc'
-			cost='-1'
-			value='50'
-	>
-	</trait>
+    <!-- Give the user more points. 
+    <trait
+        id='Debug'
+        kind='TRAIT_DEBUG'
+        label='traits.debug'
+        description='traits.debug.desc'
+        cost='-100'>
+    </trait>-->
+    <trait 
+        id='PreWarp' 
+        kind='PRE_WARP' 
+        label='traits.pre_warp' 
+        description='traits.pre_warp.desc' 
+        cost='-10'
+        value='6'>
+    </trait>
+    <!-- +10% speed on ship construction. -->
+    <trait 
+        id='ShipBuilder' 
+        kind='SHIP_PRODUCTION' 
+        label='traits.ship_builder' 
+        description='traits.ship_builder.desc' 
+        cost='1'
+        value='125'>
+        <exclude id='ShipMocker'/>
+    </trait>
+    <!-- -10% speed on ship construction. -->
+    <trait 
+        id='ShipMocker' 
+        kind='SHIP_PRODUCTION'
+        label='traits.ship_mocker'
+        description='traits.ship_mocker.desc'
+        cost='-1'
+        value='75'>
+        <exclude id='ShipBuilder'/>
+    </trait>
+    <trait 
+        id='EquipmentBuilder' 
+        kind='EQUIPMENT_PRODUCTION' 
+        label='traits.equipment_builder' 
+        description='traits.equipment_builder.desc' 
+        cost='1'
+        value='125'>
+        <exclude id='EquipmentMocker'/>
+    </trait>
+    <!-- -10% speed on ship construction. -->
+    <trait 
+        id='EquipmentMocker' 
+        kind='EQUIPMENT_PRODUCTION'
+        label='traits.equipment_mocker'
+        description='traits.equipment_mocker.desc'
+        cost='-1'
+        value='75'>
+        <exclude id='EquipmentBuilder'/>
+    </trait>
+    <trait 
+        id='WeaponBuilder' 
+        kind='WEAPON_PRODUCTION' 
+        label='traits.weapon_builder' 
+        description='traits.weapon_builder.desc' 
+        cost='1'
+        value='125'>
+        <exclude id='WeaponMocker'/>
+    </trait>
+    <!-- -10% speed on ship construction. -->
+    <trait 
+        id='WeaponMocker' 
+        kind='WEAPON_PRODUCTION'
+        label='traits.weapon_mocker'
+        description='traits.weapon_mocker.desc'
+        cost='-1'
+        value='75'>
+        <exclude id='WeaponBuilder'/>
+    </trait>
+    <trait
+        id="Fertile"
+        kind='FERTILE'
+        label='traits.fertile'
+        description='traits.fertile.desc'
+        cost='2'
+        value='50'>
+        <exclude id='Infertile'/>
+    </trait>
+    <trait
+        id='Infertile'
+        kind='FERTILE'
+        label='traits.infertile'
+        description='traits.infertile.desc'
+        cost='-2'
+        value='-50'
+    >
+        <exclude id='Fertile'/>
+    </trait>
+    <trait
+        id='BankMastery'
+        kind='TAX'
+        label='traits.bank_mastery'
+        description='traits.bank_mastery.desc'
+        cost='3'
+        value='33'
+    >
+        <exclude id='MonetaryAnalphabetism'/>
+    </trait>
+    <trait
+        id='MonetaryAnalphabetism'
+        kind='TAX'
+        label='traits.monetary_analphabetism'
+        description='traits.monetary_analphabetism.desc'
+        cost='-3'
+        value='-33'
+    >
+        <exclude id='BankMastery'/>
+    </trait>
+    <trait
+        id='Turtle'
+        kind='SPACE_DEFENSE'
+        label='traits.turtle'
+        description='traits.turtle.desc'
+        cost='2'
+        value='15'
+    >
+        <exclude id='Jelly'/>
+    </trait>
+    <trait
+        id='Jelly'
+        kind='SPACE_DEFENSE'
+        label='traits.jelly'
+        description='traits.jelly.desc'
+        cost='-2'
+        value='-15'
+    >
+        <exclude id='Turtle'/>
+    </trait>
+    <trait
+        id='WeaponMastery'
+        kind='WEAPONS'
+        label='traits.weapon_mastery'
+        description='traits.weapon_mastery.desc'
+        cost='3'
+        value='15'
+    >
+        <exclude id='RocksAndSticks'/>
+    </trait>
+    <trait
+        id='RocksAndSticks'
+        kind='WEAPONS'
+        label='traits.rocks_and_sticks'
+        description='traits.rocks_and_sticks.desc'
+        cost='-3'
+        value='-15'
+    >
+        <exclude id='WeaponMastery'/>
+    </trait>
+    <trait
+        id='MasterScientists'
+        kind='SCIENCE'
+        label='traits.master_scientists'
+        description='traits.master_scientists.desc'
+        cost='3'
+        value='-33'
+    >
+        <exclude id='SlowComprehension'/>
+    </trait>
+    <trait
+        id='SlowComprehension'
+        kind='SCIENCE'
+        label='traits.slow_comprehension'
+        description='traits.slow_comprehension.desc'
+        cost='-3'
+        value='33'
+    >
+        <exclude id='MasterScientists'/>
+    </trait>
+    <trait
+        id='Astronomers'
+        kind='ASTRONOMER'
+        label='traits.astronomers'
+        description='traits.astronomers.desc'
+        cost='1'
+    >
+        <exlcude id='MasterAstronomy'/>
+    </trait>
+    <trait
+        id='MasterAstronomy'
+        kind='ASTRONOMER_PLUS'
+        label='traits.master_astronomy'
+        description='traits.master_astronomy.desc'
+        cost='5'
+    >
+        <exclude id='Astronomers'/>
+    </trait>
+    <trait
+        id='FantasticNegotiator'
+        kind='DIPLOMACY'
+        label='traits.fantastic_negotiator'
+        description='traits.fantastic_negotiator.desc'
+        cost='1'
+        value='50'
+    >
+        <exclude id='Undiplomatic'/>
+    </trait>
+    <trait
+        id='Undiplomatic'
+        kind='DIPLOMACY'
+        label='traits.undiplomatic'
+        description='traits.undiplomatic.desc'
+        cost='-1'
+        value='-50'
+    >
+        <exclude id='FantasticNegotiator'/>
+    </trait>
+    <trait
+        id='Engineers'
+        kind='ENGINEERS'
+        label='traits.engineers'
+        description='traits.engineers.desc'
+        cost='2'
+    >
+    </trait>
+    <trait
+        id='CombatEngineers'
+        kind='COMBAT_ENGINEERS'
+        label='traits.combat_engineers'
+        description='traits.combat_engineers.desc'
+        cost='4'
+    >
+    </trait>
+    <trait
+            id='NoSurrender'
+            kind='SURRENDER'
+            label='traits.no_surrender'
+            description='traits.no_surrender.desc'
+            cost='0'
+            value='0'
+    >
+        <exclude id='YesSurrender'/>
+    </trait>
+    <trait
+            id='YesSurrender'
+            kind='SURRENDER'
+            label='traits.yes_surrender'
+            description='traits.yes_surrender.desc'
+            cost='-1'
+            value='50'
+    >
+        <exclude id='NoSurrender'/>
+    </trait>
 </traits>
