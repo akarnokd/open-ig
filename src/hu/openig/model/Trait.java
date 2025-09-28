@@ -35,7 +35,6 @@ public class Trait {
     /** Parameter. */
     public double value;
     /**
-
      * Load the trait contents from an XML.
      * @param xml the xml
      */
