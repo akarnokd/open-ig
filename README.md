@@ -31,7 +31,7 @@ rest of the files from this project page.
 
 
 # Introduction
-*Open Imperium Galactica* (Open-IG) is an open source [Java](https://adoptium.net/)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
+*Open Imperium Galactica* (Open-IG) is an open source [Java](https://adoptium.net/)<sup>TM</sup> reimplementation of the [Digital Reality](http://en.wikipedia.org/wiki/Digital_Reality) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
 
 The project contains all necessary files (with the permission from the copyright owner Digital Reality) to run the game standalone, there is no need for the original Imperium Galactica files.
 
