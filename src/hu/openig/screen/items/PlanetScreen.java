@@ -65,8 +65,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     BufferedImage areaPavedGhost;
     /** Used to place buildings on the surface. */
     final Rectangle placementRectangle = new Rectangle();
-    /** The building bounding box. */
-    Rectangle buildingBox;
+    /** The building bounding boxes for surface and radar rendering. */
+    BuildingSelectionBox buildingBox;
     /** Are we in placement mode? */
     boolean placementMode;
     /** Are we in pavement mode? */
@@ -824,6 +824,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         return null;
     }
     /**
+     * Compute the locations for the building selection boxes on both the planet and radar surfaces.
+     * @param loc the location to look for a building.
+     * @return the object containing rectangle objects to be drawn on both planet and radar surfaces
+     */
+    public BuildingSelectionBox getBuildingSelectionBox(Location loc) {
+        SurfaceEntity se = surface().buildingmap.get(loc);
+        if (se != null && se.type == SurfaceEntityType.BUILDING) {
+            return new BuildingSelectionBox(loc, se);
+        }
+        return null;
+    }
+    /**
      * Returns the bounding rectangle of the building in non-scaled screen coordinates.
      * @param b the building to test
      * @return the bounding rectangle
@@ -873,6 +885,28 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int offsetX;
         /** The offset Y. */
         int offsetY;
+        /**
+         * Get precise X coordinate of location based on the mouse coordinates.
+         * @param mx the mouse X coordinate
+         * @param my the mouse Y coordinate
+         * @return the location
+         */
+        public double getLocationXAt(int mx, int my) {
+            double mx0 = mx - (surface().baseXOffset + 28) * scale - offsetX; // Half left
+            double my0 = my - (surface().baseYOffset + 27) * scale - offsetY; // Half up
+            return Tile.toTileX((int)mx0, (int)my0) / scale;
+        }
+         /**
+         * Get precise Y coordinate of location based on the mouse coordinates.
+         * @param mx the mouse X coordinate
+         * @param my the mouse Y coordinate
+         * @return the location
+         */
+        public double getLocationYAt(int mx, int my) {
+            double mx0 = mx - (surface().baseXOffset + 28) * scale - offsetX; // Half left
+            double my0 = my - (surface().baseYOffset + 27) * scale - offsetY; // Half up
+            return Tile.toTileY((int)mx0, (int)my0) / scale;
+        }
         /**
          * Get a location based on the mouse coordinates.
          * @param mx the mouse X coordinate
@@ -1178,7 +1212,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0
                                 || planet().owner == player()) {
                             Location loc = getLocationAt(e.x, e.y);
-                            buildingBox = getBoundingRect(loc);
+                            buildingBox = getBuildingSelectionBox(loc);
                             doSelectBuilding(getBuildingAt(loc));
                             if (currentBuilding != null) {
                                 buttonSound(SoundType.CLICK_MEDIUM_2);
@@ -1402,7 +1436,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
                     g2.setColor(Color.RED);
-                    g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+                    g2.drawRect(buildingBox.buildingBoxSurface.x, buildingBox.buildingBoxSurface.y, buildingBox.buildingBoxSurface.width, buildingBox.buildingBoxSurface.height);
                 }
 
                 g2.setTransform(at);
@@ -2146,16 +2180,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
         }
+        /** Calculate non-scaled radar image bounding rectangle.
+         * @param surface the surface object
+         * @return a bounding rectangle object
+         */
+        Rectangle getRadarImageBoundingRectangle(PlanetSurface surface) {
+            int x1 = Tile.toRadarX(surface.width - 1, -surface.width + 1);
+            Location loc = surface.renderingOrigins.get(surface.renderingOrigins.size() - 1);
+            int y1 = Tile.toRadarY(loc.x, loc.y);
+            return new Rectangle(0, 0, x1 + 57, y1 + 28);
+        }
         /**
          * Draw symbolic surface tiles into a buffered image that can be reused for radar drawing.
          * @param surface the surface object
-         * @param x0 the base x offset
-         * @param y0 the base y offset
+         * @param br bounding rectangle of the radar image
          * @param g2 graphics object to draw to. If not given the minimap is rendered to an image.
          * @return a buffered image with a rendered minimap.
          */
-        BufferedImage drawRadarSurfaceImage(PlanetSurface surface, int x0, int y0, Graphics2D g2) {
-            Rectangle br = surface.boundingRectangle;
+        BufferedImage drawRadarSurfaceImage(PlanetSurface surface, Rectangle br, Graphics2D g2) {
             BufferedImage radarMapImage = null;
             Graphics2D surfaceGraphics;
             if (g2 != null) {
@@ -2164,16 +2206,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 radarMapImage = new BufferedImage(br.width, br.height, BufferedImage.TYPE_INT_ARGB);
                 surfaceGraphics = radarMapImage.createGraphics();
             }
-            // transform the minimap neatly to the middle of the radar panel
-            surfaceGraphics.shear(0.0225, 0);
-            surfaceGraphics.rotate(-0.051678, br.width / 2.0f, br.height / 2.0f);
-            surfaceGraphics.translate(-(x0 + Tile.toScreenX(0, 0)) / 4, 0);
             BufferedImage empty = areaEmpty.getStrip(0);
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
                 for (int j = 0; j < surface.renderingLength.get(i); j++) {
-                    int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-                    int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+                    int x = Tile.toRadarX(loc.x - j, loc.y);
+                    int y = Tile.toRadarY(loc.x - j, loc.y);
                     Location loc1 = Location.of(loc.x - j, loc.y);
                     SurfaceEntity se = surface.buildingmap.get(loc1);
                     if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
@@ -2181,13 +2219,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                     if (se != null) {
                         getImage(se, true, loc1, cell);
-                        int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+                        int yRef = Tile.toRadarY(cell.a, cell.b) + cell.yCompensation;
                         if (surface.surfaceCells.hasPavement(loc1) && !surface.surfaceCells.hasBuilding(loc1)) {
-                            int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                            int yp = Tile.toRadarY(loc1.x, loc1.y);
                             surfaceGraphics.drawImage(areaPaved, x, yp, null);
                         } else {
                             if (cell.image != null) {
-                                surfaceGraphics.drawImage(cell.image, x, yref, null);
+                                surfaceGraphics.drawImage(cell.image, x, yRef, null);
                             }
                         }
                     } else {
@@ -2195,22 +2233,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
             }
-            //Draw rectangle around the minimap
-            int rectX0 = x0 + Tile.toScreenX(0, 0);
-            int rectY0 = y0 + Tile.toScreenY(0, 0);
-            int rectX1 = x0 + Tile.toScreenX(surface.width, -surface.width);
-            int rectY1 = y0 + Tile.toScreenY(surface.width, -surface.width);
-            int rectX2 = x0 + Tile.toScreenX(-surface.height + surface.width, -surface.height - surface.width);
-            int rectY2 = y0 + Tile.toScreenY(-surface.height + surface.width, -surface.height - surface.width);
-            int rectX3 = x0 + Tile.toScreenX(-surface.height, -surface.height);
-            int rectY3 = y0 + Tile.toScreenY(-surface.height, -surface.height);
-            surfaceGraphics.setColor(Color.ORANGE);
-            surfaceGraphics.setStroke(new BasicStroke(15.0f));
-            surfaceGraphics.drawLine(rectX0, rectY0, rectX1, rectY1);
-            surfaceGraphics.drawLine(rectX1, rectY1, rectX2, rectY2);
-            surfaceGraphics.drawLine(rectX2, rectY2, rectX3, rectY3);
-            surfaceGraphics.drawLine(rectX3, rectY3, rectX0, rectY0);
-            surfaceGraphics.dispose();
             return radarMapImage;
         }
 
@@ -2226,7 +2248,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (surface == null) {
                 return;
             }
-            Rectangle br = surface.boundingRectangle;
+            Rectangle br = getRadarImageBoundingRectangle(surface);
 
             AffineTransform at = g2.getTransform();
 
@@ -2234,8 +2256,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float scaley = height * 1.0f / br.height;
             float scale = Math.min(scalex, scaley);
 
-            int x0 = surface.baseXOffset;
-            int y0 = surface.baseYOffset;
+            int x0 = -Tile.toRadarX(-height, -height);
+            int y0 = 0;
 
 
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
@@ -2247,7 +2269,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         BufferedImage scaledImg = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
                         Graphics2D scaledSurfaceGraphics = scaledImg.createGraphics();
-                        scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, x0, y0, null), 0, 0, scaledWidth, scaledHeight, null);
+                        scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, br, null), 0, 0, scaledWidth, scaledHeight, null);
                         scaledSurfaceGraphics.dispose();
                         radarMapImage = scaledImg;
                         drawRadarImage = false;
@@ -2260,24 +2282,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 } else {
                     g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
                     g2.scale(scale, scale);
-                    drawRadarSurfaceImage(surface, x0, y0, g2);
+                    drawRadarSurfaceImage(surface, br, g2);
                 }
 
                 g2.setColor(Color.RED);
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
                     if (buildingBox != null) {
-                        g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+                        g2.drawRect(buildingBox.buildingBoxRadar.x, buildingBox.buildingBoxRadar.y, buildingBox.buildingBoxRadar.width, buildingBox.buildingBoxRadar.height);
                     }
                 }
                 g2.setColor(Color.WHITE);
+                double a0 = render.getLocationXAt(0 , 0);
+                double b0 = render.getLocationYAt(0 , 0);
+                double a1 = render.getLocationXAt(render.width , render.height);
+                double b1 = render.getLocationYAt(render.width , render.height);
                 g2.drawRect(
-                        (int)(-render.offsetX / render.scale),
+                        (int)Tile.toRadarX(a0, b0),
+                        (int)Tile.toRadarY(a0, b0),
+                        (int)(Tile.toRadarX(a1, b1) - Tile.toRadarX(a0, b0)),
+                        (int)(Tile.toRadarY(a1, b1) - Tile.toRadarY(a0, b0))
+                );
 
-                        (int)(-render.offsetY / render.scale),
-
-                        (int)(render.width / render.scale - 1),
-
-                        (int)(render.height / render.scale - 1));
             }
             boolean jammed = false;
             for (GroundwarUnit u : units) {
@@ -2290,17 +2315,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
             if (!jammed) {
-                Graphics2D unitIndicators = (Graphics2D) g2.create();
-                unitIndicators.shear(0.0225, 0);
-                unitIndicators.rotate(-0.051678, br.width / 2.0f, br.height / 2.0f);
-                unitIndicators.translate(-(x0 + Tile.toScreenX(0, 0)) / 4, 0);
                 for (GroundwarUnit u : units) {
                     if (blink) {
-                        int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
-                        int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
-                        unitIndicators.setColor(u.owner == player() ? Color.GREEN : Color.RED);
-                        unitIndicators.fillRect(px, py, 40, 40);
-                        unitIndicators.dispose();
+                        int px = (int)(x0 + Tile.toRadarX(u.x + 0.5, u.y - 0.5));
+                        int py = (int)(Tile.toRadarY(u.x + 0.5, u.y - 0.5));
+                        g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
+                        g2.fillRect(px, py, 40, 40);
                     }
                 }
             }
@@ -4070,7 +4090,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             placementMode = more && planet().canBuild(building());
             buildingsPanel.build.down = placementMode;
 
-            buildingBox = getBoundingRect(b.location);
+            buildingBox = getBuildingSelectionBox(b.location);
             doSelectBuilding(b);
 
             buildingInfoPanel.update();
@@ -7079,4 +7099,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
     }
 
+    class BuildingSelectionBox {
+
+        /** The building bounding box for surface rendering. */
+        Rectangle buildingBoxSurface = null;
+
+        /** The building bounding boxes for radar rendering. */
+        Rectangle buildingBoxRadar = null;
+
+        /**
+         * Compute the bounding rectangle of the rendered building object for surface and radar rendering.
+         * @param loc the location of the selected building.
+         * @param se the surface entity describing the selected building.
+         */
+        BuildingSelectionBox(Location loc, SurfaceEntity se) {
+            int a0 = loc.x - se.virtualColumn;
+            int b0 = loc.y + se.virtualRow;
+
+            int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+            int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
+            buildingBoxSurface = new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
+
+            x = Tile.toRadarX(a0, b0);
+            y = Tile.toRadarY(a0, b0 - se.tile.height + 1) + 27;
+            buildingBoxRadar  = new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
+        }
+    }
 }
