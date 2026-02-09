@@ -279,6 +279,42 @@ public class Tile {
         return -12 * x - 15 * y;
     }
     /**
+     * Converts the tile coordinates to pixel coordinates on the radar map, X component.
+     * @param x the X tile coordinate
+     * @param y the Y tile coordinate
+     * @return the screen coordinate
+     */
+    public static int toRadarX(int x, int y) {
+        return x * 28 - y * 28;
+    }
+    /**
+     * Converts the tile coordinates to pixel coordinates on the radar map, Y component.
+     * @param x the X tile coordinate
+     * @param y the Y tile coordinate
+     * @return the screen Y coordinate
+     */
+    public static int toRadarY(int x, int y) {
+        return -12 * x - 12 * y;
+    }
+    /**
+     * Converts the tile coordinates to pixel coordinates on the radar map, X component.
+     * @param x the X tile coordinate
+     * @param y the Y tile coordinate
+     * @return the screen coordinate
+     */
+    public static double toRadarX(double x, double y) {
+        return x * 28 - y * 28;
+    }
+    /**
+     * Converts the tile coordinates to pixel coordinates on the radar map, Y component.
+     * @param x the X tile coordinate
+     * @param y the Y tile coordinate
+     * @return the screen Y coordinate
+     */
+    public static double toRadarY(double x, double y) {
+        return -12 * x - 12 * y;
+    }
+    /**
      * Converts the screen coordinates to tile coordinates, X component.
      * @param x the X screen coordinate
      * @param y the Y screen coordinate
