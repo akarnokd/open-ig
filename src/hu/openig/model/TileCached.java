@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class TileCached extends Tile {
     /** The cached image strips. The key is maxCount times the alpha value. */
-    protected final Map<Integer, Ref<BufferedImage[]>> cache = new HashMap<>();
+    protected final Map<Integer, Ref<ImageStrip[]>> cache = new HashMap<>();
     /** The maximum alpha cache count. */
     protected final int maxCount;
     /**
@@ -48,12 +48,12 @@ public class TileCached extends Tile {
         return new TileCached(this);
     }
     @Override
-    public BufferedImage getStrip(int stripIndex) {
+    public ImageStrip getStrip(int stripIndex) {
         if (hasAlphaChanged()) {
             float a = (Math.min(Math.max(MIN_ALPHA, alpha), 1f) - MIN_ALPHA) / (1f - MIN_ALPHA);
             int key = (int)(a * maxCount + 0.5);
-            Ref<BufferedImage[]> r = cache.get(key);
-            BufferedImage[] strips = r != null ? r.get() : null;
+            Ref<ImageStrip[]> r = cache.get(key);
+            ImageStrip[] strips = r != null ? r.get() : null;
             if (r == null || strips == null) {
                 renew();
                 computeImageWithLights();
@@ -69,14 +69,15 @@ public class TileCached extends Tile {
      * Create a fresh image in place of every array element.
      */
     protected void renew() {
-        BufferedImage[] newStrips = new BufferedImage[stripCache.length];
+        ImageStrip[] newStrips = new ImageStrip[stripCache.length];
         for (int i = 0; i < newStrips.length; i++) {
-            BufferedImage s = stripCache[i];
-            final int w = s.getWidth();
-            final int h = s.getHeight();
+            ImageStrip s = stripCache[i];
+            final int w = s.image.getWidth();
+            final int h = s.image.getHeight();
             BufferedImage d = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             d.setAccelerationPriority(1.0f);
-            newStrips[i] = d;
+            newStrips[i].yOffset = s.yOffset;
+            newStrips[i].image = d;
         }
         stripCache = newStrips;
     }

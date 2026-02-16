@@ -255,7 +255,7 @@ public class MapRenderer extends JComponent {
         g2.setColor(Color.YELLOW);
         g2.drawRect(br.x, br.y, br.width, br.height);
 
-        BufferedImage empty = areaEmpty.getStrip(0);
+        BufferedImage empty = areaEmpty.getStrip(0).image;
         Rectangle renderingWindow = new Rectangle(0, 0, getWidth(), getHeight());
         for (int i = 0; i < surface.renderingOrigins.size(); i++) {
             Location loc = surface.renderingOrigins.get(i);
@@ -287,7 +287,7 @@ public class MapRenderer extends JComponent {
                 if (!surface.placement.canPlaceBuilding(loc.x, loc.y)) {
                     int x = x0 + Tile.toScreenX(loc.x, loc.y);
                     int y = y0 + Tile.toScreenY(loc.x, loc.y);
-                    g2.drawImage(areaDeny.getStrip(0), x, y, null);
+                    g2.drawImage(areaDeny.getStrip(0).image, x, y, null);
                 }
             }
         }
@@ -297,24 +297,24 @@ public class MapRenderer extends JComponent {
                     for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
                         int x = x0 + Tile.toScreenX(i, j);
                         int y = y0 + Tile.toScreenY(i, j);
-                        g2.drawImage(selection.getStrip(0), x, y, null);
+                        g2.drawImage(selection.getStrip(0).image, x, y, null);
                     }
                 }
             }
             if (current != null) {
                 int x = x0 + Tile.toScreenX(current.x, current.y);
                 int y = y0 + Tile.toScreenY(current.x, current.y);
-                g2.drawImage(areaCurrent.getStrip(0), x, y, null);
+                g2.drawImage(areaCurrent.getStrip(0).image, x, y, null);
             }
         } else
         if (placementRectangle.width > 0) {
             for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
                 for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
 
-                    BufferedImage img = areaAccept.getStrip(0);
+                    BufferedImage img = areaAccept.getStrip(0).image;
                     // check for existing building
                     if (!surface.placement.canPlaceBuilding(i, j)) {
-                        img = areaDeny.getStrip(0);
+                        img = areaDeny.getStrip(0).image;
                     }
 
                     int x = x0 + Tile.toScreenX(i, j);
@@ -459,14 +459,19 @@ public class MapRenderer extends JComponent {
             cell.yCompensation = 27 - se.tile.imageHeight;
             cell.a = loc1.x - se.virtualColumn;
             cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+            Tile.ImageStrip strip;
             if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
                 se.tile.alpha = alpha;
-                cell.image = se.tile.getStrip(se.virtualRow);
+                strip = se.tile.getStrip(se.virtualRow);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             } else
             if (se.virtualRow == se.tile.height - 1) {
                 se.tile.alpha = alpha;
-                cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                strip = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             }
             cell.image = null;
@@ -496,7 +501,7 @@ public class MapRenderer extends JComponent {
             }
 
             cell.yCompensation = 27 - tile.imageHeight;
-            cell.image = tile.getStrip(0);
+            cell.image = tile.getStrip(0).image;
             cell.a = loc1.x;
             cell.b = loc1.y;
 
@@ -513,7 +518,7 @@ public class MapRenderer extends JComponent {
             }
             cell.yCompensation = 27 - tile.imageHeight;
             tile.alpha = alpha;
-            cell.image = tile.getStrip(0);
+            cell.image = tile.getStrip(0).image;
             cell.a = loc1.x;
             cell.b = loc1.y;
         } else {
@@ -531,14 +536,19 @@ public class MapRenderer extends JComponent {
             cell.yCompensation = 27 - tile.imageHeight;
             cell.a = loc1.x - se.virtualColumn;
             cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+            Tile.ImageStrip strip;
             if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
                 tile.alpha = alpha;
-                cell.image = tile.getStrip(se.virtualRow);
+                strip = tile.getStrip(se.virtualRow);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             } else
             if (se.virtualRow == se.tile.height - 1) {
                 tile.alpha = alpha;
-                cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                strip = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             }
             cell.image = null;
