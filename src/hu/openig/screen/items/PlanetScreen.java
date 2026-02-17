@@ -696,14 +696,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             cell.yCompensation = 27 - se.tile.imageHeight;
             cell.a = loc1.x - se.virtualColumn;
             cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+            Tile.ImageStrip strip;
             if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
                 se.tile.alpha = alpha;
-                cell.image = se.tile.getStrip(se.virtualRow);
+                strip = se.tile.getStrip(se.virtualRow);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             } else
             if (se.virtualRow == se.tile.height - 1) {
                 se.tile.alpha = alpha;
-                cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                strip = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             }
             cell.image = null;
@@ -735,7 +740,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
             cell.yCompensation = 27 - tile.imageHeight;
-            cell.image = tile.getStrip(0);
+            cell.image = tile.getStrip(0).image;
             cell.a = loc1.x;
             cell.b = loc1.y;
 
@@ -745,7 +750,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Tile tile =  se.building.scaffolding.normal.get(0);
             cell.yCompensation = 27 - tile.imageHeight;
             tile.alpha = alpha;
-            cell.image = tile.getStrip(0);
+            cell.image = tile.getStrip(0).image;
             cell.a = loc1.x;
             cell.b = loc1.y;
             return;
@@ -774,7 +779,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
             cell.yCompensation = 27 - tile.imageHeight;
             tile.alpha = alpha;
-            cell.image = tile.getStrip(0);
+            cell.image = tile.getStrip(0).image;
             cell.a = loc1.x;
             cell.b = loc1.y;
         } else {
@@ -791,14 +796,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             cell.yCompensation = 27 - tile.imageHeight;
             cell.a = loc1.x - se.virtualColumn;
             cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+            Tile.ImageStrip strip;
             if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
                 tile.alpha = alpha;
-                cell.image = tile.getStrip(se.virtualRow);
+                strip = tile.getStrip(se.virtualRow);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             } else
             if (se.virtualRow == se.tile.height - 1) {
                 tile.alpha = alpha;
-                cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                strip = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+                cell.image = strip.image;
+                cell.yCompensation += strip.yOffset;
                 return;
             }
             cell.image = null;
@@ -1367,7 +1377,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     for (Location loc : battlePlacements) {
                         int x = x0 + Tile.toScreenX(loc.x, loc.y);
                         int y = y0 + Tile.toScreenY(loc.x, loc.y);
-                        g2.drawImage(areaDeploy.getStrip(0), x, y, null);
+                        g2.drawImage(areaDeploy.getStrip(0).image, x, y, null);
                     }
                 }
                 if (placementMode) {
@@ -1375,10 +1385,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
                             for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
 
-                                BufferedImage img = areaAccept.getStrip(0);
+                                BufferedImage img = areaAccept.getStrip(0).image;
                                 // check for existing building
                                 if (!surface().placement.canPlaceBuilding(i, j)) {
-                                    img = areaDeny.getStrip(0);
+                                    img = areaDeny.getStrip(0).image;
                                 }
 
                                 int x = x0 + Tile.toScreenX(i, j);
@@ -1918,7 +1928,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             gt.drawString(String.valueOf(movementHandler.pathWeightMap.weightMap[loc1.x + movementHandler.pathWeightMap.offsetX][loc1.y + movementHandler.pathWeightMap.offsetY]), x + 20, y + 20);
                             if (movementHandler.reservedCells.get(Location.of(loc.x - j, loc.y)) != null) {
                                 //add slight offset, so it can be seen if a tile is both reserved and taken
-                                g2.drawImage(areaReserved.getStrip(0), x, y + 5, null);
+                                g2.drawImage(areaReserved.getStrip(0).image, x, y + 5, null);
                             }
                         }
                         gt.dispose();
@@ -2206,7 +2216,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 radarMapImage = new BufferedImage(br.width, br.height, BufferedImage.TYPE_INT_ARGB);
                 surfaceGraphics = radarMapImage.createGraphics();
             }
-            BufferedImage empty = areaEmpty.getStrip(0);
+            BufferedImage empty = areaEmpty.getStrip(0).image;
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
                 for (int j = 0; j < surface.renderingLength.get(i); j++) {
@@ -4401,7 +4411,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 Location loc = u.location();
                 int x = surface().baseXOffset + Tile.toScreenX(loc.x, loc.y);
                 int y = surface().baseYOffset + Tile.toScreenY(loc.x, loc.y);
-                g2.drawImage(areaTaken.getStrip(0), x, y , null);
+                g2.drawImage(areaTaken.getStrip(0).image, x, y , null);
             }
             if (u.paralizedTTL > 0) {
                 // draw green paralization effect

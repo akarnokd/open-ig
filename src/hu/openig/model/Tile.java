@@ -49,7 +49,7 @@ public class Tile {
         }
     };
     /** The strip cache. */
-    public BufferedImage[] stripCache;
+    public ImageStrip[] stripCache;
     /**
      * Constructor. Sets the fields.
      * @param width the width in top-right angle.
@@ -68,7 +68,7 @@ public class Tile {
         if (WORK.get()[0].length < this.image.length) {
             WORK.get()[0] = new int[this.image.length];
         }
-        stripCache = new BufferedImage[width + height - 1];
+        stripCache = new ImageStrip[width + height - 1];
         if (lightMap != null) {
             this.lightMap = createLightmapRLE(lightMap);
         } else {
@@ -110,7 +110,7 @@ public class Tile {
         this.imageHeight = other.imageHeight;
         this.lightMap = other.lightMap;
         this.alpha = other.alpha;
-        this.stripCache = new BufferedImage[width + height - 1];
+        this.stripCache = new ImageStrip[width + height - 1];
         prepareStripCache();
     }
     /**
@@ -125,7 +125,7 @@ public class Tile {
      * @param stripIndex the strip index. Strips are indexed from left to right
      * @return the partial image
      */
-    public BufferedImage getStrip(int stripIndex) {
+    public ImageStrip getStrip(int stripIndex) {
         if (hasAlphaChanged()) {
             computeImageWithLights();
         }
@@ -154,17 +154,19 @@ public class Tile {
     private void createStrips() {
         int[] w = WORK.get()[0];
         if (stripCache.length == 1) {
-            stripCache[0].setRGB(0, 0, Math.min(57, imageWidth), imageHeight, w, 0, imageWidth);
+            stripCache[0].image.setRGB(0, 0, Math.min(57, imageWidth), imageHeight, w, 0, imageWidth);
         } else {
-            for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
+            for (int stripIndex = 0; stripIndex < stripCache.length; stripIndex++) {
                 int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
-                int w0 = 57;
+                int w0 = 31;
                 if (stripIndex < height - 1) {
                     w0 = 28;
+                } else if (stripIndex == stripCache.length - 1) {
+                    w0 = 57;
                 }
                 w0 = Math.min(w0, imageWidth - x0);
-                BufferedImage stripImage = stripCache[stripIndex];
-                stripImage.setRGB(0, 0, w0, imageHeight, w, x0, imageWidth);
+                BufferedImage stripImage = stripCache[stripIndex].image;
+                stripImage.setRGB(0, 0, w0, stripImage.getHeight(), w, x0 + imageWidth * stripCache[stripIndex].yOffset, imageWidth);
             }
         }
     }
@@ -198,18 +200,61 @@ public class Tile {
         result.setRGB(0, 0, imageWidth, imageHeight, w, 0, imageWidth);
         return result;
     }
+
+    /**
+     * Calculates the height of the transparent pixels that can be vertically trimmed from an image strip to ease
+     * rendering. The upper trimmed are is saved as the Y offset of the image strip.
+     * @param x0 the starting X offset in the original image rbg array
+     * @param stripWidth the width of the strip
+     * @param strip the strip object
+     * @return height of the total trimmed area
+     * */
+    int getHeightOfTrimmedArea(int x0, int stripWidth, ImageStrip strip) {
+        outer1:
+        for (int y = 0; y < imageHeight; y++) {
+            for (int x = x0; x < x0 + stripWidth; x++) {
+                if ((image[y * imageWidth + x] & 0xFF000000) != 0) {
+                    strip.yOffset = (y == 0 ? 0 : y - 1);
+                    break outer1;
+                }
+            }
+        }
+        int trimmedHeight = 0;
+        outer1:
+        for (int y = imageHeight - 1; y >= 0; y--) {
+            for (int x = x0; x < x0 + stripWidth; x++) {
+                if ((image[y * imageWidth + x] & 0xFF000000) != 0) {
+                    trimmedHeight = (y == imageHeight ? 0 : imageHeight - y + 1);
+                    break outer1;
+                }
+            }
+        }
+        return imageHeight - strip.yOffset - trimmedHeight;
+    }
+
     /** Allocate image memory for the strip cache. */
     private void prepareStripCache() {
-        // compute strips
-        for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
-            int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
-            int w0 = 57;
-            if (stripIndex < height - 1) {
-                w0 = 28;
+        // compute strips and trim transparent areas
+        if (stripCache.length == 1) {
+            stripCache[0] = new ImageStrip();
+            stripCache[0].yOffset = 0;
+            stripCache[0].image = createImage(Math.min(57, imageWidth), imageHeight);
+            stripCache[0].image.setAccelerationPriority(1.0f);
+        } else {
+            for (int stripIndex = 0; stripIndex < stripCache.length; stripIndex++) {
+                int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
+                int w0 = 31;
+                if (stripIndex < height - 1) {
+                    w0 = 28;
+                } else if (stripIndex == stripCache.length - 1) {
+                    w0 = 57;
+                }
+                w0 = Math.min(w0, imageWidth - x0);
+                stripCache[stripIndex] = new ImageStrip();
+                int height = getHeightOfTrimmedArea(x0, w0, stripCache[stripIndex]);
+                stripCache[stripIndex].image = createImage(w0, height);
+                stripCache[stripIndex].image.setAccelerationPriority(1.0f);
             }
-            w0 = Math.min(w0, imageWidth - x0);
-            stripCache[stripIndex] = createImage(w0, imageHeight);
-            stripCache[stripIndex].setAccelerationPriority(1.0f);
         }
     }
     /**
@@ -331,5 +376,16 @@ public class Tile {
      */
     public static float toTileY(int x, int y) {
         return -(30 * y + 12 * x) / 786f;
+    }
+
+    /**
+     * An object for individual strips and their Y offsets if the strip is trimmed vertically.
+     */
+    public static class ImageStrip {
+        /** Y offset of the strip where the original image would begin if the strip created from it is trimmed vertically. */
+        public int yOffset;
+        /** Strip image. */
+        public BufferedImage image;
+
     }
 }
