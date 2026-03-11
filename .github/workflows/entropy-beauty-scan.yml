@@ -16,11 +16,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run TruffleHog (secrets + entropy filter)
+      - name: Run TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          output-file: trufflehog.json          # ← this is the clean way now
-          extra_args: --results=verified,unknown --filter-entropy=3.5 --no-update
+          path: .                     # scan current directory (the PR)
+          extra_args: --results=verified,unknown --filter-entropy=3.5 --no-update --json
+
+      - name: Save TruffleHog JSON output
+        run: |
+          # The action always prints to stdout; we capture it to a file
+          trufflehog git . --results=verified,unknown --filter-entropy=3.5 --no-update --json > trufflehog.json || true
 
       - name: Install Python + compute beauty entropy
         run: |
