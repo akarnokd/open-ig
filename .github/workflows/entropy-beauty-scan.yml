@@ -22,10 +22,13 @@ jobs:
           path: .                     # scan current directory (the PR)
           extra_args: --results=verified,unknown --filter-entropy=3.5 --json
 
-      - name: Save TruffleHog JSON output
+      # ── Save the JSON output so we can use it in the comment step ──
+      - name: Save TruffleHog output
         run: |
-          # The action always prints to stdout; we capture it to a file
-          trufflehog git . --results=verified,unknown --filter-entropy=3.5 --no-update --json > trufflehog.json || true
+          # The action already ran; we just capture the JSON lines it printed
+          cat << 'EOF' > trufflehog.json
+          $(trufflehog git . --results=verified,unknown --filter-entropy=3.5 --no-update --json 2>/dev/null || echo "")
+          EOF
 
       - name: Install Python + compute beauty entropy
         run: |
