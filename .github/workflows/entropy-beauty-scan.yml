@@ -20,7 +20,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: .                     # scan current directory (the PR)
-          extra_args: --results=verified,unknown --filter-entropy=3.5 --no-update --json
+          extra_args: --results=verified,unknown --filter-entropy=3.5 --json
 
       - name: Save TruffleHog JSON output
         run: |
