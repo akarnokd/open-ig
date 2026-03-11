@@ -22,7 +22,7 @@ jobs:
           extra_args: --results=verified,unknown --filter-entropy=3.5 --json
 
       - name: Compute mid-4 beauty entropy
-        run: python .github/scripts/compute-entropy.py
+        run: python .github/workflows/compute-entropy.py
 
       - name: Post summary comment
         uses: actions/github-script@v7
