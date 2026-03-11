@@ -1,8 +1,7 @@
 name: Entropy Beauty + TruffleHog Scan
 
 on:
-  pull_request:
-    branches: [ main, master, develop ]
+  pull_request
 
 permissions:
   contents: read
