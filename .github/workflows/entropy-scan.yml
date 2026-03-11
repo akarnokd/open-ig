@@ -1,0 +1,10 @@
+# .github/workflows/entropy-scan.yml
+name: Entropy + Secret Scan
+on: [push, pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --results=verified,unknown --filter-entropy=4.0
