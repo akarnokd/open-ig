@@ -19,7 +19,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: .
-          extra_args: --results=verified,unknown --filter-entropy=3.5 --no-update --json
+          extra_args: --results=verified,unknown --filter-entropy=3.5 --json
 
       - name: Compute mid-4 beauty entropy
         run: python .github/scripts/compute-entropy.py
