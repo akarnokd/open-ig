@@ -86,14 +86,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the internal port for this mapping.
-     * @return the {@link #internalPort}
+     * @return the {@code #internalPort}
      */
     public int getInternalPort() {
         return internalPort;
     }
 
     /**
-     * Sets the {@link #internalPort}.
+     * Sets the {@code #internalPort}.
      * @param internalPort the port to use
      */
     public void setInternalPort(int internalPort) {
@@ -102,14 +102,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the external (remote) port for this mapping.
-     * @return the {@link #externalPort}
+     * @return the {@code #externalPort}
      */
     public int getExternalPort() {
         return externalPort;
     }
 
     /**
-     * Sets the {@link #externalPort}.
+     * Sets the {@code #externalPort}.
      * @param externalPort the port to use
      */
     public void setExternalPort(int externalPort) {
@@ -118,14 +118,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the remote host this mapping is associated with.
-     * @return the {@link #remoteHost}
+     * @return the {@code #remoteHost}
      */
     public String getRemoteHost() {
         return remoteHost;
     }
 
     /**
-     * Sets the {@link #remoteHost}.
+     * Sets the {@code #remoteHost}.
      * @param remoteHost the host to set
      */
     public void setRemoteHost(String remoteHost) {
@@ -134,14 +134,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the internal host this mapping is associated with.
-     * @return the {@link UPnPPortMappingEntry#internalClient}
+     * @return the {@code UPnPPortMappingEntry#internalClient}
      */
     public String getInternalClient() {
         return internalClient;
     }
 
     /**
-     * Sets the {@link #internalClient}.
+     * Sets the {@code #internalClient}.
      * @param internalClient the client to set
      */
     public void setInternalClient(String internalClient) {
@@ -150,14 +150,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the protocol associated with this mapping.
-     * @return {@link #protocol}
+     * @return {@code #protocol}
      */
     public String getProtocol() {
         return protocol;
     }
 
     /**
-     * Sets the {@link #protocol} associated with this mapping.
+     * Sets the {@code #protocol} associated with this mapping.
      * @param protocol one of <tt>TCP</tt> or <tt>UDP</tt>
      */
     public void setProtocol(String protocol) {
@@ -166,14 +166,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the enabled flag (<tt>"1"</tt> if enabled, <tt>"0"</tt> otherwise).
-     * @return {@link #enabled}
+     * @return {@code #enabled}
      */
     public String getEnabled() {
         return enabled;
     }
 
     /**
-     * Sets the {@link #enabled} flag.
+     * Sets the {@code #enabled} flag.
      * @param enabled <tt>"1"</tt> for enabled, <tt>"0"</tt> for disabled
      */
     public void setEnabled(String enabled) {
@@ -182,14 +182,14 @@ public class UPnPPortMappingEntry {
 
     /**
      * Gets the port mapping description.
-     * @return {@link #portMappingDescription}
+     * @return {@code #portMappingDescription}
      */
     public String getPortMappingDescription() {
         return portMappingDescription;
     }
 
     /**
-     * Sets the {@link #portMappingDescription}.
+     * Sets the {@code #portMappingDescription}.
      * @param portMappingDescription the description to set
      */
     public void setPortMappingDescription(String portMappingDescription) {

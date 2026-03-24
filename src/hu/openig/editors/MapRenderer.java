@@ -111,8 +111,11 @@ public class MapRenderer extends JComponent {
     final SurfaceCell cell = new SurfaceCell();
     /** Right click-drag. */
     final MouseAdapter ma = new MouseAdapter() {
+        /** Last mouse X. */
         int lastX;
+        /** Last mouse Y. */
         int lastY;
+        /** Is in dragging mode? */
         boolean drag;
         @Override
         public void mousePressed(MouseEvent e) {
@@ -167,7 +170,9 @@ public class MapRenderer extends JComponent {
     };
     /** Selection handler. */
     final MouseAdapter sma = new MouseAdapter() {
+        /** Selection enabled. */
         boolean sel;
+        /** Original position. */
         Location orig;
         @Override
         public void mousePressed(MouseEvent e) {

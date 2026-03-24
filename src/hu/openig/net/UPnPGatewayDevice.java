@@ -134,7 +134,7 @@ public class UPnPGatewayDevice {
     /**
      * Retrieves the properties and description of the GatewayDevice.
      * <p/>
-     * Connects to the device's {@link #location} and parses the response
+     * Connects to the device's {@code #location} and parses the response
      * using a {@link UPnPGatewayDeviceHandler} to populate the fields of this
      * class
      *
@@ -497,14 +497,14 @@ public class UPnPGatewayDevice {
     /**
      * Gets the local address to connect the gateway through.
      *
-     * @return the {@link #localAddress}
+     * @return the {@code #localAddress}
      */
     public InetAddress getLocalAddress() {
         return localAddress;
     }
 
     /**
-     * Sets the {@link #localAddress}.
+     * Sets the {@code #localAddress}.
      *
      * @param localAddress the address to set
      */

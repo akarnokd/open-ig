@@ -2267,7 +2267,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float scale = Math.min(scalex, scaley);
 
             int x0 = -Tile.toRadarX(-height, -height);
-            int y0 = 0;
 
 
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
