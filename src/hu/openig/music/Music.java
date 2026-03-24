@@ -164,9 +164,11 @@ public class Music {
      *            the audio files to play back
      */
     private void playbackLoop(String... fileNames) {
-        int fails = 0;
-        while (checkStop() && fails < fileNames.length) {
-            fails += playbackSequence(fileNames);
+        if (fileNames.length != 0) {
+            int fails = 0;
+            while (checkStop() && fails < fileNames.length) {
+                fails += playbackSequence(fileNames);
+            }
         }
     }
     /**

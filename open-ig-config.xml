@@ -24,6 +24,7 @@
 <entry key="maximized">true</entry>
 <entry key="classicControls">false</entry>
 <entry key="allowWeather">true</entry>
+<entry key="stargazerMusic">true</entry>
 <entry key="fullScreen">false</entry>
 <entry key="uiScale">100</entry>
 <entry key="hostUPnP">false</entry>
@@ -58,6 +59,7 @@
 <entry key="aiGroundAttackEverything">true</entry>
 <entry key="targetSpecificRockets">false</entry>
 <entry key="hostPort">13951</entry>
+<entry key="classicalMusic">true</entry>
 <entry key="subtitles">true</entry>
 <entry key="effectVolume">100</entry>
 <entry key="reequipBombs">true</entry>
