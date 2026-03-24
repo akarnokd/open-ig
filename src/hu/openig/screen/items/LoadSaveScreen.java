@@ -8,77 +8,30 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Action0;
-import hu.openig.core.Difficulty;
-import hu.openig.core.Func1;
-import hu.openig.core.Pair;
-import hu.openig.core.SaveMode;
-import hu.openig.model.AutoBuild;
-import hu.openig.model.Cursors;
-import hu.openig.model.FileItem;
-import hu.openig.model.Screens;
-import hu.openig.model.SoundType;
-import hu.openig.model.World;
-import hu.openig.render.RenderTools;
-import hu.openig.render.TextRenderer;
-import hu.openig.screen.ScreenBase;
-import hu.openig.screen.api.LoadSaveScreenAPI;
-import hu.openig.screen.api.SettingsPage;
-import hu.openig.ui.HorizontalAlignment;
-import hu.openig.ui.UICheckBox;
-import hu.openig.ui.UIComponent;
-import hu.openig.ui.UIContainer;
-import hu.openig.ui.UIGenericButton;
-import hu.openig.ui.UIImageButton;
-import hu.openig.ui.UILabel;
-import hu.openig.ui.UIMouse;
-import hu.openig.ui.UIMouse.Button;
-import hu.openig.ui.UIMouse.Type;
-import hu.openig.ui.UIPanel;
-import hu.openig.ui.UIScrollBox;
-import hu.openig.ui.UISpinner;
-import hu.openig.ui.VerticalAlignment;
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.XElement;
-
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.io.*;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Deque;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.text.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TimeZone;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.Timer;
 import javax.xml.stream.XMLStreamException;
+
+import hu.openig.core.*;
+import hu.openig.model.*;
+import hu.openig.render.*;
+import hu.openig.screen.ScreenBase;
+import hu.openig.screen.api.*;
+import hu.openig.ui.*;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.*;
 
 /**
  * A load and save game screen.
@@ -1618,6 +1571,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         UICheckBox muteMusic;
         /** Mute videos. */
         UICheckBox muteVideo;
+        /** Enable playing the classical game music? */
+        UICheckBox classicalMusic;
+        /** Enable playing the stargazer game music, courtesy of Tamas Kreiner? */
+        UICheckBox stargazerMusic;
 
         void init() {
 
@@ -1885,6 +1842,28 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 }
             };
 
+            classicalMusic = new UICheckBox(get("settings.classicalmusic"), 14, commons.common().checkmark, commons.text());
+            classicalMusic.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.classicalMusic = classicalMusic.selected();
+                    if (commons.music.isPlayLooped() && !commons.isBattle()) {
+                        commons.playRegularMusic();
+                    }
+                }
+            };
+
+            stargazerMusic = new UICheckBox(get("settings.stargazermusic"), 14, commons.common().checkmark, commons.text());
+            stargazerMusic.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.stargazerMusic = stargazerMusic.selected();
+                    if (commons.music.isPlayLooped() && !commons.isBattle()) {
+                        commons.playRegularMusic();
+                    }
+                }
+            };
+
             computerVoiceScreen.selected(config.computerVoiceScreen);
             computerVoiceNotify.selected(config.computerVoiceNotify);
             buttonSounds.selected(config.buttonSounds);
@@ -1892,6 +1871,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             muteAudio.selected(config.muteEffect);
             muteVideo.selected(config.muteVideo);
             muteMusic.selected(config.muteMusic);
+            classicalMusic.selected(config.classicalMusic);
+            stargazerMusic.selected(config.stargazerMusic);
 
             height = Math.max(setComponentLocations(), height);
 
@@ -1945,6 +1926,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             buttonSounds.location(10, dy + 8);
             dy += ddy;
             subtitles.location(10, dy + 8);
+            dy += ddy;
+            classicalMusic.location(10, dy + 8);
+            dy += ddy;
+            stargazerMusic.location(10, dy + 8);
             dy += ddy;
             return dy;
         }

@@ -96,6 +96,8 @@
 	<entry key="quickresearch.ai">A.I.</entry>
 	<entry key="quickresearch.mil">Mil.</entry>
 	<entry key="settings.mute">Silenciar</entry>
+    <entry key="settings.classicalmusic">Play classical music</entry>
+    <entry key="settings.stargazermusic">Play Stargazer music, via Tamas Kreiner</entry>
 	<entry key="skirmish.back">Volver</entry>
 	<entry key="skirmish.play">Jugar</entry>
 	<entry key="difficulty.EASY">Fácil</entry>

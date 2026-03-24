@@ -35,7 +35,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
     /** The version string. */
-    public static final String VERSION = "0.95.263";
+    public static final String VERSION = "0.95.264";
     /** Annotation for indicating load/save a field. */
     @Retention(RetentionPolicy.RUNTIME)
     @interface LoadSave { }
@@ -101,6 +101,14 @@ public class Configuration {
     @LoadSave
     @LoadSaveGame
     public boolean muteVideo;
+    /** Enable playing the classical music? */
+    @LoadSave
+    @LoadSaveGame
+    public boolean classicalMusic = true;
+    /** Enable playing the stargazer game music, courtesy of Tamas Kreiner? */
+    @LoadSave
+    @LoadSaveGame
+    public boolean stargazerMusic = true;
     /** The debug watcher window. */
     public Closeable watcherWindow;
     /** Returns the current crash log or null if no such log is available. */

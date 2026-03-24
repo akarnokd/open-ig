@@ -2829,6 +2829,8 @@
 
 	<entry key="equipment.fleetname.tooltip">Fleet name. Rename via [c=FFFFFFFF]double click[/c].</entry>
 	<entry key="settings.mute">Mute</entry>
+	<entry key="settings.classicalmusic">Play classical music</entry>
+    <entry key="settings.stargazermusic">Play Stargazer music, via Tamas Kreiner</entry>
 	<entry key="settings.show_tooltips">Show tooltips</entry>
 	<entry key="achievements.counts">Status: %d of %d (%.1f%%)</entry>
 	<entry key="achievements.show_earned">Earned</entry>

@@ -66,7 +66,6 @@ public class Music {
         if (sdl != null) {
             sdl.start();
         } else
-
         if (oggMusic != null) {
             oggMusic.outputLine.start();
         }
@@ -128,6 +127,10 @@ public class Music {
         }, "MusicPlaybackL-" + Arrays.toString(fileName));
         playbackThread = th;
         th.start();
+    }
+
+    public boolean isPlayLooped() {
+        return playbackThread != null;
     }
     /**
      * Play the given file list in the given sequence once.

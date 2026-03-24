@@ -925,9 +925,17 @@ public class CommonResources implements GameEnvironment {
 
         List<String> musicList = new ArrayList<>();
         int maxLen = 0;
-        for (ResourcePlace rp : rl.list(language(), "music/Music")) {
-            musicList.add(rp.getName());
-            maxLen = Math.max(rp.getName().length(), maxLen);
+        if (config.classicalMusic) {
+            for (ResourcePlace rp : rl.list(language(), "music/Music")) {
+                musicList.add(rp.getName());
+                maxLen = Math.max(rp.getName().length(), maxLen);
+            }
+        }
+        if (config.stargazerMusic) {
+            for (ResourcePlace rp : rl.list(language(), "music/Stargazer")) {
+                musicList.add(rp.getName());
+                maxLen = Math.max(rp.getName().length(), maxLen);
+            }
         }
 
         final int fMaxLen = maxLen;

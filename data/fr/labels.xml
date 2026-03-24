@@ -2574,6 +2574,8 @@
   <entry key='settings.movie_scale'>Cinématiques en plein écran</entry>
   <entry key='settings.music_volume'>Volume Musique</entry>
   <entry key='settings.mute'>Désactiver</entry>
+  <entry key="settings.classicalmusic">Play classical music</entry>
+  <entry key="settings.stargazermusic">Play Stargazer music, via Tamas Kreiner</entry>
   <entry key='settings.new_save'>-- New --</entry>
   <entry key='settings.quick_rnp'>Montrer Recherches/Productions rapides</entry>
   <entry key='settings.radarunion'>Monter le périmètre radar global uniquement</entry>
