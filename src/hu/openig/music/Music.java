@@ -189,7 +189,6 @@ public class Music {
                         if (fileName.toUpperCase(Locale.ENGLISH).endsWith(".WAV")) {
                             playBackClip(rp);
                         } else
-
                         if (fileName.toUpperCase(Locale.ENGLISH).endsWith(".OGG")) {
                             if (!playbackOgg(rp)) {
                                 fails++;
