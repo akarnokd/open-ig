@@ -29,8 +29,8 @@
 <entry key="uiScale">100</entry>
 <entry key="hostUPnP">false</entry>
 <entry key="buildingTextBackgrounds">true</entry>
-<entry key="spacewarFreeformMovement">false</entry>
-<entry key="useStandardFonts">false</entry>
+<entry key="spacewarFreeformMovement">true</entry>
+<entry key="useStandardFonts">true</entry>
 <entry key="spacewarDiminishingAttach">true</entry>
 <entry key="left">253</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
