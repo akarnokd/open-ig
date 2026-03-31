@@ -43,7 +43,7 @@
     </notes>
     <release-details>
       <entry version='0.95.264' date='2026-03-31'>
-        <item category='Music'>Added music from the unreleased IG:Stargazer game, thanks to Tamas Kreiner, the audio designer of IG.</item>
+        <item category='Music'>Added music from the unreleased IG:Stargazer game, donated by Tamas Kreiner, the musig and audio designer of the games.</item>
         <item category='Graphics' issue='1234'>Improved the rectangular transformation of the surface radar by @hemoridos</item>
         <item category='Performance' issue='1235'>Tweak large Tile striping by @hemoridos in #1235</item>
       </entry>
