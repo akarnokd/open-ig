@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.263'>
+  <module id='Game' version='0.95.264'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,11 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.264' date='2026-03-31'>
+        <item category='Music'>Added music from the unreleased IG:Stargazer game, thanks to Tamas Kreiner, the audio designer of IG.</item>
+        <item category='Graphics' issue='1234'>Improved the rectangular transformation of the surface radar by @hemoridos</item>
+        <item category='Performance' issue='1235'>Tweak large Tile striping by @hemoridos in #1235</item>
+      </entry>
       <entry version='0.95.263' date='2025-08-23'>
         <item category='Starmap' issue='1191'>Fleets can no longer be moved outside the playable space.</item>
         <item category='Spacewar' issue='1195'>Right clicking on the Quick Research or Quick Production buttons is no longer allowed during battle.</item>
@@ -357,8 +362,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.263.jar' sha1='23E20F8B3F0B2A942C3EFC517760CFBDEC294FE4'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20250603a2.zip' sha1='C46F6BD33AB780DD809312FDB89E654EAF189D41'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.264.jar' sha1='A0659666F5C2C26527BB8C7899A201BD94C75CCB'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20260331a2.zip' sha1='0D0E36F31336B58712B3AE24C4AF2B3ED0C7A86A'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -382,6 +387,7 @@
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20240607.zip' sha1='2a881e718ad806f349f06f9dc40daca74a13c4e9'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-music-stargazer.zip' sha1='f00a4cc8e83c17949c23aad05976581b9187fa5e'/>
     <remove file='open-ig-audio-generic-20121121A.zip'/>
     <remove file='open-ig-audio-generic-20120620A.zip'/>
     <remove file='open-ig-audio-generic-20120505A.zip'/>

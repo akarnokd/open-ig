@@ -316,6 +316,7 @@
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-music-stargazer.zip' sha1='f00a4cc8e83c17949c23aad05976581b9187fa5e'/>
     <remove file='open-ig-audio-generic-20120620A.zip'/>
     <remove file='open-ig-audio-generic-20120505A.zip'/>
     <remove file='open-ig-video-01-0.8.zip'/>
