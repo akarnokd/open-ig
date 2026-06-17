@@ -1403,8 +1403,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         } else {
             rightPanel.displayPanel(PanelMode.COMMUNICATOR);
             setLayoutSelectionMode(false);
-            commons.simulation.resume();
             enableFleetControls(true);
+            commons.simulation.resume();
         }
         retreat.enabled = false;
 
