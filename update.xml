@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.264'>
+  <module id='Game' version='0.95.265'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.265' date='2026-06-17'>
+        <item category='Spacewar' issue='1249'>Fix for a spacewar race condition crash due to uninitialized movement handlers by @hemoridos</item>
+      </entry>
       <entry version='0.95.264' date='2026-03-31'>
         <item category='Music'>Added music from the unreleased IG:Stargazer game, donated by Tamas Kreiner, the musig and audio designer of the games.</item>
         <item category='Graphics' issue='1234'>Improved the rectangular transformation of the surface radar by @hemoridos</item>
@@ -362,7 +365,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.264.jar' sha1='A0659666F5C2C26527BB8C7899A201BD94C75CCB'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.265.jar' sha1='7F43074B3CEA7B33FAF572635EAE45767406660F'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20260331a2.zip' sha1='0D0E36F31336B58712B3AE24C4AF2B3ED0C7A86A'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
