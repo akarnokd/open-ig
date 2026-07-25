@@ -36,6 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
@@ -189,6 +190,13 @@ public class Sounds {
      * @return the data line
      */
     SourceDataLine getLine(AudioFormatType aft) {
+        BlockingQueue<SourceDataLine> q = soundPool.get(aft);
+        if (q != null) {
+            SourceDataLine sdl = q.poll();
+            if (sdl != null) {
+                return sdl;
+            }
+        }
         return addLine(aft);
     }
     /**
@@ -197,7 +205,24 @@ public class Sounds {
      * @param sdl the source data line
      */
     void putBackLine(AudioFormatType aft, SourceDataLine sdl) {
-        sdl.close();
+        try {
+            sdl.stop();
+        } catch (Throwable t) {
+            // ignored
+        }
+        try {
+            sdl.flush();
+        } catch (Throwable t) {
+            // ignored
+        }
+        BlockingQueue<SourceDataLine> q = soundPool.get(aft);
+        if (q != null && q.offer(sdl)) {
+            return;
+        }
+        synchronized (this) {
+            sdl.close();
+            lines.remove(sdl);
+        }
     }
     /** Close all audio lines. */
     public void close() {
@@ -254,58 +279,85 @@ public class Sounds {
         if (vol > 0) {
             if (effectSemaphore.tryAcquire()) {
                 try {
-
                     final byte[] data = soundMap.get(effect);
                     final AudioFormatType aft = soundFormat.get(effect);
-                    final SourceDataLine sdl = getLine(aft);
-
-                    if (sdl != null) {
-                        final Object cancelSync = new Object();
-                        final AtomicBoolean done = new AtomicBoolean();
-
-                        final Future<?> f = exec.submit(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    String n = Thread.currentThread().getName();
-                                    Thread.currentThread().setName(n + "-" + effect);
-                                    try {
-                                        AudioThread.setVolume(sdl, vol);
-                                        sdl.start();
-                                        do {
-                                            sdl.write(data, 0, data.length);
-                                        } while (loop && !done.get() && !Thread.currentThread().isInterrupted());
-                                        sdl.drain();
-                                        sdl.stop();
-                                    } catch (Throwable t) {
-                                        Exceptions.add(t);
-                                    } finally {
-                                        Thread.currentThread().setName(n);
-
-                                        synchronized (cancelSync) {
-                                            putBackLine(aft, sdl);
-                                            done.set(true);
-                                        }
-                                        effectSemaphore.release();
-                                    }
-                                } finally {
-                                    edt(action);
-                                }
-                            }
-                        });
-                        return new Action0() {
-                            @Override
-                            public void invoke() {
-                                synchronized (cancelSync) {
-                                    if (!done.get()) {
-                                        done.set(true);
-                                        sdl.flush();
-                                        f.cancel(true);
-                                    }
-                                }
-                            }
-                        };
+                    if (data == null || aft == null) {
+                        effectSemaphore.release();
+                        edt(action);
+                        return null;
                     }
+
+                    final Object cancelSync = new Object();
+                    final AtomicBoolean done = new AtomicBoolean();
+                    final AtomicReference<SourceDataLine> sdlRef = new AtomicReference<>();
+
+                    final Future<?> f = exec.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String n = Thread.currentThread().getName();
+                                Thread.currentThread().setName(n + "-" + effect);
+                                SourceDataLine sdl = null;
+                                try {
+                                    if (done.get()) {
+                                        return;
+                                    }
+                                    sdl = getLine(aft);
+                                    if (sdl == null) {
+                                        return;
+                                    }
+                                    synchronized (cancelSync) {
+                                        if (done.get()) {
+                                            putBackLine(aft, sdl);
+                                            sdl = null;
+                                            return;
+                                        }
+                                        sdlRef.set(sdl);
+                                    }
+                                    AudioThread.setVolume(sdl, vol);
+                                    sdl.start();
+                                    do {
+                                        sdl.write(data, 0, data.length);
+                                    } while (loop && !done.get() && !Thread.currentThread().isInterrupted());
+                                    sdl.drain();
+                                    sdl.stop();
+                                } catch (Throwable t) {
+                                    Exceptions.add(t);
+                                } finally {
+                                    Thread.currentThread().setName(n);
+                                    synchronized (cancelSync) {
+                                        SourceDataLine toReturn = sdlRef.getAndSet(null);
+                                        if (toReturn != null) {
+                                            putBackLine(aft, toReturn);
+                                        }
+                                        done.set(true);
+                                    }
+                                    effectSemaphore.release();
+                                }
+                            } finally {
+                                edt(action);
+                            }
+                        }
+                    });
+                    return new Action0() {
+                        @Override
+                        public void invoke() {
+                            synchronized (cancelSync) {
+                                if (!done.get()) {
+                                    done.set(true);
+                                    SourceDataLine sdl = sdlRef.get();
+                                    if (sdl != null) {
+                                        try {
+                                            sdl.flush();
+                                        } catch (Throwable t) {
+                                            // ignored
+                                        }
+                                    }
+                                    f.cancel(true);
+                                }
+                            }
+                        }
+                    };
                 } catch (RejectedExecutionException ex) {
                     effectSemaphore.release();
                 }
