@@ -200,7 +200,7 @@ public class TextRenderer {
      * @param textCacheSize the text rendering cache size or 0 to disable it
      */
     public TextRenderer(ResourceLocator rl, boolean useStandardFonts, int textCacheSize) {
-        frc = new FontRenderContext(null, false, false);
+        frc = new FontRenderContext(null, false, true);
         this.useStandardFonts = useStandardFonts;
 
         charImage = rl.getImage("charset");
@@ -222,11 +222,11 @@ public class TextRenderer {
      */
     public void setFontScaling(double scale) {
         if (scale <= 1) {
-            frc = new FontRenderContext(null, false, false);
+            frc = new FontRenderContext(null, false, true);
         }
         AffineTransform tx = new AffineTransform();
         tx.scale(scale, scale);
-        frc = new FontRenderContext(tx, false, false);
+        frc = new FontRenderContext(tx, false, true);
     }
     /**
      * A line definition.
@@ -343,6 +343,13 @@ public class TextRenderer {
         return result;
     }
     /**
+     * @param size the font size
+     * @return the font used when {@link #useStandardFonts} is enabled
+     */
+    private static Font standardFont(int size) {
+        return new Font(Font.MONOSPACED, Font.BOLD, size /* + 4 */);
+    }
+    /**
      * Returns the expected text width for the given character size and string.
      * @param size the character size
      * @param text the text to test
@@ -351,8 +358,7 @@ public class TextRenderer {
     public int getTextWidth(int size, String text) {
         if (text.length() > 0) {
             if (useStandardFonts) {
-                Font font = new Font(Font.MONOSPACED, Font.PLAIN, size /* + 4 */);
-                return (int)font.getStringBounds(text, frc).getWidth();
+                return (int)Math.ceil(standardFont(size).getStringBounds(text, frc).getWidth());
             }
             Integer widths = charsetWidths.get(size);
             Integer spaces = charsetSpaces.get(size);
@@ -378,7 +384,7 @@ public class TextRenderer {
         if (useStandardFonts) {
             Font f = g.getFont();
             Color c = g.getColor();
-            g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size /* + 4 */));
+            g.setFont(standardFont(size));
             g.setColor(new Color(color));
             FontMetrics fm = g.getFontMetrics();
             g.drawString(text, x, y + fm.getAscent() - fm.getDescent() / 2 /* - 4 */);
