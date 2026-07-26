@@ -1348,6 +1348,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float alphaSave = alpha;
             computeAlpha();
             if (alphaSave != alpha) {
+                surfaceVisualUpdateNeeded = true;
                 if (alpha > 0.99) {
                     areaPaved = commons.colony().tilePavement;
                 } else {
@@ -1533,6 +1534,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     surface().surfaceCells.setPavement(sf.location.x + i, sf.location.y - j);
                 }
             }
+            surfaceVisualUpdateNeeded = true;
         }
         /**
          * Draw the next vehicle's image to deploy.
@@ -2204,18 +2206,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * Draw symbolic surface tiles into a buffered image that can be reused for radar drawing.
          * @param surface the surface object
          * @param br bounding rectangle of the radar image
-         * @param g2 graphics object to draw to. If not given the minimap is rendered to an image.
-         * @return a buffered image with a rendered minimap.
+         * @return a buffered image with a rendered minimap
          */
-        BufferedImage drawRadarSurfaceImage(PlanetSurface surface, Rectangle br, Graphics2D g2) {
-            BufferedImage radarMapImage = null;
-            Graphics2D surfaceGraphics;
-            if (g2 != null) {
-                surfaceGraphics = (Graphics2D) g2.create();
-            } else {
-                radarMapImage = new BufferedImage(br.width, br.height, BufferedImage.TYPE_INT_ARGB);
-                surfaceGraphics = radarMapImage.createGraphics();
-            }
+        BufferedImage drawRadarSurfaceImage(PlanetSurface surface, Rectangle br) {
+            BufferedImage image = new BufferedImage(br.width, br.height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D surfaceGraphics = image.createGraphics();
             BufferedImage empty = areaEmpty.getStrip(0).image;
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
@@ -2243,7 +2238,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
             }
-            return radarMapImage;
+            surfaceGraphics.dispose();
+            return image;
         }
 
         @Override
@@ -2272,27 +2268,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
                 int scaledWidth = (int)(br.width * scale);
                 int scaledHeight = (int)(br.height * scale);
-                if (battle != null) {
-                    drawRadarImage = surfaceVisualUpdateNeeded;
-                    if (drawRadarImage) {
-                        BufferedImage scaledImg = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+                drawRadarImage = surfaceVisualUpdateNeeded;
+                if (drawRadarImage) {
+                    BufferedImage scaledImg = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
-                        Graphics2D scaledSurfaceGraphics = scaledImg.createGraphics();
-                        scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, br, null), 0, 0, scaledWidth, scaledHeight, null);
-                        scaledSurfaceGraphics.dispose();
-                        radarMapImage = scaledImg;
-                        drawRadarImage = false;
-                    }
-                    g2.drawImage(radarMapImage, -(scaledWidth - width) / 2, -(scaledHeight - height) / 2, null);
-
-                    g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
-                    g2.scale(scale, scale);
-
-                } else {
-                    g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
-                    g2.scale(scale, scale);
-                    drawRadarSurfaceImage(surface, br, g2);
+                    Graphics2D scaledSurfaceGraphics = scaledImg.createGraphics();
+                    scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, br), 0, 0, scaledWidth, scaledHeight, null);
+                    scaledSurfaceGraphics.dispose();
+                    radarMapImage = scaledImg;
+                    drawRadarImage = false;
                 }
+                g2.drawImage(radarMapImage, -(scaledWidth - width) / 2, -(scaledHeight - height) / 2, null);
+
+                g2.translate(-(scaledWidth - width) / 2, -(scaledHeight - height) / 2);
+                g2.scale(scale, scale);
 
                 g2.setColor(Color.RED);
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
