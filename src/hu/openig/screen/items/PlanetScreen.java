@@ -313,8 +313,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     double yViewRatio = 0;
     /** Did any event happen that requires a surface visual update. */
     private boolean surfaceVisualUpdateNeeded = true;
-    /** Should the minimap on the radar panel be redrawn. */
-    boolean drawRadarImage = true;
     /** Should the planet surface be redrawn. */
     boolean drawSurfaceImage = true;
     /** The currently rendered planet. */
@@ -611,6 +609,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
     @Override
     public void onEnter(Screens mode) {
+        surfaceVisualUpdateNeeded = true;
         animationTimer = commons.register(150, new Action0() {
             @Override
             public void invoke() {
@@ -1348,7 +1347,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float alphaSave = alpha;
             computeAlpha();
             if (alphaSave != alpha) {
-                surfaceVisualUpdateNeeded = true;
                 if (alpha > 0.99) {
                     areaPaved = commons.colony().tilePavement;
                 } else {
@@ -2172,8 +2170,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @author akarnokd, Mar 27, 2011
      */
     class RadarRender extends UIComponent {
-        /** Image buffer for storing the currently rendered radar minimap. */
-        BufferedImage radarMapImage = null;
+        /** Cached minimaps for the current planet, keyed by lighting alpha. */
+        final Map<Float, BufferedImage> radarAlphaCache = new HashMap<>();
 
         /** The pre-rendered noise. */
         BufferedImage[] noises = new BufferedImage[0];
@@ -2268,15 +2266,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
                 int scaledWidth = (int)(br.width * scale);
                 int scaledHeight = (int)(br.height * scale);
-                drawRadarImage = surfaceVisualUpdateNeeded;
-                if (drawRadarImage) {
-                    BufferedImage scaledImg = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
-
-                    Graphics2D scaledSurfaceGraphics = scaledImg.createGraphics();
+                if (surfaceVisualUpdateNeeded) {
+                    radarAlphaCache.clear();
+                }
+                BufferedImage radarMapImage = radarAlphaCache.get(alpha);
+                if (radarMapImage == null) {
+                    radarMapImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D scaledSurfaceGraphics = radarMapImage.createGraphics();
                     scaledSurfaceGraphics.drawImage(drawRadarSurfaceImage(surface, br), 0, 0, scaledWidth, scaledHeight, null);
                     scaledSurfaceGraphics.dispose();
-                    radarMapImage = scaledImg;
-                    drawRadarImage = false;
+                    radarAlphaCache.put(alpha, radarMapImage);
                 }
                 g2.drawImage(radarMapImage, -(scaledWidth - width) / 2, -(scaledHeight - height) / 2, null);
 
@@ -3941,7 +3940,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     @Override
     public void draw(Graphics2D g2) {
-        drawRadarImage = surfaceVisualUpdateNeeded;
         drawSurfaceImage = surfaceVisualUpdateNeeded;
         super.draw(g2);
         surfaceVisualUpdateNeeded = false;
