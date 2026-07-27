@@ -26,6 +26,14 @@ import java.util.List;
  * @author akarnokd, Jan 12, 2012
  */
 public class ObjectivesView extends UIComponent {
+    /** Panel background fill. */
+    static final Color BACKGROUND = new Color(0xC0000000, true);
+    /** Border / separator line color. */
+    static final Color BORDER = new Color(0xFFC0C0C0);
+    /** Objective checkbox outline. */
+    static final Color CHECKBOX = new Color(0xFFB0B0B0);
+    /** Progress bar color. */
+    static final Color PROGRESS = new Color(0xFFFFCC00);
     /** The common resources. */
     final CommonResources commons;
     /** For the statusbar's location info. */
@@ -51,13 +59,11 @@ public class ObjectivesView extends UIComponent {
 
         g2.translate(tx, ty);
         try {
-            int background = 0xC0000000;
-
             List<Objective> objs = commons.world().scripting.currentObjectives();
 
             if (objs.size() == 0) {
                 int w = commons.text().getTextWidth(14, commons.get("no_objectives"));
-                g2.setColor(new Color(background, true));
+                g2.setColor(BACKGROUND);
 
                 String hideS = commons.get("hide_objectives");
                 int hideW = commons.text().getTextWidth(7, hideS);
@@ -67,7 +73,7 @@ public class ObjectivesView extends UIComponent {
                 g2.fillRect(0, 0, w + 10, 33);
                 commons.text().paintTo(g2, 5, 3, 14, TextRenderer.GRAY, commons.get("no_objectives"));
 
-                g2.setColor(new Color(0xFFC0C0C0));
+                g2.setColor(BORDER);
                 g2.drawLine(0, 20, Math.min(hideW, w), 20);
                 commons.text().paintTo(g2, 2, 22, 7, 0xFFFFFF00, hideS);
 
@@ -91,10 +97,10 @@ public class ObjectivesView extends UIComponent {
 
             w = Math.min(Math.max(hideW, w), limit);
 
-            g2.setColor(new Color(background, true));
+            g2.setColor(BACKGROUND);
 
             g2.fillRect(0, 0, w + 4, h + 13);
-            g2.setColor(new Color(0xFFC0C0C0));
+            g2.setColor(BORDER);
             g2.drawRect(0, 0, w + 4, h + 13);
 
             int y = 3;
@@ -102,7 +108,7 @@ public class ObjectivesView extends UIComponent {
                 y += drawObjective(g2, o, 2, y, w);
             }
 
-            g2.setColor(new Color(0xFFC0C0C0));
+            g2.setColor(BORDER);
             g2.drawLine(0, y + 2, Math.min(hideW, w), y + 2);
             commons.text().paintTo(g2, 2, y + 4, 7, 0xFFFFFF00, hideS);
 
@@ -123,7 +129,7 @@ public class ObjectivesView extends UIComponent {
      */
     int drawObjective(Graphics2D g2, Objective o, int x, int y, int w) {
 
-        g2.setColor(new Color(0xFFB0B0B0));
+        g2.setColor(CHECKBOX);
         g2.drawRect(x + 3, y + 3, 14, 14);
         g2.drawRect(x + 4, y + 4, 12, 12);
 
@@ -156,7 +162,7 @@ public class ObjectivesView extends UIComponent {
                 int rw = w - dx;
                 int rwf = (int)(rw * pv);
 
-                g2.setColor(new Color(0xFFFFCC00));
+                g2.setColor(PROGRESS);
                 g2.drawRect(x + dx, y + dy, rw, 7);
                 g2.fillRect(x + dx, y + dy, rwf, 7);
             }
