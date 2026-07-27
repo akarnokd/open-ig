@@ -37,6 +37,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Indicate if a component is drag sensitive. */
     @Retention(RetentionPolicy.RUNTIME)
     @interface DragSensitive { }
+    /** Friendly unit HP bar color. */
+    static final Color FRIEND_HP = new Color(0x458AAA);
+    /** Enemy unit HP bar color. */
+    static final Color ENEMY_HP = new Color(0xAE6951);
+    /** Semi-transparent background for pavement price labels. */
+    static final AlphaComposite TEXT_BG_50 = AlphaComposite.SrcOver.derive(0.5f);
+    /** Semi-transparent background for building name labels. */
+    static final AlphaComposite TEXT_BG_80 = AlphaComposite.SrcOver.derive(0.8f);
+    /** Semi-transparent background for info panel. */
+    static final AlphaComposite PANEL_BG_85 = AlphaComposite.SrcOver.derive(0.85f);
     /**
 
      * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
@@ -1426,8 +1436,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                             if (config.buildingTextBackgrounds) {
                                 Composite compositeSave = g2.getComposite();
-                                AlphaComposite a1 = AlphaComposite.SrcOver.derive(0.5f);
-                                g2.setComposite(a1);
+                                g2.setComposite(TEXT_BG_50);
                                 g2.setColor(Color.BLACK);
                                 g2.fillRect(px0 - 2, py0 - 2, priceWidth + 4, 14);
                                 g2.setComposite(compositeSave);
@@ -1642,7 +1651,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                 if (config.buildingTextBackgrounds) {
                     compositeSave = g2.getComposite();
-                    a1 = AlphaComposite.SrcOver.derive(0.8f);
+                    a1 = TEXT_BG_80;
                     g2.setComposite(a1);
                     g2.setColor(Color.BLACK);
                     g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
@@ -3171,7 +3180,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         @Override
         public void draw(Graphics2D g2) {
             Composite c = g2.getComposite();
-            g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+            g2.setComposite(PANEL_BG_85);
             g2.setColor(Color.BLACK);
             g2.fillRoundRect(0, 0, width, height, 10, 10);
             g2.setComposite(c);
@@ -4415,9 +4424,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g2.setColor(Color.BLACK);
             g2.fillRect(p.x + 4, p.y + 3, u.model.width - 7, 5);
             if (u.owner == player()) {
-                g2.setColor(new Color(0x458AAA));
+                g2.setColor(FRIEND_HP);
             } else {
-                g2.setColor(new Color(0xAE6951));
+                g2.setColor(ENEMY_HP);
             }
             g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
 
