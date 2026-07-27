@@ -36,6 +36,15 @@ public final class RenderTools {
     /** Utility class. */
     private RenderTools() {
     }
+    /** Prebuilt A–Y labels for starmap / minimap grids. */
+    private static final String[] GRID_LABELS;
+    static {
+        GRID_LABELS = new String[25];
+        int i = 0;
+        for (char c = 'A'; c < 'Z'; c++) {
+            GRID_LABELS[i++] = String.valueOf(c);
+        }
+    }
     /** The top status bar height constant. */
     public static final int STATUS_BAR_TOP = 20;
     /** The bottom status bar height constant. */
@@ -201,8 +210,8 @@ public final class RenderTools {
         int i = 0;
         y0 = dy - 6;
         x0 = 2;
-        for (char c = 'A'; c < 'Z'; c++) {
-            text.paintTo(g2, (int)(rect.x + x0), (int)(rect.y + y0), 5, TextRenderer.GRAY, String.valueOf(c));
+        for (String label : GRID_LABELS) {
+            text.paintTo(g2, (int)(rect.x + x0), (int)(rect.y + y0), 5, TextRenderer.GRAY, label);
             x0 += dx;
             i++;
             if (i % 5 == 0) {
