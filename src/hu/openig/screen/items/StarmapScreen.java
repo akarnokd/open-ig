@@ -60,6 +60,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +82,8 @@ public class StarmapScreen extends ScreenBase {
     static final Color EXPLORATION_FOG = new Color(0x80000000, true);
     /** Radar union area fill color. */
     static final Color RADAR_FILL = new Color(128, 0, 0, 32);
+    /** Scratch set for merging planet problems + warnings while painting. */
+    final EnumSet<PlanetProblems> planetProblemsScratch = EnumSet.noneOf(PlanetProblems.class);
     /** The horizontal/vertical scrollbar painter. */
     public class ScrollBarPainter {
         /** Horizontal scroll rectangle. */
@@ -1564,14 +1567,14 @@ public class StarmapScreen extends ScreenBase {
                 g2.drawImage(msi, msix , msiy, null);
             }
 
-            Set<PlanetProblems> combined = new HashSet<>();
-            combined.addAll(ps.problems);
-            combined.addAll(ps.warnings);
+            planetProblemsScratch.clear();
+            planetProblemsScratch.addAll(ps.problems);
+            planetProblemsScratch.addAll(ps.warnings);
 
-            if (combined.size() > 0) {
-                int w = combined.size() * 11 - 1;
+            if (!planetProblemsScratch.isEmpty()) {
+                int w = planetProblemsScratch.size() * 11 - 1;
                 int i = 0;
-                for (PlanetProblems pp : combined) {
+                for (PlanetProblems pp : planetProblemsScratch) {
                     BufferedImage icon = null;
                     BufferedImage iconDark = null;
                     switch (pp) {
