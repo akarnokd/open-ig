@@ -88,7 +88,6 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -117,6 +116,17 @@ import java.util.Set;
  * @author akarnokd, 2010.01.06.
  */
 public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
+    /** Grid overlay color. */
+    static final Color GRID_COLOR = new Color(0, 128, 0, 255);
+    /** Dashed stroke pattern for the grid. */
+    static final float[] GRID_DASH = { 3f };
+    /** Dashed stroke for the grid. */
+    static final BasicStroke GRID_STROKE = new BasicStroke(1, BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_BEVEL, 0, GRID_DASH, 0);
+    /** Selection-box fill color. */
+    static final Color SELECTION_BOX = new Color(255, 255, 255, 128);
+    /** Shield bar color. */
+    static final Color SHIELD_BAR = new Color(0xFFFFCC00);
     /** The movement handler object responsible for handling space war unit movements. */
     WarMovementHandler movementHandler;
     /** Annotation to show a component on a specified panel mode. */
@@ -1939,10 +1949,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         if (viewGrid.selected) {
             Graphics2D gr = (Graphics2D) g2.create();
-            gr.setColor(new Color(0, 128, 0, 255));
-            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
-                    0, new float[]{3}, 0);
-            gr.setStroke(dashed);
+            gr.setColor(GRID_COLOR);
+            gr.setStroke(GRID_STROKE);
             for (int i = 0; i <= gridSizeX; i++) {
                 gr.drawLine(i * GRID_CELL_SIZE + gridOffsetX, 0, i * GRID_CELL_SIZE + gridOffsetX, space.height);
             }
@@ -2008,7 +2016,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             int sy0 = Math.min(selectionStart.y, selectionEnd.y);
             int sx1 = Math.max(selectionStart.x, selectionEnd.x);
             int sy1 = Math.max(selectionStart.y, selectionEnd.y);
-            g2.setColor(new Color(255, 255, 255, 128));
+            g2.setColor(SELECTION_BOX);
             g2.fillRect(sx0, sy0, sx1 - sx0 + 1, sy1 - sy0 + 1);
         }
 
@@ -2143,7 +2151,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 g2.setColor(Color.RED);
                 g2.drawRect((int)e.x - w2 + 3, y, dw, 4);
                 if (e.shieldMax > 0) {
-                    g2.setColor(new Color(0xFFFFCC00));
+                    g2.setColor(SHIELD_BAR);
                     g2.fillRect((int)e.x - w2 + 3, y, (int)(e.shield * dw / e.shieldMax), 4);
                 }
             }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -32,6 +33,10 @@ import javax.xml.stream.XMLStreamException;
  * @author akarnokd
  */
 public class TextRenderer {
+    /** Split text into paragraphs. */
+    private static final Pattern PARAGRAPH_SPLIT = Pattern.compile("\n");
+    /** Split a paragraph into words. */
+    private static final Pattern WORD_SPLIT = Pattern.compile("\\s+");
     /**
      * Record to store a particularly sized character series's width and height.
      * @author akarnokd
@@ -493,13 +498,13 @@ public class TextRenderer {
     public int wrapText(String text, int width, int size, List<String> linesOut) {
         linesOut.clear();
         int maxWidth = 0;
-        String[] par = text.split("\n");
+        String[] par = PARAGRAPH_SPLIT.split(text);
         for (String s : par) {
             if (s.trim().isEmpty()) {
                 linesOut.add("");
                 continue;
             }
-            String[] words = s.split("\\s+");
+            String[] words = WORD_SPLIT.split(s);
             StringBuilder line = new StringBuilder();
             StringBuilder lineTest = new StringBuilder();
             for (int i = 0; i < words.length; i++) {

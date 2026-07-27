@@ -10,7 +10,6 @@ package hu.openig.screen.panels;
 
 import hu.openig.model.WeatherType;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -34,6 +33,8 @@ public class WeatherOverlay {
     public static final double RAIN_VELOCITY = 30;
     /** Snow mode velocity. */
     public static final double SNOW_VELOCITY = 4;
+    /** Steps in the precomputed rain/snow color palettes. */
+    private static final int COLOR_PALETTE_SIZE = 64;
     /** The individual drops. */
     private final List<WeatherDrop> drops = new ArrayList<>(MAX_DROPS);
     /** Current horizontal wind speed. */
@@ -46,6 +47,23 @@ public class WeatherOverlay {
     public static final Color SNOW_COLOR = new Color(255, 255, 255);
     /** The base rain color. */
     public static final Color RAIN_COLOR = new Color(200, 200, 255);
+    /** Precomputed rain colors by brightness step. */
+    private static final Color[] RAIN_COLORS = new Color[COLOR_PALETTE_SIZE];
+    /** Precomputed snow colors by brightness step. */
+    private static final Color[] SNOW_COLORS = new Color[COLOR_PALETTE_SIZE];
+    static {
+        for (int i = 0; i < COLOR_PALETTE_SIZE; i++) {
+            double a = i / (double)(COLOR_PALETTE_SIZE - 1);
+            RAIN_COLORS[i] = new Color(
+                    (int)(RAIN_COLOR.getRed() * a),
+                    (int)(RAIN_COLOR.getGreen() * a),
+                    (int)(RAIN_COLOR.getBlue() * a));
+            SNOW_COLORS[i] = new Color(
+                    (int)(SNOW_COLOR.getRed() * a),
+                    (int)(SNOW_COLOR.getGreen() * a),
+                    (int)(SNOW_COLOR.getBlue() * a));
+        }
+    }
     /** The rendering bounds. */
     public Dimension bounds;
     /** The light level. */
@@ -121,16 +139,8 @@ public class WeatherOverlay {
          */
         private void updateColor() {
             double a = Math.max(0, Math.min(1, alpha + random.nextDouble() * 0.2 - 0.1));
-
-            color = type == WeatherType.RAIN
-//                    ? RAIN_COLOR
-//                    : SNOW_COLOR;
-//                    ? new Color(RAIN_COLOR.getRed(), RAIN_COLOR.getGreen(), RAIN_COLOR.getBlue(), random.nextInt(156) + 50)
-
-//                    : new Color(SNOW_COLOR.getRed(), SNOW_COLOR.getGreen(), SNOW_COLOR.getBlue(), random.nextInt(226) + 30);
-                    ? new Color((int)(RAIN_COLOR.getRed() * a), (int)(RAIN_COLOR.getGreen() * a), (int)(RAIN_COLOR.getBlue() * a))
-
-                    : new Color((int)(SNOW_COLOR.getRed() * a), (int)(SNOW_COLOR.getGreen() * a), (int)(SNOW_COLOR.getBlue() * a));
+            int idx = (int)Math.round(a * (COLOR_PALETTE_SIZE - 1));
+            color = type == WeatherType.RAIN ? RAIN_COLORS[idx] : SNOW_COLORS[idx];
         }
         /**
          * Reposition outbound drop.
@@ -149,7 +159,6 @@ public class WeatherOverlay {
          */
         public void paint(Graphics2D g2) {
             g2.setColor(color);
-            g2.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2.fillRect(shape.x, shape.y, shape.width, shape.height);
         }
     }

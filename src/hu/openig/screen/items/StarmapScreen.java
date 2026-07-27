@@ -71,6 +71,16 @@ import java.util.Set;
  * @author akarnokd, 2010.01.11.
  */
 public class StarmapScreen extends ScreenBase {
+    /** Fleet path stroke for attack/move arrows. */
+    static final BasicStroke FLEET_PATH_STROKE = new BasicStroke(1.5f);
+    /** Attack-mode fleet path color. */
+    static final Color FLEET_PATH_ATTACK = new Color(255, 0, 0, 128);
+    /** Move-mode fleet path color. */
+    static final Color FLEET_PATH_MOVE = new Color(124, 124, 180, 128);
+    /** Exploration fog fill color. */
+    static final Color EXPLORATION_FOG = new Color(0x80000000, true);
+    /** Radar union area fill color. */
+    static final Color RADAR_FILL = new Color(128, 0, 0, 32);
     /** The horizontal/vertical scrollbar painter. */
     public class ScrollBarPainter {
         /** Horizontal scroll rectangle. */
@@ -1304,10 +1314,10 @@ public class StarmapScreen extends ScreenBase {
             for (Fleet f : fleets) {
                 if (f.owner == player()) {
                     Stroke defaultStroke = g2.getStroke();
-                    g2.setStroke(new BasicStroke(1.5f));
+                    g2.setStroke(FLEET_PATH_STROKE);
                     if (f.mode == FleetMode.ATTACK) {
                         if (f.targetFleet != null) {
-                            g2.setColor(new Color(255, 0, 0, 128));
+                            g2.setColor(FLEET_PATH_ATTACK);
                             drawArrow(
                                     g2,
                                     (int)(starmapRect.x + f.x * zoom),
@@ -1316,7 +1326,7 @@ public class StarmapScreen extends ScreenBase {
                                     (int)(starmapRect.y + f.targetFleet.y * zoom));
                         } else
                         if (f.targetPlanet() != null) {
-                            g2.setColor(new Color(255, 0, 0, 128));
+                            g2.setColor(FLEET_PATH_ATTACK);
                             drawArrow(
                                     g2,
                                     (int)(starmapRect.x + f.x * zoom),
@@ -1328,7 +1338,7 @@ public class StarmapScreen extends ScreenBase {
                         double lastx = f.x;
                         double lasty = f.y;
                         if (f.targetFleet != null) {
-                            g2.setColor(new Color(124, 124, 180, 128));
+                            g2.setColor(FLEET_PATH_MOVE);
                             drawArrow(
                                     g2,
                                     (int)(starmapRect.x + f.x * zoom),
@@ -1337,7 +1347,7 @@ public class StarmapScreen extends ScreenBase {
                                     (int)(starmapRect.y + f.targetFleet.y * zoom));
                         } else
                         if (f.targetPlanet() != null) {
-                            g2.setColor(new Color(124, 124, 180, 128));
+                            g2.setColor(FLEET_PATH_MOVE);
                             drawArrow(
                                     g2,
                                     (int)(starmapRect.x + f.x * zoom),
@@ -1347,7 +1357,7 @@ public class StarmapScreen extends ScreenBase {
                         } else
 
                         if (f.waypoints.size() > 0) {
-                            g2.setColor(new Color(124, 124, 180, 128));
+                            g2.setColor(FLEET_PATH_MOVE);
                             int i = 0;
                             for (Point2D.Double pt : f.waypoints) {
                                 if (i++ == f.waypoints.size() - 1) {
@@ -1645,7 +1655,7 @@ public class StarmapScreen extends ScreenBase {
             Area a = new Area(new Rectangle(0, 0, world().galaxyModel.map.getWidth(), world().galaxyModel.map.getHeight()));
             a.subtract(new Area(player().explorationOuterLimit));
 
-            g2.setColor(new Color(0x80000000, true));
+            g2.setColor(EXPLORATION_FOG);
 
             drawShape(g2, a, true);
 
@@ -1653,7 +1663,7 @@ public class StarmapScreen extends ScreenBase {
             drawRect(g2, player().explorationOuterLimit, false);
         } else
         if (player().explorationInnerLimit != null) {
-            g2.setColor(new Color(0x80000000, true));
+            g2.setColor(EXPLORATION_FOG);
             drawRect(g2, player().explorationInnerLimit, true);
         }
     }
@@ -2984,7 +2994,7 @@ public class StarmapScreen extends ScreenBase {
         }
         g2.translate(starmapRect.x, starmapRect.y);
         if (radarCache.radarArea != null) {
-            g2.setColor(new Color(128, 0, 0, 32));
+            g2.setColor(RADAR_FILL);
             g2.fill(radarCache.radarArea);
         }
         for (Point p : radarCache.dots) {
