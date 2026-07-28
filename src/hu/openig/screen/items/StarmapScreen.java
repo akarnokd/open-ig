@@ -442,6 +442,20 @@ public class StarmapScreen extends ScreenBase {
     public boolean newGameStarted;
     /** Debug: show all planets and fleets. */
     boolean showAll;
+    /** Last width used by {@link #computeRectangles()}. */
+    int layoutWidth = -1;
+    /** Last height used by {@link #computeRectangles()}. */
+    int layoutHeight = -1;
+    /** Last {@code config.showStarmapScroll} used by layout. */
+    boolean layoutShowScroll;
+    /** Last {@code config.showStarmapLists} used by layout. */
+    boolean layoutShowLists;
+    /** Last {@code config.showStarmapInfo} used by layout. */
+    boolean layoutShowInfo;
+    /** Last {@code config.showStarmapMinimap} used by layout. */
+    boolean layoutShowMinimap;
+    /** Last {@link #planetFleetSplitter} used by layout. */
+    double layoutSplitter = Double.NaN;
     /** The extra fleet icon 2. */
     BufferedImage extraFleet2;
     /** Indicate if the current planet/fleet's name is in edit mode. */
@@ -581,26 +595,6 @@ public class StarmapScreen extends ScreenBase {
         bridge.x = buttonsPanel.x + 1;
         bridge.y = info.y + info.height + 1;
 
-        List<Planet> planets = planets();
-        if (planets.size() > 0) {
-            int idx = planets.indexOf(planet());
-            prevPlanet.enabled(idx > 0);
-            nextPlanet.enabled(idx + 1 < planets.size());
-        } else {
-            prevPlanet.enabled(false);
-            nextPlanet.enabled(false);
-        }
-
-        List<Fleet> fleets = player().ownFleets();
-        if (fleets.size() > 0) {
-            int idx = fleets.indexOf(fleet());
-            prevFleet.enabled(idx > 0);
-            nextFleet.enabled(idx + 1 < fleets.size());
-        } else {
-            prevFleet.enabled(false);
-            nextFleet.enabled(false);
-        }
-
         // ..............................................................
 
         planetsList.x = planetsListPanel.x;
@@ -689,6 +683,50 @@ public class StarmapScreen extends ScreenBase {
         setTooltip(statistics, "starmap.statistics.tooltip");
         setTooltip(achievements, "starmap.achievements.tooltip");
         setTooltip(zoom, "starmap.zoom.tooltip");
+
+        layoutWidth = width;
+        layoutHeight = height;
+        layoutShowScroll = config.showStarmapScroll;
+        layoutShowLists = config.showStarmapLists;
+        layoutShowInfo = config.showStarmapInfo;
+        layoutShowMinimap = config.showStarmapMinimap;
+        layoutSplitter = planetFleetSplitter;
+    }
+    /**
+     * @return true if panel/chrome layout must be recomputed (not just the map viewport)
+     */
+    boolean starmapLayoutDirty() {
+        return width != layoutWidth
+                || height != layoutHeight
+                || config.showStarmapScroll != layoutShowScroll
+                || config.showStarmapLists != layoutShowLists
+                || config.showStarmapInfo != layoutShowInfo
+                || config.showStarmapMinimap != layoutShowMinimap
+                || Double.compare(planetFleetSplitter, layoutSplitter) != 0;
+    }
+    /**
+     * Enable/disable planet and fleet list navigation buttons for the current selection.
+     */
+    void updatePlanetFleetNavigation() {
+        List<Planet> planets = planets();
+        if (planets.size() > 0) {
+            int idx = planets.indexOf(planet());
+            prevPlanet.enabled(idx > 0);
+            nextPlanet.enabled(idx + 1 < planets.size());
+        } else {
+            prevPlanet.enabled(false);
+            nextPlanet.enabled(false);
+        }
+
+        List<Fleet> fleets = player().ownFleets();
+        if (fleets.size() > 0) {
+            int idx = fleets.indexOf(fleet());
+            prevFleet.enabled(idx > 0);
+            nextFleet.enabled(idx + 1 < fleets.size());
+        } else {
+            prevFleet.enabled(false);
+            nextFleet.enabled(false);
+        }
     }
 
     /**
@@ -1247,7 +1285,12 @@ public class StarmapScreen extends ScreenBase {
         displayPlanetInfo();
         displayFleetInfo();
 
-        computeRectangles();
+        if (starmapLayoutDirty()) {
+            computeRectangles();
+        } else {
+            computeViewport();
+        }
+        updatePlanetFleetNavigation();
 
         Shape save0 = g2.getClip();
 
