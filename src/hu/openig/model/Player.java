@@ -12,6 +12,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -44,6 +45,10 @@ public class Player {
     public String shortName;
     /** The coloring used for this player. */
     public int color;
+    /** Cached AWT color for {@link #color}; rebuilt when the packed RGB changes. */
+    private Color awtColor;
+    /** Packed RGB that {@link #awtColor} was built from. */
+    private int awtColorRgb;
     /** The fleet icon. */
     public BufferedImage fleetIcon;
     /** The picture used in the database screen. */
@@ -170,6 +175,17 @@ public class Player {
         aiDefensiveLimits.put(Difficulty.EASY, 1);
         aiDefensiveLimits.put(Difficulty.NORMAL, 3);
         aiDefensiveLimits.put(Difficulty.HARD, 5);
+    }
+    /**
+     * Returns a reusable AWT {@link Color} for this player's packed {@link #color}.
+     * @return the color
+     */
+    public Color awtColor() {
+        if (awtColor == null || awtColorRgb != color) {
+            awtColorRgb = color;
+            awtColor = new Color(color);
+        }
+        return awtColor;
     }
     /** @return the socual ratio for AI player. Ratios sum up to 1. */
     public double aiSocialRatio() {

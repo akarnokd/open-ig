@@ -67,7 +67,7 @@ public class EquipmentMinimap extends UIComponent {
                 int cx = (int)(p.x * zoom);
                 int cy = (int)(p.y * zoom);
 
-                g2.setColor(new Color(p.owner.color));
+                g2.setColor(p.owner.awtColor());
                 g2.fillRect(cx - 1, cy - 1, 3, 3);
 
                 if (commons.world().player.currentPlanet == p) {
