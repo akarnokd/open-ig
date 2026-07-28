@@ -1,3 +1,4 @@
+/build/
 /bin/
 /video/
 #open-ig-*.jar
@@ -11,3 +12,4 @@ target
 open-ig-config.xml
 open-ig-launcher-config.xml
 open-ig-mapeditor-config.xml
+.gradle/

@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'hu.openig'
+version = '0.95'   // adjust as needed
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)   // or 17/21 if you prefer
+    }
+}
+
+// Keep the existing source root — do not require src/main/java
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        // No resources under src; game data lives in data/, audio/, images/, etc.
+        resources {
+            srcDirs = []
+        }
+    }
+}
+
+application {
+    mainClass = 'hu.openig.Startup'
+    // Optional: default JVM args matching the developer guide
+    applicationDefaultJvmArgs = ['-Xmx1G']
+}
+
+// Optional but useful: produce a runnable JAR with a proper manifest
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'hu.openig.Startup'
+        )
+    }
+}
+
+// Optional: make `./gradlew run` use the project root as working directory
+// so relative paths to data/, audio/, images/, etc. still work
+tasks.named('run') {
+    workingDir = rootProject.projectDir
+}
