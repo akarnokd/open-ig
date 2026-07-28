@@ -41,6 +41,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     static final Color FRIEND_HP = new Color(0x458AAA);
     /** Enemy unit HP bar color. */
     static final Color ENEMY_HP = new Color(0xAE6951);
+    /** Surface clear color at full daylight alpha ({@code 96/255}). */
+    static final Color SURFACE_CLEAR_DAY = new Color(96f / 255f, 96f / 255f, 96f / 255f);
     /** Semi-transparent background for pavement price labels. */
     static final AlphaComposite TEXT_BG_50 = AlphaComposite.SrcOver.derive(0.5f);
     /** Semi-transparent background for building name labels. */
@@ -116,6 +118,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     final Rectangle base = new Rectangle();
     /** The planet view window. */
     final Rectangle window = new Rectangle();
+    /** Scratch rectangle for surface viewport culling. */
+    final Rectangle renderingWindow = new Rectangle();
+    /** Cached surface clear color for the current lighting alpha. */
+    Color surfaceClearColor = SURFACE_CLEAR_DAY;
     /** The buildings sidebar button. */
     @DragSensitive
     UIImageButton sidebarBuildings;
@@ -1361,8 +1367,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (alphaSave != alpha) {
                 if (alpha > 0.99) {
                     areaPaved = commons.colony().tilePavement;
+                    surfaceClearColor = SURFACE_CLEAR_DAY;
                 } else {
                     areaPaved = ImageUtils.withNight(commons.colony().tilePavement, alpha, Tile.LIGHT_THRESHOLD);
+                    surfaceClearColor = new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255);
                 }
             }
 
@@ -1371,7 +1379,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Shape save0 = g2.getClip();
             g2.clipRect(0, 0, width, height);
 
-            g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
+            g2.setColor(surfaceClearColor);
             g2.fillRect(0, 0, width, height);
 
             AffineTransform at = g2.getTransform();
@@ -1884,7 +1892,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g2.setColor(Color.YELLOW);
             g2.drawRect(br.x, br.y, br.width, br.height);
 
-            Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+            renderingWindow.setBounds(0, 0, width, height);
             drawSurfaceImage = surfaceVisualUpdateNeeded;
             if (battle != null) {
                 if (drawSurfaceImage) {
