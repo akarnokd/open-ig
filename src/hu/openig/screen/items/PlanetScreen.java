@@ -203,6 +203,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean showInfo = true;
     /** Show the screen navigation buttons? */
     boolean showSidebarButtons = true;
+    /** Scratch set for merging planet problems + warnings while painting. */
+    final EnumSet<PlanetProblems> planetProblemsScratch = EnumSet.noneOf(PlanetProblems.class);
     /** The set where the vehicles may be placed. */
     final Set<Location> battlePlacements = new HashSet<>();
     /** The ground war units. */
@@ -2042,16 +2044,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * @param ps the statistics
          */
         void renderProblems(Graphics2D g2, PlanetStatistics ps) {
-            Set<PlanetProblems> combined = new HashSet<>();
-            combined.addAll(ps.problems);
-            combined.addAll(ps.warnings);
+            planetProblemsScratch.clear();
+            planetProblemsScratch.addAll(ps.problems);
+            planetProblemsScratch.addAll(ps.warnings);
 
-            if (combined.size() > 0) {
-                int w = combined.size() * 11 - 1;
+            if (!planetProblemsScratch.isEmpty()) {
+                int w = planetProblemsScratch.size() * 11 - 1;
                 g2.setColor(Color.BLACK);
                 g2.fillRect((width - w) / 2 - 2, 18, w + 4, 15);
                 int i = 0;
-                for (PlanetProblems pp : combined) {
+                for (PlanetProblems pp : planetProblemsScratch) {
                     BufferedImage icon = null;
                     BufferedImage iconDark = null;
                     switch (pp) {
