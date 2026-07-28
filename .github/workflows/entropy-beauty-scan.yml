@@ -99,7 +99,7 @@ jobs:
               body: body
             });
 
-      # ── Create issue on push ONLY if suspicious (entropy outside 4.3–5.1) ──
+      # ── Create issue on push ONLY if suspicious (entropy outside 4.1–5.1) ──
       - name: Create issue on suspicious push
         if: github.event_name == 'push' || github.event_name == 'release'
         uses: actions/github-script@v9
@@ -110,7 +110,7 @@ jobs:
             const beauty = JSON.parse(fs.readFileSync('/tmp/beauty.json', 'utf8'));
 
             // Only create issue if it's NOT beautiful mid-4
-            if (beauty.average_entropy >= 4.3 && beauty.average_entropy <= 5.1) {
+            if (beauty.average_entropy >= 4.1 && beauty.average_entropy <= 5.1) {
               console.log("✅ Mid-4 beauty — no issue created");
               return;
             }
