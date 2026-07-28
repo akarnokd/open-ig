@@ -17,6 +17,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -25,6 +27,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -137,6 +140,12 @@ public class GameWindow extends JFrame implements GameControls {
         int lastScale = -1;
         /** Save transform before draw. */
         AffineTransform predraw;
+        /**
+         * Logical-resolution back-buffer used when {@code uiScale != 100}.
+         * Screens draw 1:1 into this image; one scaled blit goes to the window.
+         * Avoids per-{@code drawImage} AffineTransform filtering (huge FPS drop).
+         */
+        BufferedImage scaleBuffer;
         /** When did the last paint happen. */
         long lastPaint = System.nanoTime();
         /** The FPS value to draw to the overlay. */
@@ -170,6 +179,124 @@ public class GameWindow extends JFrame implements GameControls {
             } else {
                 Exceptions.add(new IllegalStateException("Predraw already null."));
             }
+        }
+        /**
+         * Ensure the UI-scale back-buffer matches the logical inner size.
+         * @param g2 window graphics (for a compatible image config)
+         * @param iw logical width
+         * @param ih logical height
+         * @return {@code true} if a new buffer was allocated (contents are empty / black)
+         */
+        boolean ensureScaleBuffer(Graphics2D g2, int iw, int ih) {
+            if (scaleBuffer == null || scaleBuffer.getWidth() != iw || scaleBuffer.getHeight() != ih) {
+                scaleBuffer = g2.getDeviceConfiguration().createCompatibleImage(iw, ih,
+                        java.awt.Transparency.OPAQUE);
+                // Compatible images are not guaranteed to be cleared; avoid flashing garbage
+                // if the first paint into this buffer is somehow clipped/partial.
+                Graphics2D bg = scaleBuffer.createGraphics();
+                try {
+                    bg.setColor(Color.BLACK);
+                    bg.fillRect(0, 0, iw, ih);
+                } finally {
+                    bg.dispose();
+                }
+                return true;
+            }
+            return false;
+        }
+        /**
+         * Apply Swing's window dirty clip to the logical-resolution back-buffer.
+         * The window clip is in physical pixels; screens draw in logical pixels, so
+         * the clip is scaled by {@code 100 / uiScale}. Grown by 1px to cover
+         * round-trip truncation from {@link #repaintInner(int, int, int, int)}.
+         * @param windowG2 window graphics (source of the physical clip)
+         * @param bufferG2 back-buffer graphics to clip
+         * @param uiScale current UI scale percent
+         * @param logicalWidth back-buffer width
+         * @param logicalHeight back-buffer height
+         */
+        void clipScaleBufferToWindowDirtyRegion(Graphics2D windowG2, Graphics2D bufferG2,
+                int uiScale, int logicalWidth, int logicalHeight) {
+            Shape deviceClip = windowG2.getClip();
+            if (deviceClip == null) {
+                return;
+            }
+            AffineTransform toLogical = AffineTransform.getScaleInstance(100d / uiScale, 100d / uiScale);
+            Rectangle lr = toLogical.createTransformedShape(deviceClip).getBounds();
+            lr.grow(1, 1);
+            bufferG2.setClip(lr.intersection(new Rectangle(0, 0, logicalWidth, logicalHeight)));
+        }
+        /**
+         * Draw the active screens into {@code g2} (logical / unscaled coordinates).
+         * @param g2 destination graphics
+         * @param r0 full repaint requested
+         * @param r1 partial repaint requested
+         */
+        void paintScreens(Graphics2D g2, boolean r0, boolean r1) {
+            if (movieVisible() && movie.opaque()) {
+                movie.draw(g2);
+            } else {
+                if (r1 && !r0 && !optionsVisible) {
+                    if (secondary != null) {
+                        push(g2);
+                        try {
+                            secondary.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                    if (statusbarVisible) {
+                        push(g2);
+                        try {
+                            statusbar.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                } else {
+                    if (primary != null) {
+                        push(g2);
+                        try {
+                            primary.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                    if (secondary != null) {
+                        push(g2);
+                        try {
+                            secondary.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                    if (optionsVisible) {
+                        push(g2);
+                        try {
+                            options.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                    if (statusbarVisible) {
+                        push(g2);
+                        try {
+                            statusbar.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                    if (movieVisible()) {
+                        push(g2);
+                        try {
+                            movie.draw(g2);
+                        } finally {
+                            pop(g2);
+                        }
+                    }
+                }
+            }
+            renderTooltip(g2);
         }
         @Override
         public void paint(Graphics g) {
@@ -208,80 +335,44 @@ public class GameWindow extends JFrame implements GameControls {
             }
 
             Graphics2D g2 = (Graphics2D)g;
-            AffineTransform at0 = g2.getTransform();
             try {
                 if (uis != 100) {
-                    g2.scale(uis / 100d, uis / 100d);
-                }
-                if (movieVisible() && movie.opaque()) {
-                    movie.draw(g2);
-                } else {
-                    if (r1 && !r0 && !optionsVisible) {
-                        if (secondary != null) {
-                            push(g2);
-                            try {
-                                secondary.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                        if (statusbarVisible) {
-                            push(g2);
-                            try {
-                                statusbar.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                    } else {
-                        if (primary != null) {
-                            push(g2);
-                            try {
-                                primary.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                        if (secondary != null) {
-                            push(g2);
-                            try {
-                                secondary.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                        if (optionsVisible) {
-                            push(g2);
-                            try {
-                                options.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                        if (statusbarVisible) {
-                            push(g2);
-                            try {
-                                statusbar.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-                        if (movieVisible()) {
-                            push(g2);
-                            try {
-                                movie.draw(g2);
-                            } finally {
-                                pop(g2);
-                            }
-                        }
-
+                    // Render at logical size, then scale once. Live g2.scale() on the
+                    // window Graphics makes every drawImage (tiles, UI, text) go through
+                    // AffineTransform filtering — especially brutal with bilinear on PlanetScreen.
+                    int iw = getInnerWidth();
+                    int ih = getInnerHeight();
+                    if (ensureScaleBuffer(g2, iw, ih)) {
+                        // New buffer has no prior primary/secondary pixels — must full-paint.
+                        r0 = true;
                     }
+                    Graphics2D bg = scaleBuffer.createGraphics();
+                    try {
+                        clipScaleBufferToWindowDirtyRegion(g2, bg, uis, iw, ih);
+                        paintScreens(bg, r0, r1);
+                    } finally {
+                        bg.dispose();
+                    }
+
+                    AffineTransform at0 = g2.getTransform();
+                    Object prevHint = g2.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+                    try {
+                        g2.scale(uis / 100d, uis / 100d);
+                        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                        g2.drawImage(scaleBuffer, 0, 0, null);
+                    } finally {
+                        g2.setTransform(at0);
+                        if (prevHint != null) {
+                            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, prevHint);
+                        }
+                    }
+                } else {
+                    scaleBuffer = null;
+                    paintScreens(g2, r0, r1);
                 }
-                renderTooltip(g2);
             } catch (Throwable t) {
                 Exceptions.add(t);
-            } finally {
-                g2.setTransform(at0);
             }
             if (config.showFPS) {
                 long t2 = System.nanoTime();
@@ -1287,10 +1378,14 @@ public class GameWindow extends JFrame implements GameControls {
         repaintRequestPartial = true;
         if (!fixedFramerate) {
             if (config.uiScale != 100) {
-                x = (int)(x * config.uiScale * 1d / 100);
-                y = (int)(y * config.uiScale * 1d / 100);
-                w = (int)(w * config.uiScale * 1d / 100);
-                h = (int)(h * config.uiScale * 1d / 100);
+                // Ceil size so the physical dirty region covers every logical pixel after
+                // scale; pairs with the +1 inflate when mapping the clip back to the buffer.
+                int x2 = (int)Math.ceil((x + w) * config.uiScale / 100d);
+                int y2 = (int)Math.ceil((y + h) * config.uiScale / 100d);
+                x = (int)Math.floor(x * config.uiScale / 100d);
+                y = (int)Math.floor(y * config.uiScale / 100d);
+                w = Math.max(1, x2 - x);
+                h = Math.max(1, y2 - y);
             }
             surface.repaint(x, y, w, h);
         }
