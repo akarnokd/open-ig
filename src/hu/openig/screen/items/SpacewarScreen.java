@@ -127,6 +127,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     static final Color SELECTION_BOX = new Color(255, 255, 255, 128);
     /** Shield bar color. */
     static final Color SHIELD_BAR = new Color(0xFFFFCC00);
+    /** Last inner width used for layout / chrome TexturePaint cache. */
+    int chromeLayoutWidth = -1;
+    /** Last inner height used for layout / chrome TexturePaint cache. */
+    int chromeLayoutHeight = -1;
+    /** Cached TexturePaint for the top frame fill. */
+    TexturePaint frameTopFillPaint;
+    /** Cached TexturePaint for the bottom status panel fill. */
+    TexturePaint panelStatFillPaint;
+    /** Cached TexturePaint for the right frame fill. */
+    TexturePaint frameRightFillPaint;
+    /** Cached TexturePaint for the left frame fill. */
+    TexturePaint frameLeftFillPaint;
     /** The movement handler object responsible for handling space war unit movements. */
     WarMovementHandler movementHandler;
     /** Annotation to show a component on a specified panel mode. */
@@ -1001,11 +1013,34 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         selectionPanel.size(Math.max(0, rightPanel.x - 2 - selectionPanel.x), StatusPanel.PANEL_HEIGHT);
 
         pan(0, 0);
+        rebuildChromeTexturePaints();
+        chromeLayoutWidth = getInnerWidth();
+        chromeLayoutHeight = getInnerHeight();
+    }
+    /**
+     * Rebuild cached chrome {@link TexturePaint}s for the current inner size.
+     */
+    void rebuildChromeTexturePaints() {
+        frameTopFillPaint = new TexturePaint(commons.spacewar().frameTopFill,
+                new Rectangle(commons.spacewar().frameTopLeft.getWidth(), 20, 1, commons.spacewar().frameTopFill.getHeight()));
+        panelStatFillPaint = new TexturePaint(commons.spacewar().panelStatFill,
+                new Rectangle(commons.spacewar().panelStatLeft.getWidth(),
+                        getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18,
+                        1, commons.spacewar().panelStatFill.getHeight()));
+        frameRightFillPaint = new TexturePaint(commons.spacewar().frameRightFill,
+                new Rectangle(getInnerWidth() - commons.spacewar().frameRight.getWidth(),
+                        20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(),
+                        commons.spacewar().frameRightFill.getWidth(), commons.spacewar().frameRightFill.getHeight()));
+        frameLeftFillPaint = new TexturePaint(commons.spacewar().frameLeftFill,
+                new Rectangle(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(),
+                        commons.spacewar().frameLeftFill.getWidth(), commons.spacewar().frameLeftFill.getHeight()));
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        onResize();
+        if (getInnerWidth() != chromeLayoutWidth || getInnerHeight() != chromeLayoutHeight) {
+            onResize();
+        }
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
         g2.drawImage(commons.spacewar().frameTopLeft, 0, 20, null);
@@ -1021,20 +1056,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         Paint p = g2.getPaint();
 
-        TexturePaint tp = new TexturePaint(commons.spacewar().frameTopFill, new Rectangle(commons.spacewar().frameTopLeft.getWidth(), 20, 1, commons.spacewar().frameTopFill.getHeight()));
-        g2.setPaint(tp);
+        g2.setPaint(frameTopFillPaint);
         g2.fillRect(commons.spacewar().frameTopLeft.getWidth(), 20, getInnerWidth() - commons.spacewar().frameTopLeft.getWidth() - commons.spacewar().frameTopRight.getWidth(), commons.spacewar().frameTopFill.getHeight());
 
-        tp = new TexturePaint(commons.spacewar().panelStatFill, new Rectangle(commons.spacewar().panelStatLeft.getWidth(), getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, 1, commons.spacewar().panelStatFill.getHeight()));
-        g2.setPaint(tp);
+        g2.setPaint(panelStatFillPaint);
         g2.fillRect(commons.spacewar().panelStatLeft.getWidth(), getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, getInnerWidth() - commons.spacewar().frameTopRight.getWidth() - commons.spacewar().frameTopLeft.getWidth(), commons.spacewar().panelStatFill.getHeight());
 
-        tp = new TexturePaint(commons.spacewar().frameRightFill, new Rectangle(getInnerWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), commons.spacewar().frameRightFill.getHeight()));
-        g2.setPaint(tp);
+        g2.setPaint(frameRightFillPaint);
         g2.fillRect(getInnerWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), getInnerHeight() - 38 - commons.spacewar().frameTopRight.getHeight() - commons.spacewar().frameRight.getHeight() - commons.spacewar().panelStatRight.getHeight());
 
-        tp = new TexturePaint(commons.spacewar().frameLeftFill, new Rectangle(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(), commons.spacewar().frameLeftFill.getHeight()));
-        g2.setPaint(tp);
+        g2.setPaint(frameLeftFillPaint);
         g2.fillRect(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(),
 
                 getInnerHeight() - 36 - commons.spacewar().frameTopLeft.getHeight() - commons.spacewar().commands.getHeight() - commons.spacewar().panelStatLeft.getHeight());
