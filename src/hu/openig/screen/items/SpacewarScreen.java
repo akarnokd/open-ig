@@ -4067,7 +4067,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 if (ship.attackUnit != null && !ship.flee) {
                     if (ship.attackUnit.isDestroyed()
                             || (ship.guard && ship.inRange(ship.attackUnit).isEmpty())
-                            || (!ship.attackUnit.intersects(0, 0, space.width, space.height))) {
+                            || (!ship.attackUnit.isRocket()
+                                    && !ship.attackUnit.intersects(0, 0, space.width, space.height))) {
                         guard(ship);
                         if (ship.selected && ship.owner == player()) {
                             enableSelectedFleetControls();
