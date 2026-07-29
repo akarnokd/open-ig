@@ -135,13 +135,18 @@ public class StarmapScreen extends ScreenBase {
             vscrollInnerRect.setLocation(vscrollRect.x + 2, vscrollRect.y + 2);
             vscrollInnerRect.setSize(vscrollRect.width - 4, vscrollRect.height - 4);
 
+            updateKnobs();
+        }
+        /**
+         * Recompute knob size/position from the current zoom and pan offsets.
+         * Track chrome comes from {@link #setBounds}; call after viewport offsets are applied.
+         */
+        public void updateKnobs() {
             vscrollKnobRect.setLocation(vscrollInnerRect.x + 1, vscrollInnerRect.y + 1);
             vscrollKnobRect.setSize(vscrollInnerRect.width - 2, vscrollInnerRect.height - 2);
 
             hscrollKnobRect.setLocation(hscrollInnerRect.x + 1, hscrollInnerRect.y + 1);
             hscrollKnobRect.setSize(hscrollInnerRect.width - 2, hscrollInnerRect.height - 2);
-
-            // adjust position and size based on the current zoom and window
 
             int vPixelsAvailable = Math.max(starmapRect.height - starmapWindow.height, 0);
             int hPixelsAvailable = Math.max(starmapRect.width - starmapWindow.width, 0);
@@ -783,6 +788,7 @@ public class StarmapScreen extends ScreenBase {
         minimapViewportRect.y += minimapRect.y + 2;
 
         starmapClip = starmapWindow.intersection(starmapRect);
+        scrollbarPainter.updateKnobs();
     }
 
     /**
