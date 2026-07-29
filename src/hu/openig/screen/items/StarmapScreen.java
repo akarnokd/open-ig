@@ -82,6 +82,8 @@ public class StarmapScreen extends ScreenBase {
     static final Color EXPLORATION_FOG = new Color(0x80000000, true);
     /** Radar union area fill color. */
     static final Color RADAR_FILL = new Color(128, 0, 0, 32);
+    /** Minimap color for unowned / unknown-owner planets. */
+    static final Color MINIMAP_UNOWNED = new Color(TextRenderer.GRAY);
     /** Scratch set for merging planet problems + warnings while painting. */
     final EnumSet<PlanetProblems> planetProblemsScratch = EnumSet.noneOf(PlanetProblems.class);
     /** The horizontal/vertical scrollbar painter. */
@@ -1491,11 +1493,11 @@ public class StarmapScreen extends ScreenBase {
                 if (p != planet() || minimapPlanetBlink) {
                     int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
                     int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
-                    int labelColor = TextRenderer.GRAY;
                     if (p.owner != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
-                        labelColor = p.owner.color;
+                        g2.setColor(p.owner.awtColor());
+                    } else {
+                        g2.setColor(MINIMAP_UNOWNED);
                     }
-                    g2.setColor(new Color(labelColor));
                     g2.fillRect(x0 - 1, y0 - 1, 3, 3);
                 }
             }

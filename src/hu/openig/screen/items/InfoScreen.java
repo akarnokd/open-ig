@@ -88,6 +88,8 @@ import java.util.Set;
  * @author akarnokd, 2010.01.11.
  */
 public class InfoScreen extends ScreenBase {
+    /** Minimap / selection outline gray ({@link TextRenderer#GRAY}). */
+    static final Color MINIMAP_GRAY = new Color(TextRenderer.GRAY);
     /**
 
      * The annotation to indicate which UI elements should by default
@@ -1976,16 +1978,16 @@ public class InfoScreen extends ScreenBase {
                 }
                 int x0 = (p.x * width / commons.starmap().background.getWidth());
                 int y0 = (p.y * height / commons.starmap().background.getHeight());
-                int labelColor = TextRenderer.GRAY;
                 if (p.owner != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
-                    labelColor = p.owner.color;
+                    g2.setColor(p.owner.awtColor());
+                } else {
+                    g2.setColor(MINIMAP_GRAY);
                 }
-                g2.setColor(new Color(labelColor));
 //                if (p != planet() || (p == planet() && animationBlink)) {
                     g2.fillRect(x0 - 1, y0 - 1, 3, 3);
 //                }
                 if (p == planet()) {
-                    g2.setColor(new Color(TextRenderer.GRAY));
+                    g2.setColor(MINIMAP_GRAY);
                     g2.drawRect(x0 - 3, y0 - 3, 6, 6);
                 }
             }
@@ -1998,7 +2000,7 @@ public class InfoScreen extends ScreenBase {
                         int y1 = y0 - f.owner.fleetIcon.getHeight() / 2;
                         g2.drawImage(f.owner.fleetIcon, x1, y1, null);
                         if (f == fleet()) {
-                            g2.setColor(new Color(f.owner.color));
+                            g2.setColor(f.owner.awtColor());
                             g2.drawRect(x1 - 2, y1 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
                         }
                     }
@@ -2147,7 +2149,7 @@ public class InfoScreen extends ScreenBase {
                         String t = getText.invoke(p);
                         commons.text().paintTo(g2, x0, y0 + 1, fontSize, c, t);
                         if (p == getCurrent.invoke(null)) {
-                            g2.setColor(new Color(player().color));
+                            g2.setColor(player().awtColor());
                             g2.drawRect(x0 - 2, y0 - 1, columnWidth, rowHeight);
                         }
                     }
@@ -2399,7 +2401,7 @@ public class InfoScreen extends ScreenBase {
                             commons.text().paintTo(g2, x0, y0 + 4, 7, col, n);
                         }
                         if (p == player().currentBuilding) {
-                            g2.setColor(new Color(player().color));
+                            g2.setColor(player().awtColor());
                             g2.drawRect(x0 - 2 + 30, y0, columnWidth - 30, rowHeight);
                         }
                     }
