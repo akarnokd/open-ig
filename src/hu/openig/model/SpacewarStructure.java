@@ -370,7 +370,7 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
      * @return true if within longest beam range
      */
     public boolean isInRange(SpacewarObject target) {
-        return distanceTo(target) <= maximumRange;
+        return maximumRange > 0 && maximumRange >= distanceTo(target);
     }
     /**
      * Returns a list of those BEAM weapon ports, which have the target structure in range.
