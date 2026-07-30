@@ -23,6 +23,7 @@ import hu.openig.ui.UIPanel;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -52,6 +53,14 @@ public class SpacewarSelectionPanel extends UIPanel {
     public static final int CONTENT_PAD_Y = 3;
     /** Gap between cells in the selection grid. */
     public static final int CELL_GAP = 4;
+    /** Overlay scrollbar width. */
+    static final int SCROLL_BAR_WIDTH = 8;
+    /** Minimum scrollbar thumb height. */
+    static final int SCROLL_MIN_THUMB = 12;
+    /** Scrollbar track color. */
+    static final Color SCROLL_TRACK = new Color(0x40, 0x40, 0x40);
+    /** Scrollbar thumb color. */
+    static final Color SCROLL_THUMB = new Color(0xA0, 0xA0, 0xA0);
 
     /** Common resources. */
     final CommonResources commons;
@@ -242,6 +251,14 @@ public class SpacewarSelectionPanel extends UIPanel {
         final List<SelectionRow> rows = new ArrayList<>();
         /** Recycled rows. */
         final List<SelectionRow> rowPool = new ArrayList<>();
+        /** Scrollbar track (content-local). */
+        final Rectangle scrollTrack = new Rectangle();
+        /** Scrollbar thumb (content-local). */
+        final Rectangle scrollThumb = new Rectangle();
+        /** True while dragging the scrollbar thumb. */
+        boolean scrollDragging;
+        /** Grab offset within the thumb when drag started. */
+        int scrollGrabY;
         ContentPanel() {
             backgroundColor(0xFF000000);
         }
@@ -269,6 +286,7 @@ public class SpacewarSelectionPanel extends UIPanel {
             layoutWidth = -1;
             layoutDirty = true;
             contentBuffer = null;
+            scrollDragging = false;
         }
 
         /** Sync selection, layout if needed, then paint the buffer. */
@@ -450,11 +468,96 @@ public class SpacewarSelectionPanel extends UIPanel {
             Shape save = g2.getClip();
             g2.clipRect(0, 0, width, height);
             g2.drawImage(contentBuffer, 0, 0, null);
+            drawScrollbar(g2);
             g2.setClip(save);
+        }
+
+        /** @return true if the list can scroll */
+        boolean scrollable() {
+            return maxOffset > 0;
+        }
+
+        /** Recompute track/thumb rectangles from {@link #offset} / {@link #maxOffset}. */
+        void updateScrollGeometry() {
+            if (!scrollable()) {
+                scrollTrack.setBounds(0, 0, 0, 0);
+                scrollThumb.setBounds(0, 0, 0, 0);
+                return;
+            }
+            // Full content height so top/bottom margins stay equal.
+            int x = width - SCROLL_BAR_WIDTH;
+            scrollTrack.setBounds(x, 0, SCROLL_BAR_WIDTH, height);
+
+            int thumbH = Math.max(SCROLL_MIN_THUMB, height / (maxOffset + 1));
+            if (thumbH > height) {
+                thumbH = height;
+            }
+            int travel = height - thumbH;
+            int thumbY = 0;
+            if (travel > 0 && maxOffset > 0) {
+                thumbY = (int)Math.round(1.0 * offset * travel / maxOffset);
+            }
+            scrollThumb.setBounds(x, thumbY, SCROLL_BAR_WIDTH, thumbH);
+        }
+
+        void drawScrollbar(Graphics2D g2) {
+            updateScrollGeometry();
+            if (!scrollable()) {
+                return;
+            }
+            g2.setColor(SCROLL_TRACK);
+            g2.fillRect(scrollTrack.x, scrollTrack.y, scrollTrack.width, scrollTrack.height);
+            g2.setColor(SCROLL_THUMB);
+            g2.fillRect(scrollThumb.x, scrollThumb.y, scrollThumb.width, scrollThumb.height);
+        }
+
+        /**
+         * Place the thumb so its top is {@code thumbTop} and sync {@link #offset}.
+         * @param thumbTop desired thumb top in content-local Y
+         */
+        void setOffsetFromThumbTop(int thumbTop) {
+            updateScrollGeometry();
+            int travel = scrollTrack.height - scrollThumb.height;
+            if (travel <= 0) {
+                offset = 0;
+            } else {
+                int ty = Math.max(scrollTrack.y, Math.min(thumbTop, scrollTrack.y + travel));
+                offset = (int)Math.round(1.0 * (ty - scrollTrack.y) * maxOffset / travel);
+            }
+            clampOffset();
+            updateScrollGeometry();
         }
 
         @Override
         public boolean mouse(UIMouse e) {
+            if (scrollDragging) {
+                if (e.has(Type.DRAG) || e.has(Type.MOVE)) {
+                    setOffsetFromThumbTop(e.y - scrollGrabY);
+                    return true;
+                }
+                if (e.has(Type.UP) || e.has(Type.LEAVE)) {
+                    scrollDragging = false;
+                    return true;
+                }
+            }
+            if (scrollable() && e.has(Type.DOWN) && e.has(Button.LEFT)) {
+                updateScrollGeometry();
+                if (scrollThumb.contains(e.x, e.y)) {
+                    scrollDragging = true;
+                    scrollGrabY = e.y - scrollThumb.y;
+                    return true;
+                }
+                if (scrollTrack.contains(e.x, e.y)) {
+                    setOffsetFromThumbTop(e.y - scrollThumb.height / 2);
+                    scrollDragging = true;
+                    scrollGrabY = scrollThumb.height / 2;
+                    return true;
+                }
+            }
+            if (e.has(Type.UP) || e.has(Type.LEAVE)) {
+                scrollDragging = false;
+            }
+
             // Coordinates are content-local; convert to panel-local for bounds.
             int mx = e.x;
             int my = e.y + CONTENT_TOP;
