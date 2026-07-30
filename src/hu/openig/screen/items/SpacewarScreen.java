@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
@@ -63,9 +64,9 @@ import hu.openig.model.TraitKind;
 import hu.openig.model.WarUnit;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
-import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.panels.EquipmentConfigure;
+import hu.openig.screen.panels.SpacewarSelectionPanel;
 import hu.openig.screen.panels.ThreePhaseButton;
 import hu.openig.screen.panels.TwoPhaseButton;
 import hu.openig.ui.HorizontalAlignment;
@@ -315,7 +316,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     /** Fleet control button. */
     ThreePhaseButton rocketButton;
     /** The middle selection panel. */
-    SelectionPanel selectionPanel;
+    SpacewarSelectionPanel selectionPanel;
     /** The simulation delay on normal speed. */
     static final int SIMULATION_DELAY = 100;
     /** Keep the last info images. */
@@ -419,7 +420,39 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         leftPanel = new StatusPanel(true);
         rightPanel = new StatusPanel(false);
 
-        selectionPanel = new SelectionPanel();
+        selectionPanel = new SpacewarSelectionPanel(commons);
+        selectionPanel.structures = structures;
+        selectionPanel.groups = groups;
+        selectionPanel.onSelectAll = new Action0() {
+            @Override
+            public void invoke() {
+                doSelectAll();
+            }
+        };
+        selectionPanel.onDeselectAll = new Action0() {
+            @Override
+            public void invoke() {
+                deselectAll();
+            }
+        };
+        selectionPanel.onRecallGroup = new Action1<Integer>() {
+            @Override
+            public void invoke(Integer value) {
+                recallGroup(value);
+            }
+        };
+        selectionPanel.onRemoveGroup = new Action1<Integer>() {
+            @Override
+            public void invoke(Integer value) {
+                removeGroup(value);
+            }
+        };
+        selectionPanel.onSelectionModified = new Action0() {
+            @Override
+            public void invoke() {
+                displaySelectedShipInfo();
+            }
+        };
 
         addThis();
     }
@@ -3676,7 +3709,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         List<SpacewarStructure> result = new ArrayList<>();
         for (SpacewarStructure s : structures) {
             if (!areAllies(s.owner, ship.owner) && !s.isDestroyed()) {
-                if (ship.inRange(s).size() > 0) {
+                if (ship.isInRange(s)) {
                     result.add(s);
                 }
             }
@@ -4066,7 +4099,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 }
                 if (ship.attackUnit != null && !ship.flee) {
                     if (ship.attackUnit.isDestroyed()
-                            || (ship.guard && ship.inRange(ship.attackUnit).isEmpty())
+                            || (ship.guard && !ship.isInRange(ship.attackUnit))
                             || (!ship.attackUnit.isRocket()
                                     && !ship.attackUnit.intersects(0, 0, space.width, space.height))) {
                         guard(ship);
@@ -5134,480 +5167,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      */
     public void viewGridSelected(boolean selected) {
         viewGrid.selected = selected;
-    }
-    /**
-     * The selection cell.
-     * @author akarnokd, 2012.01.11.
-     */
-    class SelectionCell {
-        /** The object's name. */
-        String name;
-        /** The object's owner. */
-        String owner;
-        /** The objects parent. */
-        String parent;
-        /** The color of the owner. */
-        int color;
-        /** The image. */
-        BufferedImage image;
-        /** The shield ratio. */
-        double shieldRatio;
-        /** The HP ratio. */
-        double hpRatio;
-        /** The firepower. */
-        double firepower;
-        /** The damage per second. */
-        double dps;
-        /** The rocket count. */
-        int rockets;
-        /** The bomb count. */
-        int bombs;
-        /** Count. */
-        int count;
-        /** The maximum image size. */
-        static final int MAX_IMAGE = 50;
-        /** Hitpoints. */
-        int hp;
-        /** Shield points. */
-        int sp;
-        /** The computed location of the cell. */
-        Rectangle bounds;
-        /** The original structure. */
-        final SpacewarStructure structure;
-        /**
-         * Construct a cell.
-         * @param s the original structure
-         */
-        SelectionCell(SpacewarStructure s) {
-            this.structure = s;
-
-            image = s.angles[0];
-            if (s.item != null) {
-                name = s.item.type.name;
-            } else
-            if (s.building != null) {
-                name = s.building.type.name;
-            }
-            owner = s.owner.name;
-            color = s.owner.color;
-            if (s.fleet != null) {
-                parent = s.fleet.name();
-            } else
-            if (s.planet != null) {
-                parent = s.planet.name();
-            }
-
-            hp = (int)s.hp;
-
-            hpRatio = 1.0 * s.hp / s.hpMax;
-            if (s.shieldMax > 0) {
-                shieldRatio = 1.0 * s.shield / s.shieldMax;
-                sp = (int)s.shield;
-
-            } else {
-                shieldRatio = -1;
-                sp = -1;
-            }
-            count = s.count;
-
-            for (SpacewarWeaponPort p : s.ports) {
-                if (p.projectile.mode == Mode.BEAM) {
-                    double dmg = p.damage(s.owner);
-                    firepower += p.count * dmg * count;
-                    dps += p.count * dmg * count * 1000.0 / p.projectile.delay;
-                } else
-                if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
-                    rockets += p.count;
-                } else
-                if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
-                    bombs += p.count;
-                }
-            }
-            dps = Math.round(dps);
-
-        }
-        /**
-         * Returns the rendering width.
-         * @return the rendering width
-         */
-        int width() {
-            int w = 0;
-            if (count < 2) {
-                w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.name", name)));
-            } else {
-                w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.name_count", name, count)));
-            }
-            w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.owner", owner)));
-            w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.parent", parent)));
-            w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.firepower_dps", (int)firepower, dps)));
-            if (rockets > 0 || bombs > 0) {
-                w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.bombs_rockets", bombs, rockets)));
-            }
-            // defense values
-            int dv = commons.text().getTextWidth(7, get("spacewar.selection.defense_values"));
-            dv += commons.text().getTextWidth(7, Integer.toString(hp));
-            if (sp >= 0) {
-                dv += commons.text().getTextWidth(7, " + ");
-                dv += commons.text().getTextWidth(7, Integer.toString(sp));
-                dv += commons.text().getTextWidth(7, " = ");
-                dv += commons.text().getTextWidth(7, Integer.toString(sp + hp));
-            }
-            w = Math.max(w, dv);
-
-            return w + Math.min(MAX_IMAGE, image.getWidth()) + 15;
-        }
-        /**
-         * The total text height.
-         * @return the total text height
-         */
-        int textHeight() {
-            int rows = 5;
-            if (rockets > 0 || bombs > 0) {
-                rows++;
-            }
-            return 7 * rows + (rows - 1) * 2;
-        }
-        /**
-         * Returns the rendering height.
-         * @return the rendering height
-         */
-        int height() {
-            int h = MAX_IMAGE + 10;
-            h = Math.max(h, textHeight() + 2);
-            return h;
-        }
-        /**
-         * Draws the cell.
-         * @param g2 the graphics context
-         * @param x0 the origin X
-         * @param y0 the origin Y
-         */
-        public void draw(Graphics2D g2, int x0, int y0) {
-            g2.translate(x0, y0);
-
-            g2.setColor(Color.LIGHT_GRAY);
-
-            int h = height();
-//            int w = width();
-
-//            g2.drawRect(0, 0, w, h);
-            int dy = (h - 10 - Math.min(50, image.getHeight())) / 2;
-
-            g2.setColor(Color.GREEN);
-            int iw = Math.min(image.getWidth(), MAX_IMAGE);
-            int iw2 = (int)(iw * hpRatio);
-            g2.drawRect(0, dy + 0, iw, 4);
-            g2.fillRect(0, dy + 0, iw2, 4);
-
-            if (shieldRatio >= 0) {
-                g2.setColor(Color.ORANGE);
-                iw2 = (int)(iw * shieldRatio);
-                g2.drawRect(0, dy + 6, iw, 4);
-                g2.fillRect(0, dy + 6, iw2, 4);
-            }
-
-            if (image.getWidth() > MAX_IMAGE || image.getHeight() > MAX_IMAGE) {
-                double scalex = 1.0 * MAX_IMAGE / image.getWidth();
-                double scaley = 1.0 * MAX_IMAGE / image.getHeight();
-                double scale = Math.min(scalex, scaley);
-
-                int imw = (int)(image.getWidth() * scale);
-                int imh = (int)(image.getHeight() * scale);
-
-                int dx = (MAX_IMAGE - imw) / 2;
-                dy = (MAX_IMAGE - imh) / 2 + 10;
-
-                g2.drawImage(image, dx, dy, imw, imh, null);
-            } else {
-                g2.drawImage(image, 0, dy + 10, null);
-            }
-
-            int dx = Math.min(MAX_IMAGE, image.getWidth()) + 4;
-
-            dy = (h - textHeight()) / 2;
-
-            if (count > 1) {
-                commons.text().paintTo(g2, dx, dy, 7, color, format("spacewar.selection.name_count", name, count));
-            } else {
-                commons.text().paintTo(g2, dx, dy, 7, color, format("spacewar.selection.name", name));
-            }
-            commons.text().paintTo(g2, dx, dy + 9, 7, color, format("spacewar.selection.owner", owner));
-            commons.text().paintTo(g2, dx, dy + 18, 7, color, format("spacewar.selection.parent", parent));
-            commons.text().paintTo(g2, dx, dy + 27, 7, color, format("spacewar.selection.firepower_dps", (int)firepower, (int)dps));
-            int y2 = dy + 36;
-            if (rockets > 0 || bombs > 0) {
-                commons.text().paintTo(g2, dx, y2, 7, color, format("spacewar.selection.bombs_rockets", bombs, rockets));
-                y2 += 9;
-            }
-
-            List<TextSegment> tss = new ArrayList<>();
-            tss.add(new TextSegment(get("spacewar.selection.defense_values"), color));
-            tss.add(new TextSegment(Integer.toString(hp), Color.GREEN.getRGB()));
-            if (sp >= 0) {
-                tss.add(new TextSegment(" + ", color));
-                tss.add(new TextSegment(Integer.toString(sp), Color.ORANGE.getRGB()));
-                tss.add(new TextSegment(" = ", color));
-                tss.add(new TextSegment(Integer.toString(hp + sp), TextRenderer.YELLOW));
-            }
-            commons.text().paintTo(g2, dx, y2, 7, tss);
-
-            g2.translate(-x0, -y0);
-        }
-    }
-    /**
-     * The panel showing information about the current selection.
-
-     * @author akarnokd, 2012.01.11.
-     */
-    class SelectionPanel extends UIContainer {
-        /** The current scroll offset. */
-        int offset = 0;
-        /** The row height. */
-        static final int ROW_HEIGHT = 30;
-        /** The last selection. */
-        List<SpacewarStructure> lastSelection = new ArrayList<>();
-        /** The group buttons. */
-        final List<UIImageButton> groupButtons = new ArrayList<>();
-        /** The cells currently displayable. */
-        final List<SelectionCell> cells = new ArrayList<>();
-        /** Constructs the selection panel buttons. */
-        SelectionPanel() {
-            int x = 5;
-            for (int i = -1; i < 10; i++) {
-                final int j = i;
-
-                UIImageButton ib = new UIImageButton(commons.common().shield) {
-                    @Override
-                    public void draw(Graphics2D g2) {
-                        super.draw(g2);
-                        String s = Integer.toString(j);
-                        if (j < 0) {
-                            s = "*";
-                        }
-                        commons.text().paintTo(g2, 7, 3, 10, TextRenderer.WHITE, s);
-                    }
-                    @Override
-                    public boolean mouse(UIMouse e) {
-                        if (e.has(Button.RIGHT) && e.has(Type.DOWN)) {
-                            if (j >= 0) {
-                                removeGroup(j);
-                            } else {
-                                deselectAll();
-                            }
-                            return true;
-                        }
-                        return super.mouse(e);
-                    }
-                };
-                ib.onClick = new Action0() {
-                    @Override
-                    public void invoke() {
-                        if (j >= 0) {
-                            recallGroup(j);
-                        } else {
-                            doSelectAll();
-                        }
-                    }
-                };
-
-                groupButtons.add(ib);
-                add(ib);
-                ib.x = x;
-
-                x += 25;
-
-                if (i == -1) {
-                    ib.tooltip(get("battle.selectall.tooltip"));
-                } else {
-                    ib.tooltip(format("battle.selectgroup.tooltip", i));
-                }
-            }
-        }
-        @Override
-        public void draw(Graphics2D g2) {
-            Set<Integer> groupSet = U.newSet(groups.values());
-            groupSet.add(-1);
-            for (int i = 0; i < 11; i++) {
-                boolean v0 = groupButtons.get(i).visible();
-                groupButtons.get(i).visible(groupSet.contains(i - 1));
-                if (v0 != groupButtons.get(i).visible()) {
-                    commons.control().moveMouse();
-                }
-            }
-
-            List<SpacewarStructure> sel = getSelection();
-
-            if (sel.size() != lastSelection.size() || !lastSelection.containsAll(sel)) {
-                offset = 0;
-            }
-            lastSelection = sel;
-
-            Shape save = g2.getClip();
-            g2.clipRect(0, 0, width, height);
-
-            g2.setColor(Color.BLACK);
-
-            g2.fillRect(0, 0, width, height);
-
-            offset = Math.max(0, Math.min(offset, sel.size() - 1));
-
-            cells.clear();
-            for (SpacewarStructure s : sel) {
-                SelectionCell c = new SelectionCell(s);
-                cells.add(c);
-            }
-            int x0 = 0;
-            int y0 = 22;
-            int h = 0;
-            int row = 0;
-            for (SelectionCell c : cells) {
-                int cw = c.width();
-                if (x0 > 0 && x0 + cw >= width) {
-                    x0 = 0;
-                    y0 += h;
-                    h = 0;
-                    row++;
-                }
-
-                if (row >= offset) {
-                    c.draw(g2, x0, y0);
-                    int ch = c.height();
-                    c.bounds = new Rectangle(x0, y0, cw, ch);
-                    h = Math.max(h, ch);
-                } else {
-                    c.bounds = null;
-                }
-                x0 += cw;
-            }
-            if (offset > row) {
-                offset = row;
-            }
-
-            super.draw(g2);
-
-            g2.setClip(save);
-        }
-        /** Clear any references. */
-        @Override
-        public void clear() {
-            lastSelection.clear();
-            cells.clear();
-        }
-        @Override
-        public boolean mouse(UIMouse e) {
-            if (e.has(Type.WHEEL)) {
-                if (e.z < 0) {
-                    offset--;
-                } else {
-                    offset++;
-                }
-                return true;
-            }
-            if (e.has(Type.DOWN) && e.has(Button.RIGHT) && e.y >= commons.common().shield[0].getHeight()) {
-                removeFromSelection(e.x, e.y);
-                displaySelectedShipInfo();
-                return true;
-            }
-            if (e.has(Type.DOUBLE_CLICK) && e.has(Button.LEFT)) {
-                if (e.has(Modifier.SHIFT)) {
-                    addTypeToSelection(e.x, e.y, e.z > 2);
-                    displaySelectedShipInfo();
-                } else
-                if (e.has(Modifier.CTRL)) {
-                    removeTypeFromSelection(e.x, e.y, e.z > 2);
-                    displaySelectedShipInfo();
-                } else {
-                    retainTypeFromSelection(e.x, e.y, e.z > 2);
-                    displaySelectedShipInfo();
-                }
-                return true;
-            }
-            return super.mouse(e);
-        }
-        /**
-         * Add units with the same type (or category) to the current selection.
-         * @param mx the mouse coordinates
-         * @param my the mouse coordinates
-         * @param category affect entire category?
-         */
-        void addTypeToSelection(int mx, int my, boolean category) {
-            for (SelectionCell c : cells) {
-                if (c.bounds != null && c.bounds.contains(mx, my)) {
-                    for (SpacewarStructure s : structures) {
-                        if (s.owner == c.structure.owner) {
-                            if (category) {
-                                ResearchType rt0 = world().researches.get(c.structure.techId);
-                                ResearchType rt1 = world().researches.get(s.techId);
-                                s.selected = (rt0.category == rt1.category);
-                            } else {
-                                s.selected = s.techId.equals(c.structure.techId);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        /**
-         * Retain the type (or category) in the current selection.
-         * @param mx the mouse coordinates
-         * @param my the mouse coordinates
-         * @param category affect entire category?
-         */
-        void retainTypeFromSelection(int mx, int my, boolean category) {
-            for (SelectionCell c : cells) {
-                if (c.bounds != null && c.bounds.contains(mx, my)) {
-                    for (SelectionCell c1 : cells) {
-                        if (c1.structure.owner == c.structure.owner) {
-                            if (category) {
-                                ResearchType rt0 = world().researches.get(c.structure.techId);
-                                ResearchType rt1 = world().researches.get(c1.structure.techId);
-                                c1.structure.selected = (rt0.category == rt1.category);
-                            } else {
-                                c1.structure.selected = c1.structure.techId.equals(c.structure.techId);
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-
-        }
-        /**
-         * Remove the type (or category) from the current selection.
-         * @param mx the mouse coordinates
-         * @param my the mouse coordinates
-         * @param category affect entire category?
-         */
-        void removeTypeFromSelection(int mx, int my, boolean category) {
-            for (SelectionCell c : cells) {
-                if (c.bounds != null && c.bounds.contains(mx, my)) {
-                    for (SelectionCell c1 : cells) {
-                        if (c1.structure.owner == c.structure.owner) {
-                            if (category) {
-                                ResearchType rt0 = world().researches.get(c.structure.techId);
-                                ResearchType rt1 = world().researches.get(c1.structure.techId);
-                                c1.structure.selected = !(rt0.category == rt1.category);
-                            } else {
-                                c1.structure.selected = !c1.structure.techId.equals(c.structure.techId);
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        /**
-         * Remove the cell(ship) from the selection.
-         * @param mx the mouse X
-         * @param my the mouse Y
-         */
-        void removeFromSelection(int mx, int my) {
-            for (SelectionCell c : cells) {
-                if (c.bounds != null && c.bounds.contains(mx, my)) {
-                    c.structure.selected = false;
-                }
-            }
-        }
     }
     /** Deselect everything. */
     void deselectAll() {

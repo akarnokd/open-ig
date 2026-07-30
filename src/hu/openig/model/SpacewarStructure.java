@@ -364,20 +364,35 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
         return r;
     }
     /**
+     * Returns true if at least one BEAM weapon can reach the target.
+     * Uses {@link #maximumRange} — no port iteration / list allocation.
+     * @param target the target structure
+     * @return true if within longest beam range
+     */
+    public boolean isInRange(SpacewarObject target) {
+        return maximumRange > 0 && maximumRange >= distanceTo(target);
+    }
+    /**
      * Returns a list of those BEAM weapon ports, which have the target structure in range.
      * @param target the target structure
      * @return the list of weapon ports
      */
     public List<SpacewarWeaponPort> inRange(SpacewarObject target) {
         List<SpacewarWeaponPort> result = new ArrayList<>();
-        double d = Math.hypot(x - target.x, y - target.y);
+        double d = distanceTo(target);
         for (SpacewarWeaponPort p : ports) {
             if (p.projectile.range >= d && p.projectile.mode == Mode.BEAM) {
                 result.add(p);
             }
         }
-
         return result;
+    }
+    /**
+     * @param target the other object
+     * @return Euclidean distance to the target
+     */
+    double distanceTo(SpacewarObject target) {
+        return Math.hypot(x - target.x, y - target.y);
     }
     /**
      * Apply damage to this structure, considering the shield level and
