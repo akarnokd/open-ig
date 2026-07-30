@@ -113,8 +113,6 @@ public final class SpacewarSelectionCell {
     int textHeight;
     /** X within the current layout row. */
     int rowX;
-    /** True when painted in the current viewport. */
-    boolean visibleInViewport;
     /** Hit-test bounds in panel coordinates. */
     final Rectangle bounds = new Rectangle();
     /** Opaque pixel bounds of {@link #image} (source coordinates). */

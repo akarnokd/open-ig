@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * Spacewar middle status panel: group buttons + scrollable selection grid.
@@ -255,7 +256,6 @@ public class SpacewarSelectionPanel extends UIPanel {
             selectionScratch.clear();
             for (SpacewarSelectionCell c : cells) {
                 c.structure = null;
-                c.visibleInViewport = false;
                 cellPool.add(c);
             }
             cells.clear();
@@ -304,7 +304,6 @@ public class SpacewarSelectionPanel extends UIPanel {
         void rebuildCells() {
             for (SpacewarSelectionCell c : cells) {
                 c.structure = null;
-                c.visibleInViewport = false;
                 cellPool.add(c);
             }
             cells.clear();
@@ -324,14 +323,13 @@ public class SpacewarSelectionPanel extends UIPanel {
         void syncFromSelection() {
             collectSelection();
             if (!selectionMatchesCells()) {
-                offset = 0;
                 rebuildCells();
             } else {
-                for (SpacewarSelectionCell c : cells) {
+                forEachVisibleCell((c, y0) -> {
                     if (c.syncLoadout()) {
                         layoutDirty = true;
                     }
-                }
+                });
             }
             if (layoutWidth != width) {
                 layoutDirty = true;
@@ -354,7 +352,6 @@ public class SpacewarSelectionPanel extends UIPanel {
             SelectionRow current = null;
             int x0 = 0;
             for (SpacewarSelectionCell c : cells) {
-                c.visibleInViewport = false;
                 if (current != null && x0 > 0 && x0 + c.cellWidth >= innerWidth) {
                     rows.add(current);
                     current = null;
@@ -396,6 +393,22 @@ public class SpacewarSelectionPanel extends UIPanel {
             }
         }
 
+        /**
+         * Invoke {@code action} for each cell on the visible page.
+         * @param action receives the cell and its content-local top Y
+         */
+        void forEachVisibleCell(BiConsumer<SpacewarSelectionCell, Integer> action) {
+            int y0 = CONTENT_PAD_Y;
+            int viewBottom = height - CONTENT_PAD_Y;
+            for (int r = offset; r < rows.size() && y0 < viewBottom; r++) {
+                SelectionRow row = rows.get(r);
+                for (SpacewarSelectionCell c : row.cells) {
+                    action.accept(c, y0);
+                }
+                y0 += row.height + CELL_GAP;
+            }
+        }
+
         int ensureContentBuffer() {
             int bw = Math.max(1, width);
             int bh = Math.max(1, height);
@@ -419,27 +432,13 @@ public class SpacewarSelectionPanel extends UIPanel {
                 bg.setColor(Color.BLACK);
                 bg.fillRect(0, 0, contentBuffer.getWidth(), viewH);
 
-                for (SpacewarSelectionCell c : cells) {
-                    c.visibleInViewport = false;
-                }
-
-                int y0 = CONTENT_PAD_Y;
-                int viewBottom = viewH - CONTENT_PAD_Y;
-                for (int r = offset; r < rows.size(); r++) {
-                    SelectionRow row = rows.get(r);
-                    if (y0 >= viewBottom) {
-                        break;
-                    }
-                    for (SpacewarSelectionCell c : row.cells) {
-                        c.refreshCombatStats();
-                        c.rebuildDefenseSegments();
-                        c.visibleInViewport = true;
-                        // Bounds in parent (SpacewarSelectionPanel) coordinates.
-                        c.bounds.setBounds(c.rowX, CONTENT_TOP + y0, c.cellWidth, c.cellHeight);
-                        c.paint(bg, c.rowX, y0);
-                    }
-                    y0 += row.height + CELL_GAP;
-                }
+                forEachVisibleCell((c, y0) -> {
+                    c.refreshCombatStats();
+                    c.rebuildDefenseSegments();
+                    // Bounds in parent (SpacewarSelectionPanel) coordinates.
+                    c.bounds.setBounds(c.rowX, CONTENT_TOP + y0, c.cellWidth, c.cellHeight);
+                    c.paint(bg, c.rowX, y0);
+                });
             } finally {
                 bg.dispose();
             }
@@ -485,12 +484,13 @@ public class SpacewarSelectionPanel extends UIPanel {
         }
 
         SpacewarSelectionCell cellAt(int mx, int my) {
-            for (SpacewarSelectionCell c : cells) {
-                if (c.visibleInViewport && c.bounds.contains(mx, my)) {
-                    return c;
+            SpacewarSelectionCell[] hit = { null };
+            forEachVisibleCell((c, y0) -> {
+                if (hit[0] == null && c.bounds.contains(mx, my)) {
+                    hit[0] = c;
                 }
-            }
-            return null;
+            });
+            return hit[0];
         }
 
         void addTypeToSelection(int mx, int my, boolean category) {
