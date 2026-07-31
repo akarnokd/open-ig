@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -228,7 +227,7 @@ public class SpacewarSelectionPanel extends UIPanel {
     }
 
     /**
-     * Scrollable viewport: owns cell pool, row layout, and atomic buffer paint.
+     * Scrollable viewport: owns cell pool, row layout, and visible-page paint.
      */
     final class ContentPanel extends UIPanel {
         /** Scroll offset in layout rows. */
@@ -239,8 +238,6 @@ public class SpacewarSelectionPanel extends UIPanel {
         int layoutWidth = -1;
         /** True when rows must be recomputed. */
         boolean layoutDirty = true;
-        /** Offscreen buffer for the visible page. */
-        BufferedImage contentBuffer;
         /** Scratch list of the current selection. */
         final List<SpacewarStructure> selectionScratch = new ArrayList<>();
         /** Bound cells in display order. */
@@ -285,14 +282,12 @@ public class SpacewarSelectionPanel extends UIPanel {
             maxOffset = 0;
             layoutWidth = -1;
             layoutDirty = true;
-            contentBuffer = null;
             scrollDragging = false;
         }
 
-        /** Sync selection, layout if needed, then paint the buffer. */
+        /** Sync selection and layout; hit-test bounds are refreshed in {@link #draw}. */
         void syncAndLayout() {
             syncFromSelection();
-            renderContentBuffer();
         }
 
         void collectSelection() {
@@ -427,47 +422,20 @@ public class SpacewarSelectionPanel extends UIPanel {
             }
         }
 
-        int ensureContentBuffer() {
-            int bw = Math.max(1, width);
-            int bh = Math.max(1, height);
-            if (contentBuffer == null
-                    || contentBuffer.getWidth() != bw
-                    || contentBuffer.getHeight() != bh) {
-                contentBuffer = new BufferedImage(bw, bh, BufferedImage.TYPE_INT_ARGB);
-            }
-            return bh;
-        }
-
-        /**
-         * Compose the visible page into {@link #contentBuffer}.
-         * Icons, bars and labels for every visible cell are painted here
-         * before a single blit in {@link #draw(Graphics2D)}.
-         */
-        void renderContentBuffer() {
-            int viewH = ensureContentBuffer();
-            Graphics2D bg = contentBuffer.createGraphics();
-            try {
-                bg.setColor(Color.BLACK);
-                bg.fillRect(0, 0, contentBuffer.getWidth(), viewH);
-
-                forEachVisibleCell((c, y0) -> {
-                    c.refreshCombatStats();
-                    c.rebuildDefenseSegments();
-                    // Bounds in parent (SpacewarSelectionPanel) coordinates.
-                    c.bounds.setBounds(c.rowX, CONTENT_TOP + y0, c.cellWidth, c.cellHeight);
-                    c.paint(bg, c.rowX, y0);
-                });
-            } finally {
-                bg.dispose();
-            }
-        }
-
         @Override
         public void draw(Graphics2D g2) {
-            // Buffer already prepared in syncAndLayout() during parent draw.
+            // Paint cells directly so vector text sees the supersampled transform
+            // instead of upscaling a pre-baked logical bitmap.
             Shape save = g2.getClip();
             g2.clipRect(0, 0, width, height);
-            g2.drawImage(contentBuffer, 0, 0, null);
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, width, height);
+            forEachVisibleCell((c, y0) -> {
+                c.refreshCombatStats();
+                c.rebuildDefenseSegments();
+                c.bounds.setBounds(c.rowX, CONTENT_TOP + y0, c.cellWidth, c.cellHeight);
+                c.paint(g2, c.rowX, y0);
+            });
             drawScrollbar(g2);
             g2.setClip(save);
         }

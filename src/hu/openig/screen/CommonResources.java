@@ -368,7 +368,10 @@ public class CommonResources implements GameEnvironment {
 
             traits.load(rl.getXML("traits"));
 
-            text.setFontScaling(config.uiScale / 100d);
+            // UI scale is applied by GameWindow's back-buffer (blit or supersample).
+            // Scaling the FRC only affects vector-font getTextWidth and desyncs it from
+            // paintTo, which distorts layout whenever useStandardFonts is on.
+            text.setFontScaling(1d);
 
             // FIXME during translation
 
