@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -205,7 +206,7 @@ public class TextRenderer {
      * @param textCacheSize the text rendering cache size or 0 to disable it
      */
     public TextRenderer(ResourceLocator rl, boolean useStandardFonts, int textCacheSize) {
-        frc = new FontRenderContext(null, false, true);
+        frc = new FontRenderContext(null, true, true);
         this.useStandardFonts = useStandardFonts;
 
         charImage = rl.getImage("charset");
@@ -223,15 +224,20 @@ public class TextRenderer {
     }
     /**
      * Set the font scaling on the font render context if using standard fonts.
+     * <p>Pass {@code 1} for identity. Do not pass the UI scale here: interface
+     * magnification is applied by GameWindow's back-buffer. Scaling the FRC as
+     * well only widens {@link #getTextWidth} while {@link #paintTo} still draws
+     * unscaled glyphs, which distorts layout.
      * @param scale the scaling to use, use 1 to reset the scaling
      */
     public void setFontScaling(double scale) {
         if (scale <= 1) {
-            frc = new FontRenderContext(null, false, true);
+            frc = new FontRenderContext(null, true, true);
+            return;
         }
         AffineTransform tx = new AffineTransform();
         tx.scale(scale, scale);
-        frc = new FontRenderContext(tx, false, true);
+        frc = new FontRenderContext(tx, true, true);
     }
     /**
      * A line definition.
@@ -389,15 +395,25 @@ public class TextRenderer {
         if (useStandardFonts) {
             Font f = g.getFont();
             Color c = g.getColor();
-            g.setFont(standardFont(size));
-            g.setColor(new Color(color));
-            FontMetrics fm = g.getFontMetrics();
-            g.drawString(text, x, y + fm.getAscent() - fm.getDescent() / 2 /* - 4 */);
-//            g.drawLine(x, y, x + 5, y);
-//            g.drawLine(x, y + size - 1, x + 5, y + size - 1);
-//            g.drawLine(x, y + fm.getAscent() + fm.getDescent() - 1, x + 5, y + fm.getAscent() + fm.getDescent() - 1);
-            g.setColor(c);
-            g.setFont(f);
+            Object prevAA = g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
+            Object prevFM = g.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
+            try {
+                g.setFont(standardFont(size));
+                g.setColor(new Color(color));
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                        RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+                FontMetrics fm = g.getFontMetrics();
+                g.drawString(text, x, y + fm.getAscent() - fm.getDescent() / 2 /* - 4 */);
+            } finally {
+                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        prevAA != null ? prevAA : RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                        prevFM != null ? prevFM : RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
+                g.setColor(c);
+                g.setFont(f);
+            }
             return;
         }
         if (useTextCache) {

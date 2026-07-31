@@ -141,9 +141,10 @@ public class GameWindow extends JFrame implements GameControls {
         /** Save transform before draw. */
         AffineTransform predraw;
         /**
-         * Logical-resolution back-buffer used when {@code uiScale != 100}.
-         * Screens draw 1:1 into this image; one scaled blit goes to the window.
-         * Avoids per-{@code drawImage} AffineTransform filtering (huge FPS drop).
+         * UI-scale back-buffer when {@code uiScale != 100}.
+         * Bitmap fonts: logical size, one bilinear blit (fast path from #1264).
+         * Vector fonts: physical size ({@code logical × uiScale/100}); screens paint
+         * under {@code g.scale} so text rasterizes at device pixels, then a 1:1 blit.
          */
         BufferedImage scaleBuffer;
         /** When did the last paint happen. */
@@ -181,10 +182,10 @@ public class GameWindow extends JFrame implements GameControls {
             }
         }
         /**
-         * Ensure the UI-scale back-buffer matches the logical inner size.
+         * Ensure the UI-scale back-buffer matches the required size.
          * @param g2 window graphics (for a compatible image config)
-         * @param iw logical width
-         * @param ih logical height
+         * @param iw buffer width
+         * @param ih buffer height
          * @return {@code true} if a new buffer was allocated (contents are empty / black)
          */
         boolean ensureScaleBuffer(Graphics2D g2, int iw, int ih) {
@@ -337,34 +338,55 @@ public class GameWindow extends JFrame implements GameControls {
             Graphics2D g2 = (Graphics2D)g;
             try {
                 if (uis != 100) {
-                    // Render at logical size, then scale once. Live g2.scale() on the
-                    // window Graphics makes every drawImage (tiles, UI, text) go through
-                    // AffineTransform filtering — especially brutal with bilinear on PlanetScreen.
+                    // Bitmap fonts: logical buffer + one blit (#1264) — fast, soft upsample OK.
+                    // Vector fonts: supersampled buffer (physical size, paint under scale) so
+                    // glyphs rasterize at device pixels; nearest on drawImage avoids bilinear
+                    // tile filtering while scaled. Expect FPS closer to pre-#1264 on maps.
                     int iw = getInnerWidth();
                     int ih = getInnerHeight();
-                    if (ensureScaleBuffer(g2, iw, ih)) {
-                        // New buffer has no prior primary/secondary pixels — must full-paint.
-                        r0 = true;
-                    }
-                    Graphics2D bg = scaleBuffer.createGraphics();
-                    try {
-                        clipScaleBufferToWindowDirtyRegion(g2, bg, uis, iw, ih);
-                        paintScreens(bg, r0, r1);
-                    } finally {
-                        bg.dispose();
-                    }
-
-                    AffineTransform at0 = g2.getTransform();
-                    Object prevHint = g2.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
-                    try {
-                        g2.scale(uis / 100d, uis / 100d);
-                        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    boolean shouldSupersample = commons.text().isUseStandardFonts();
+                    if (shouldSupersample) {
+                        int pw = Math.max(1, (int)Math.ceil(iw * uis / 100d));
+                        int ph = Math.max(1, (int)Math.ceil(ih * uis / 100d));
+                        if (ensureScaleBuffer(g2, pw, ph)) {
+                            r0 = true;
+                        }
+                        Graphics2D bg = scaleBuffer.createGraphics();
+                        try {
+                            bg.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                                    RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+                            bg.scale(uis / 100d, uis / 100d);
+                            clipScaleBufferToWindowDirtyRegion(g2, bg, uis, iw, ih);
+                            paintScreens(bg, r0, r1);
+                        } finally {
+                            bg.dispose();
+                        }
                         g2.drawImage(scaleBuffer, 0, 0, null);
-                    } finally {
-                        g2.setTransform(at0);
-                        if (prevHint != null) {
-                            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, prevHint);
+                    } else {
+                        if (ensureScaleBuffer(g2, iw, ih)) {
+                            // New buffer has no prior primary/secondary pixels — must full-paint.
+                            r0 = true;
+                        }
+                        Graphics2D bg = scaleBuffer.createGraphics();
+                        try {
+                            clipScaleBufferToWindowDirtyRegion(g2, bg, uis, iw, ih);
+                            paintScreens(bg, r0, r1);
+                        } finally {
+                            bg.dispose();
+                        }
+
+                        AffineTransform at0 = g2.getTransform();
+                        Object prevHint = g2.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+                        try {
+                            g2.scale(uis / 100d, uis / 100d);
+                            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                            g2.drawImage(scaleBuffer, 0, 0, null);
+                        } finally {
+                            g2.setTransform(at0);
+                            if (prevHint != null) {
+                                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, prevHint);
+                            }
                         }
                     }
                 } else {
@@ -2194,7 +2216,9 @@ public class GameWindow extends JFrame implements GameControls {
 
             setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
 
-            commons.text().setFontScaling(config.uiScale / 100d);
+            // Keep vector-font metrics in logical pixels; UI scale is applied by the
+            // back-buffer path (blit or supersampled paint-under-scale).
+            commons.text().setFontScaling(1d);
         }
     }
     @Override
@@ -2317,7 +2341,7 @@ public class GameWindow extends JFrame implements GameControls {
 
                 int th = 10;
 
-                UIColorLabel lbl = new UIColorLabel(th * config.uiScale / 100, commons.text());
+                UIColorLabel lbl = new UIColorLabel(th, commons.text());
                 lbl.width = config.tooltipWidth;
                 lbl.text(tooltipText);
                 lbl.width = lbl.maxWidth();
