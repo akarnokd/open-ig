@@ -485,9 +485,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             listWorker.cancel(true);
             listWorker = null;
         }
-        // save only if no game is active
+        // Persist global settings
+        config.save();
         if (commons.world() == null) {
-            config.save();
             MainScreen ms = commons.control().getScreen(Screens.MAIN);
             ms.checkExistingSave();
         }

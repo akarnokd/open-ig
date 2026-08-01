@@ -10,7 +10,6 @@ package hu.openig.model;
 
 import hu.openig.core.Func0;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.XElement;
 
 import java.io.Closeable;
 import java.io.File;
@@ -39,9 +38,6 @@ public class Configuration {
     /** Annotation for indicating load/save a field. */
     @Retention(RetentionPolicy.RUNTIME)
     @interface LoadSave { }
-    /** Annotation for indicating load/save a field into a game save. */
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface LoadSaveGame { }
     /** The configuration is new. */
     public boolean isNew;
     /** The language code. */
@@ -79,35 +75,27 @@ public class Configuration {
     public int audioChannels = 16;
     /** The music volume 0-100. */
     @LoadSave
-    @LoadSaveGame
     public int musicVolume = 100;
     /** Mute music? */
     @LoadSave
-    @LoadSaveGame
     public boolean muteMusic;
     /** The effect volume 0-100. */
     @LoadSave
-    @LoadSaveGame
     public int effectVolume = 100;
     /** Mute effect. */
     @LoadSave
-    @LoadSaveGame
     public boolean muteEffect;
     /** Video volume 0-100. */
     @LoadSave
-    @LoadSaveGame
     public int videoVolume = 100;
     /** Mute video. */
     @LoadSave
-    @LoadSaveGame
     public boolean muteVideo;
     /** Enable playing the classical music? */
     @LoadSave
-    @LoadSaveGame
     public boolean classicalMusic = true;
     /** Enable playing the stargazer game music, courtesy of Tamas Kreiner? */
     @LoadSave
-    @LoadSaveGame
     public boolean stargazerMusic = true;
     /** The debug watcher window. */
     public Closeable watcherWindow;
@@ -121,70 +109,54 @@ public class Configuration {
     public boolean maximized;
     /** Reequip tanks after battles. */
     @LoadSave
-    @LoadSaveGame
     public boolean reequipTanks = true;
     /** Reequip bombs after battles. */
     @LoadSave
-    @LoadSaveGame
     public boolean reequipBombs = true;
     /** Computer voice for screen switches. */
     @LoadSave
-    @LoadSaveGame
     public boolean computerVoiceScreen = true;
     /** Computer voice for notifications. */
     @LoadSave
-    @LoadSaveGame
     public boolean computerVoiceNotify = true;
     /** Build limit. */
     @LoadSave
-    @LoadSaveGame
     public int autoBuildLimit = 20000;
     /** Automatic repair. */
     @LoadSave
-    @LoadSaveGame
     public boolean autoRepair;
     /** Play button sounds? */
     @LoadSave
-    @LoadSaveGame
     public boolean buttonSounds = true;
     /** Play satellite deploy video? */
     @LoadSave
-    @LoadSaveGame
     public boolean satelliteDeploy = true;
     /** The research money percent times 10, e.g., 100% == 1000. */
     @LoadSave
-    @LoadSaveGame
     public int researchMoneyPercent = 1000;
     /** Automatically determine battle outcome. */
     @LoadSave
-    @LoadSaveGame
     public boolean automaticBattle = false;
     /** Autobuild default. */
     @LoadSave
-    @LoadSaveGame
     public AutoBuild autoBuildForNewPlanets = AutoBuild.OFF;
     /** Repair limit. */
     @LoadSave
-    @LoadSaveGame
     public int autoRepairLimit = 0;
     /** Display the building names and status? */
     @LoadSave
-    @LoadSaveGame
     public boolean showBuildingName = true;
     /** Display the union of the radar circles instead of each circle separately? */
     @LoadSave
-    @LoadSaveGame
     public boolean radarUnion = true;
     /** The alpha cache max element count. Zero means disabling the cache. */
     @LoadSave
     public int tileCacheSize = 0;
     /** Classic right-click action control scheme. */
     @LoadSave
-    @LoadSaveGame
     public boolean classicControls;
     /** Invert the left-right mouse button events. */
     @LoadSave
-    @LoadSaveGame
     public boolean swapMouseButtons;
     /**
 
@@ -206,26 +178,21 @@ public class Configuration {
     public int tileCacheBuildingLimit = 10;
     /** Enable the animation of inventory? */
     @LoadSave
-    @LoadSaveGame
     public boolean animateInventory = true;
     /** Slow down the game in case of enemy attack? */
     @LoadSave
-    @LoadSaveGame
     public boolean slowOnEnemyAttack = true;
     /**
      * Automatically pop up objectives list on new objective or on completion
      * of a current one.
      */
     @LoadSave
-    @LoadSaveGame
     public boolean autoDisplayObjectives = true;
     /** Display subtitles. */
     @LoadSave
-    @LoadSaveGame
     public boolean subtitles = true;
     /** The time step in minutes for the simulation. */
     @LoadSave
-    @LoadSaveGame
     public int timestep = 10;
     /** The user interface scaling factor. */
     @LoadSave
@@ -239,11 +206,9 @@ public class Configuration {
     /** Show quick research and production buttons? */
 
     @LoadSave
-    @LoadSaveGame
     public boolean quickRNP = true;
     /** Scale the secondary, fixed size screens. */
     @LoadSave
-    @LoadSaveGame
     public boolean scaleAllScreens = false;
     /** AI should attack every building, not just the defensive ones. */
     @LoadSave
@@ -272,27 +237,21 @@ public class Configuration {
     public int productionHistoryLimit = 10;
     /** Show starmap lists? */
     @LoadSave
-    @LoadSaveGame
     public boolean showStarmapLists = true;
     /** Show starmap info? */
     @LoadSave
-    @LoadSaveGame
     public boolean showStarmapInfo = true;
     /** Show starmap minimap. */
     @LoadSave
-    @LoadSaveGame
     public boolean showStarmapMinimap = true;
     /** Show starmap scrollbars. */
     @LoadSave
-    @LoadSaveGame
     public boolean showStarmapScroll = true;
     /** Enable the drawing of black boxes behind building names and percentages. */
     @LoadSave
-    @LoadSaveGame
     public boolean buildingTextBackgrounds = true;
     /** Allow free form movement in spacewar battles. */
     @LoadSave
-    @LoadSaveGame
     public boolean spacewarFreeformMovement = false;
     /** The current profile. */
     @LoadSave
@@ -336,7 +295,6 @@ public class Configuration {
     public String joinPassphrase;
     /** Allow the AI-managed autobuild to produce items. */
     @LoadSave
-    @LoadSaveGame
     public boolean aiAutoBuildProduction = true;
     /**
 
@@ -359,15 +317,12 @@ public class Configuration {
     public boolean targetSpecificRockets;
     /** Disable weather effects. */
     @LoadSave
-    @LoadSaveGame
     public boolean allowWeather = true;
     /** Disable custom mouse cursors. */
     @LoadSave
-    @LoadSaveGame
     public boolean customCursors = true;
     /** Disable day-night cycle. */
     @LoadSave
-    @LoadSaveGame
     public boolean dayNightCycle = true;
     /** Enable/disable AI upgrading buildings. */
     @LoadSave
@@ -583,49 +538,5 @@ public class Configuration {
         }
 
         return result;
-    }
-    /**
-     * Load game properties from the given game world object.
-     * @param xworld the world object.
-     */
-    public void loadProperties(XElement xworld) {
-        try {
-            for (Field f : this.getClass().getDeclaredFields()) {
-                if (f.isAnnotationPresent(LoadSaveGame.class)) {
-                    if (f.getType() == Boolean.TYPE) {
-                        if (xworld.has(f.getName())) {
-                            f.set(this,  Boolean.valueOf(xworld.get(f.getName())));
-                        }
-                    } else
-                    if (f.getType() == Integer.TYPE || f.getType() == Integer.class) {
-                        if (xworld.has(f.getName())) {
-                            f.set(this, Integer.valueOf(xworld.get(f.getName())));
-                        }
-                    } else
-                    if (f.getType() == String.class) {
-                        if (xworld.has(f.getName())) {
-                            f.set(this,  xworld.get(f.getName()));
-                        }
-                    }
-                }
-            }
-        } catch (IllegalAccessException ex) {
-            Exceptions.add(ex);
-        }
-    }
-    /**
-     * Save game properties from the given game world object.
-     * @param xworld the world object.
-     */
-    public void saveProperties(XElement xworld) {
-        try {
-            for (Field f : this.getClass().getDeclaredFields()) {
-                if (f.isAnnotationPresent(LoadSaveGame.class)) {
-                    xworld.set(f.getName(), f.get(this));
-                }
-            }
-        } catch (IllegalAccessException ex) {
-            Exceptions.add(ex);
-        }
     }
 }

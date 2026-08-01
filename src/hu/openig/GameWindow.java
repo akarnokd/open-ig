@@ -1774,7 +1774,7 @@ public class GameWindow extends JFrame implements GameControls {
         fworld.scripting.onLoaded();
     }
     /**
-     * Save the game related settings such as position and configuration values.
+     * Save the game related settings such as screen positions and view toggles.
      * @param xworld the world object
      */
     void saveSettings(XElement xworld) {
@@ -1796,11 +1796,9 @@ public class GameWindow extends JFrame implements GameControls {
 
         xworld.set("bridge-send", allScreens.bridge.sendSelected);
         xworld.set("bridge-receive", allScreens.bridge.receiveSelected);
-
-        config.saveProperties(xworld);
     }
     /**
-     * Restore the game related settings such as position and configuration values.
+     * Restore the game related settings such as screen positions and view toggles.
      * @param xworld the world XElement
      */
     void restoreSettings(XElement xworld) {
@@ -1832,8 +1830,6 @@ public class GameWindow extends JFrame implements GameControls {
         sm.showGridButton.selected = xworld.getBoolean("starmap-grid", sm.showGridButton.selected);
         sm.showFleetButton.selected = xworld.getBoolean("starmap-fleets", sm.showFleetButton.selected);
         sm.showNames(xworld.getEnum("starmap-names", ShowNamesMode.class, sm.showNames()));
-
-        config.loadProperties(xworld);
 
         commons.music.setVolume(config.musicVolume);
         commons.music.setMute(config.muteMusic);
