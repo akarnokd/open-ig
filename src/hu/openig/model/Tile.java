@@ -158,7 +158,7 @@ public class Tile {
         } else {
             for (int stripIndex = 0; stripIndex < stripCache.length; stripIndex++) {
                 int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
-                int w0 = 31;
+                int w0 = 30;
                 if (stripIndex < height - 1) {
                     w0 = 28;
                 } else if (stripIndex == stripCache.length - 1) {
@@ -224,7 +224,7 @@ public class Tile {
         for (int y = imageHeight - 1; y >= 0; y--) {
             for (int x = x0; x < x0 + stripWidth; x++) {
                 if ((image[y * imageWidth + x] & 0xFF000000) != 0) {
-                    trimmedHeight = (y == imageHeight ? 0 : imageHeight - y + 1);
+                    trimmedHeight = (y == imageHeight ? 0 : imageHeight - y - 1);
                     break outer1;
                 }
             }
@@ -243,7 +243,7 @@ public class Tile {
         } else {
             for (int stripIndex = 0; stripIndex < stripCache.length; stripIndex++) {
                 int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
-                int w0 = 31;
+                int w0 = 30;
                 if (stripIndex < height - 1) {
                     w0 = 28;
                 } else if (stripIndex == stripCache.length - 1) {

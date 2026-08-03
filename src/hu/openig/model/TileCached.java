@@ -76,6 +76,7 @@ public class TileCached extends Tile {
             final int h = s.image.getHeight();
             BufferedImage d = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             d.setAccelerationPriority(1.0f);
+            newStrips[i] = new ImageStrip();
             newStrips[i].yOffset = s.yOffset;
             newStrips[i].image = d;
         }
