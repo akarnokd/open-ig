@@ -329,10 +329,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     double xViewRatio = 0;
     /** The ratio of the Y coordinates of the center of the rendering screen and the center of the planet surface. */
     double yViewRatio = 0;
-    /** Did any event happen that requires a surface visual update. */
-    private boolean surfaceVisualUpdateNeeded = true;
-    /** Should the planet surface be redrawn. */
-    boolean drawSurfaceImage = true;
     /** The currently rendered planet. */
     private Planet renderedPlanet = null;
 
@@ -627,7 +623,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
     @Override
     public void onEnter(Screens mode) {
-        surfaceVisualUpdateNeeded = true;
+        render.invalidate();
         animationTimer = commons.register(150, new Action0() {
             @Override
             public void invoke() {
@@ -912,6 +908,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int offsetX;
         /** The offset Y. */
         int offsetY;
+        /** Drop the buffered surface so the next battle draw rebuilds it. */
+        void invalidate() {
+            planetSurfaceImage = null;
+        }
         /**
          * Get precise X coordinate of location based on the mouse coordinates.
          * @param mx the mouse X coordinate
@@ -1356,7 +1356,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             // Did we switch planet?
             if (renderedPlanet == null || renderedPlanet != planet()) {
-                surfaceVisualUpdateNeeded = true;
+                invalidate();
                 renderedPlanet = planet();
             }
 
@@ -1365,6 +1365,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             float alphaSave = alpha;
             computeAlpha();
             if (alphaSave != alpha) {
+                invalidate();
                 if (alpha > 0.99) {
                     areaPaved = commons.colony().tilePavement;
                     surfaceClearColor = SURFACE_CLEAR_DAY;
@@ -1551,7 +1552,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     surface().surfaceCells.setPavement(sf.location.x + i, sf.location.y - j);
                 }
             }
-            surfaceVisualUpdateNeeded = true;
+            radar.invalidate();
         }
         /**
          * Draw the next vehicle's image to deploy.
@@ -1893,15 +1894,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g2.drawRect(br.x, br.y, br.width, br.height);
 
             renderingWindow.setBounds(0, 0, width, height);
-            drawSurfaceImage = surfaceVisualUpdateNeeded;
             if (battle != null) {
-                if (drawSurfaceImage) {
+                if (planetSurfaceImage == null) {
                     planetSurfaceImage = drawPlanetSurfaceImage(surface, x0, y0);
-                    g2.drawImage(planetSurfaceImage, 0, 0, null);
-                    drawSurfaceImage = false;
-                } else {
-                    g2.drawImage(planetSurfaceImage, 0, 0, null);
                 }
+                g2.drawImage(planetSurfaceImage, 0, 0, null);
             }
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
@@ -2189,8 +2186,26 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @author akarnokd, Mar 27, 2011
      */
     class RadarRender extends UIComponent {
-        /** Cached minimaps for the current planet, keyed by lighting alpha. */
+        /** Cached full radar minimaps keyed by lighting alpha. */
         final Map<Float, BufferedImage> radarAlphaCache = new HashMap<>();
+        /** Planet the cache was built for. */
+        Planet cachedPlanet;
+        /**
+         * Snapshot of minimap-relevant building state last baked into the cache:
+         * {@code [knowledge, id0, kind0, id1, kind1, ...]}.
+         */
+        int[] cachedState = new int[0];
+        /** Valid length of {@link #cachedState}. */
+        int cachedStateLength = -1;
+        /** Scratch buffer filled each draw before comparing to {@link #cachedState}. */
+        int[] stateScratch = new int[0];
+
+        /** Drop cached images (e.g. after pavement). Next draw rebuilds. */
+        void invalidate() {
+            radarAlphaCache.clear();
+            cachedPlanet = null;
+            cachedStateLength = -1;
+        }
 
         /** The pre-rendered noise. */
         BufferedImage[] noises = new BufferedImage[0];
@@ -2220,7 +2235,74 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             return new Rectangle(0, 0, x1 + 57, y1 + 28);
         }
         /**
-         * Draw symbolic surface tiles into a buffered image that can be reused for radar drawing.
+         * Symbolic minimap tile kind, matching {@link #getImage} symbolic mode.
+         * @param b the building
+         * @return tile kind discriminator
+         */
+        int minimapTileKind(Building b) {
+            if (b.isConstructing()) {
+                return b.isSeverlyDamaged() ? 1 : 2;
+            }
+            if (b.isDestroyed()) {
+                return 3;
+            }
+            if (b.isDamaged()) {
+                return 4;
+            }
+            if (b.isOperational()) {
+                return 5;
+            }
+            return 6;
+        }
+        /**
+         * Rebuild the alpha cache when the planet or building minimap states changed.
+         * <p>
+         * Each draw builds a compact snapshot of what the minimap depends on:
+         * building-knowledge, then for every building its id and symbolic tile kind
+         * (constructing / damaged / normal / inoperable / …). That scratch snapshot is
+         * compared to the one from the last cache fill. Same planet and identical
+         * snapshot → keep the cached images. Any difference (or a planet switch) →
+         * clear {@link #radarAlphaCache} and store the new snapshot.
+         * <p>
+         * Location is not stored: buildings do not move in place, and a replacement
+         * building always gets a new id, which already forces a miss. Pavement is not
+         * in the snapshot either; callers must {@link #invalidate()} after paving.
+         * @param surface the planet surface
+         */
+        void ensureCacheCurrent(PlanetSurface surface) {
+            int need = 1 + surface.buildings.size() * 2;
+            if (stateScratch.length < need) {
+                stateScratch = new int[Math.max(need, 16)];
+            }
+            int n = 0;
+            int buildingKnowledge = knowledge(planet(), PlanetKnowledge.BUILDING);
+            stateScratch[n++] = buildingKnowledge;
+            for (Building b : surface.buildings.iterable()) {
+                stateScratch[n++] = b.id;
+                stateScratch[n++] = buildingKnowledge < 0 ? 0 : minimapTileKind(b);
+            }
+            boolean changed = cachedPlanet != planet() || cachedStateLength != n;
+            if (!changed) {
+                for (int i = 0; i < n; i++) {
+                    if (stateScratch[i] != cachedState[i]) {
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+            if (!changed) {
+                return;
+            }
+            radarAlphaCache.clear();
+            if (cachedState.length < n) {
+                cachedState = new int[stateScratch.length];
+            }
+            System.arraycopy(stateScratch, 0, cachedState, 0, n);
+            cachedStateLength = n;
+            cachedPlanet = planet();
+        }
+        /**
+         * Draw the full radar surface (terrain, roads, pavement, buildings).
          * @param surface the surface object
          * @param br bounding rectangle of the radar image
          * @return a buffered image with a rendered minimap
@@ -2285,9 +2367,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
                 int scaledWidth = (int)(br.width * scale);
                 int scaledHeight = (int)(br.height * scale);
-                if (surfaceVisualUpdateNeeded) {
-                    radarAlphaCache.clear();
-                }
+                ensureCacheCurrent(surface);
                 BufferedImage radarMapImage = radarAlphaCache.get(alpha);
                 if (radarMapImage == null) {
                     radarMapImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
@@ -3072,7 +3152,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
 
         planet().demolish(currentBuilding);
-        surfaceVisualUpdateNeeded = true;
+        render.invalidate();
         doAllocation();
         buildingBox = null;
         doSelectBuilding(null);
@@ -3083,14 +3163,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Action for the Active button. */
     void doActive() {
         currentBuilding.enabled = false;
-        surfaceVisualUpdateNeeded = true;
         doSelectBuilding(currentBuilding);
         doAllocation();
     }
     /** Action for the Offline button. */
     void doOffline() {
         currentBuilding.enabled = true;
-        surfaceVisualUpdateNeeded = true;
         doSelectBuilding(currentBuilding);
         doAllocation();
     }
@@ -3638,7 +3716,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 commons.control().displayError(get("message.not_enough_money"));
             }
         }
-        surfaceVisualUpdateNeeded = true;
+        render.invalidate();
     }
     @Override
     public void onInitialize() {
@@ -3958,12 +4036,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         addThis();
     }
     @Override
-    public void draw(Graphics2D g2) {
-        drawSurfaceImage = surfaceVisualUpdateNeeded;
-        super.draw(g2);
-        surfaceVisualUpdateNeeded = false;
-    }
-    @Override
     public void onResize() {
         base.setBounds(0, 20, getInnerWidth(), getInnerHeight() - 38);
         window.setBounds(base.x + 20, base.y, base.width - 40, base.height);
@@ -4112,7 +4184,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             setBuildingList(0);
 
             effectSound(SoundType.DEPLOY_BUILDING);
-            surfaceVisualUpdateNeeded = true;
+            render.invalidate();
         } else {
             if (player().money() < player().currentBuilding.cost) {
                 buttonSound(SoundType.NOT_AVAILABLE);
@@ -5160,7 +5232,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         b.hitpoints = (int)Math.max(0, b.hitpoints - 1L * damage * b.type.hitpoints / maxHp);
         // if damage passes the half mark
         if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
-            surfaceVisualUpdateNeeded = true;
+            render.invalidate();
             if ("Defensive".equals(b.type.kind)) {
                 int count = world().battle.getTurrets(b.type.id, planet().race).size() / 2;
                 int i = guns.size() - 1;
@@ -5196,7 +5268,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             effectSound(SoundType.EXPLOSION_LONG);
             destroyBuilding(b);
-            surfaceVisualUpdateNeeded = true;
+            render.invalidate();
         }
         if (!"Defensive".equals(b.type.kind)) {
             doAllocation();
@@ -6230,7 +6302,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     public void initiateBattle(BattleInfo battle) {
         this.battle = battle;
-        surfaceVisualUpdateNeeded = true;
+        render.invalidate();
 
         player().currentPlanet = battle.targetPlanet;
 
@@ -6487,7 +6559,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         movementHandler = new GroundWarMovementHandler(commons.pool, 28, SIMULATION_DELAY, units, surface().width, surface().height, surface().placement);
         movementHandler.initUnits();
         commons.simulation.resume();
-        surfaceVisualUpdateNeeded = true;
+        render.invalidate();
     }
     /**
      * Place or remove an unit at the given location if the UI is in deploy mode.
