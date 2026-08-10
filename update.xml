@@ -43,44 +43,44 @@
     </notes>
     <release-details>
       <entry version='0.95.266' date='2026-08-10'>
-        <item category='UI,Graphics' issue='1256,1259,1262,1263,1264,1261,1268,1269,1270,1271,1281'>Graphics performance improvements across. by @janosgy</item>
-        <item category='UI' issue='1258,1276'>Fix for vector font rendering anomalies. by @janosgy</item>
-        <item category='Spacewar' issue='1273'>Keep engaging rockets that temporarily leave the battlefield. by @janosgy</item>
-        <item category='Spacewar,UI' issue='1272,1274'>Rewrite spacewar selection panel for performance and layout. by @janosgy</item>
-        <item category='Save' issue='1279'>Keep configuration settings global-only, not in savegames. by @janosgy</item>
-        <item category='Graphics' issue='1280'>Fixed some inaccuracies with tile strips. by @hemoridos</item>
-        <item category='Graphics' issue='1283'>Fixed the lightmap for ychom particle projector. by @hemoridos</item>
+        <item category='UI,Graphics' issues='1256,1259,1262,1263,1264,1261,1268,1269,1270,1271,1281'>Graphics performance improvements across. by @janosgy</item>
+        <item category='UI' issues='1258,1276'>Fix for vector font rendering anomalies. by @janosgy</item>
+        <item category='Spacewar' issues='1273'>Keep engaging rockets that temporarily leave the battlefield. by @janosgy</item>
+        <item category='Spacewar,UI' issues='1272,1274'>Rewrite spacewar selection panel for performance and layout. by @janosgy</item>
+        <item category='Save' issues='1279'>Keep configuration settings global-only, not in savegames. by @janosgy</item>
+        <item category='Graphics' issues='1280'>Fixed some inaccuracies with tile strips. by @hemoridos</item>
+        <item category='Graphics' issues='1283'>Fixed the lightmap for ychom particle projector. by @hemoridos</item>
       </entry>
       <entry version='0.95.265' date='2026-06-17'>
-        <item category='Spacewar' issue='1249'>Fix for a spacewar race condition crash due to uninitialized movement handlers by @hemoridos</item>
+        <item category='Spacewar' issues='1249'>Fix for a spacewar race condition crash due to uninitialized movement handlers by @hemoridos</item>
       </entry>
       <entry version='0.95.264' date='2026-03-31'>
         <item category='Music'>Added music from the unreleased IG:Stargazer game, donated by Tamas Kreiner, the musig and audio designer of the games.</item>
-        <item category='Graphics' issue='1234'>Improved the rectangular transformation of the surface radar by @hemoridos</item>
-        <item category='Performance' issue='1235'>Tweak large Tile striping by @hemoridos in #1235</item>
+        <item category='Graphics' issues='1234'>Improved the rectangular transformation of the surface radar by @hemoridos</item>
+        <item category='Performance' issues='1235'>Tweak large Tile striping by @hemoridos in #1235</item>
       </entry>
       <entry version='0.95.263' date='2025-08-23'>
-        <item category='Starmap' issue='1191'>Fleets can no longer be moved outside the playable space.</item>
-        <item category='Spacewar' issue='1195'>Right clicking on the Quick Research or Quick Production buttons is no longer allowed during battle.</item>
+        <item category='Starmap' issues='1191'>Fleets can no longer be moved outside the playable space.</item>
+        <item category='Spacewar' issues='1195'>Right clicking on the Quick Research or Quick Production buttons is no longer allowed during battle.</item>
       </entry>
       <entry version='0.95.262' date='2025-06-03'>
-        <item category='Balance' issue='1187'>Garthogs will no longer rebuild their lost barracks and guns in the campaign for easy and normal difficulties. On hard, they will only build at most one of each.</item>
+        <item category='Balance' issues='1187'>Garthogs will no longer rebuild their lost barracks and guns in the campaign for easy and normal difficulties. On hard, they will only build at most one of each.</item>
       </entry>
       <entry version='0.95.261' date='2024-12-05'>
         <item category='UI'>Show the upgrade info button more consistently.</item>
       </entry>
       <entry version='0.95.260' date='2024-11-03'>
-        <item category='Diplomacy' issue='1184'>Fix for receiving a diplomatic call being non-interactable at times.</item>
+        <item category='Diplomacy' issues='1184'>Fix for receiving a diplomatic call being non-interactable at times.</item>
       </entry>
       <entry version='0.95.259' date='2024-10-13'>
-        <item category='Campaign' issue='1181'>Play music again after finishing the main campaign and selecting continue.</item>
+        <item category='Campaign' issues='1181'>Play music again after finishing the main campaign and selecting continue.</item>
         <item category='Skirmish,Groundwar'>Fix deployment exclusion locations not scaling with the planet in skirmish.</item>
       </entry>
       <entry version='0.95.258' date='2024-10-12'>
-        <item category='Skirmish' issue='1180'>Fix a crash when using planet scaling settings.</item>
+        <item category='Skirmish' issues='1180'>Fix a crash when using planet scaling settings.</item>
       </entry>
       <entry version='0.95.257' date='2024-10-01'>
-        <item category='Missions' issue='1178'>Fix the success condition of Mission 3 - Escort Carrier.</item>
+        <item category='Missions' issues='1178'>Fix the success condition of Mission 3 - Escort Carrier.</item>
       </entry>
       <entry version='0.95.256' date='2024-09-30'>
         <item category='System'>Fix a Java 8 incompatibility issue.</item>
