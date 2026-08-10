@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.265'>
+  <module id='Game' version='0.95.266'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,15 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.266' date='2026-08-10'>
+        <item category='UI,Graphics' issue='1256,1259,1262,1263,1264,1261,1268,1269,1270,1271,1281'>Graphics performance improvements across. by @janosgy</item>
+        <item category='UI' issue='1258,1276'>Fix for vector font rendering anomalies. by @janosgy</item>
+        <item category='Spacewar' issue='1273'>Keep engaging rockets that temporarily leave the battlefield. by @janosgy</item>
+        <item category='Spacewar,UI' issue='1272,1274'>Rewrite spacewar selection panel for performance and layout. by @janosgy</item>
+        <item category='Save' issue='1279'>Keep configuration settings global-only, not in savegames. by @janosgy</item>
+        <item category='Graphics' issue='1280'>Fixed some inaccuracies with tile strips. by @hemoridos</item>
+        <item category='Graphics' issue='1283'>Fixed the lightmap for ychom particle projector. by @hemoridos</item>
+      </entry>
       <entry version='0.95.265' date='2026-06-17'>
         <item category='Spacewar' issue='1249'>Fix for a spacewar race condition crash due to uninitialized movement handlers by @hemoridos</item>
       </entry>
@@ -365,9 +374,9 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.265.jar' sha1='7F43074B3CEA7B33FAF572635EAE45767406660F'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20260331a2.zip' sha1='0D0E36F31336B58712B3AE24C4AF2B3ED0C7A86A'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20240930a.zip' sha1='09EA802D35E9A124B1A1761CBBB8D8F8C8D06E77'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.266.jar' sha1='39E61EA39FF1330440ACE8D482D31473317FDE93'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20260810a2.zip' sha1='C74A03D42BF7E82A00460F9A4CF0FDB024A87F2F'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20260810a.zip' sha1='AA1EB5258C2EEEAE8F58E962BB2C8BDB55AE2A12'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -441,6 +450,7 @@
     <remove file='open-ig-images-20231211a.zip'/>
     <remove file='open-ig-images-20240418a.zip'/>
     <remove file='open-ig-images-20240607a.zip'/>
+    <remove file='open-ig-images-20240930a.zip'/>
   </module>
   <module id='MapEditor' version='0.63'>
     <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>
