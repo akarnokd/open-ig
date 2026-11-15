@@ -3145,7 +3145,7 @@
 	<entry key="battlefinish.mission-3.11">Mensaje de la nave de carga: ¡Calienta mi corazón ver por fin a un Comandante competente! ¡Buen trabajo! Por favor, acepta este Escudo v1.0 como muestra de mi gratitud.</entry>
 	<entry key="diplomacy.FreeTraders.SURRENDER.NO.69">La Alianza de Comerciantes Libres no puede permanecer libre bajo la subyugación del Imperio, ¡lucharemos hasta el último hombre para resistir vuestros avances tiránicos!</entry>
 	<entry key="buildings.particle_projector.desc">Ser alcanzado por un disparo de un proyector de fusión es como chocar contra un pequeño sol. Inflige graves daños a las naves enemigas que se alejan de su alcance.</entry>
-	<entry key="diplomacy.FreeNations.ALLIANCE.77">A la Sociedad de Naciones Libres sólo le espera la muerte y la pérdida si seguimos luchando contra el Imperio. Por el bien de nuestro pueblo, nos rendimos.</entry>
+	<entry key="diplomacy.FreeNations.ALLIANCE.77">La mejora mutua de nuestras relaciones ha hecho posible elevarlas al nivel de una alianza, Almirante.</entry>
 	<entry key="buildings.field_telescope.desc">El Telescopio de Campo es un detector de ondas de radio de alta potencia y focalizado que puede utilizarse para encontrar flotas enemigas a mayor distancia que el Telescopio de Radar.</entry>
 	<entry key="buildings.water_vaporator.desc">Los Vaporizadores de Humedad extraen la humedad del aire para suministrar agua potable. Los planetas con escasez de agua necesitan Vaporizadores para evitar el lento crecimiento de la población.</entry>
 	<entry key="database.map.5">
@@ -3254,7 +3254,7 @@
 	<entry key="buildings.colony_hub.desc">El centro de colonias es el centro de colonias prefabricado depositado automáticamente en el planeta por una nave de colonización. Sólo puedes construir otras estructuras en un planeta si tienes un centro de colonización.</entry>
 	<entry key="diplomacy.FreeTraders.DARGSLAN.NO.64">No hay esperanza en luchar contra el Imperio de Dargslan con las fuerzas actualmente disponibles. Quizá con el tiempo seamos lo bastante fuertes para hacerles frente, pero ese momento no es ahora.</entry>
 	<entry key="buildings.phood_factory.desc">Phood(TM) Factory utiliza los últimos avances en ingeniería genética MeatBeast(TM), FastGrain(TM) y Sculpted Algae(TM) para producir grandes cantidades de alimentos para los hambrientos colonos.</entry>
-	<entry key="diplomacy.FreeNations.ALLIANCE.78">El propio presidente Szabo ha pedido al Consejo Administrativo que ofrezca nuestra rendición al Imperio. El Consejo ha decidido honrar su petición y se rinde formalmente al Imperio.</entry>
+	<entry key="diplomacy.FreeNations.ALLIANCE.78">A petición personal del presidente Szabo, el Consejo ha votado a favor de una alianza entre el Imperio y la Sociedad de Naciones Libres.</entry>
 	<entry key="diplomacy.Ychom.MONEY.NO.42">Según la normativa actual del Consorcio Ann-Hiva, tu Imperio sólo puede invertir durante un periodo de 3 días al trimestre. Su oferta es ilegal y ha contaminado el mercado actual.</entry>
 	<entry key="buildings.fire_brigade.desc">Las brigadas de bomberos reparan automáticamente las estructuras dañadas de la colonia hasta en un 50%, de forma gratuita. Son muy útiles cuando una colonia está siendo bombardeada desde la órbita o asaltada por fuerzas terrestres.</entry>
 	<entry key="buildings.stadium.desc">En el estadio se organizan espectáculos y eventos deportivos para los colonos. El Full Contact Arcturian Rules Football ha demostrado ser muy eficaz para elevar la moral.</entry>
