@@ -1490,8 +1490,8 @@ public class DiplomacyScreen extends WalkableScreen {
 
             responseText.visible(true);
             continueLabel.visible(false);
-            if (na.callType == CallType.ALLIANCE || na.callType == CallType.RESIGN
-                    || na.callType == CallType.MONEY) {
+            if (na.callType == CallType.ALLIANCE || na.callType == CallType.PEACE
+                    || na.callType == CallType.RESIGN || na.callType == CallType.MONEY) {
                 messagePhase = 4;
                 acceptOffer.visible(true);
                 declineOffer.visible(true);
@@ -1505,6 +1505,14 @@ public class DiplomacyScreen extends WalkableScreen {
                             if (dr.value < 91) {
                                 dr.updateDrValue(91);
                             }
+                        } else
+                        if (na.callType == CallType.PEACE) {
+                            int peaceValue = Math.max(
+                                    Math.max(player().warThreshold, other.warThreshold),
+                                    Math.max(player().endHostilitiesThreshold, other.endHostilitiesThreshold)
+                            ) + 1;
+                            dr.updateDrValue(Math.max(dr.value, peaceValue));
+                            dr.wontTalk(false);
                         } else
                         if (na.callType == CallType.MONEY) {
                             long mny = ((Number)na.value()).longValue();
