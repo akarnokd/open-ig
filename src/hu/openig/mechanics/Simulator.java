@@ -91,6 +91,10 @@ public final class Simulator {
 
         if (day0 != day1) {
 
+            if (day1 == 1) {
+                cleanupInvalidFleetTasks(world);
+            }
+
             for (Player p : world.players.values()) {
 
                 if (!p.isMainPlayer) {
@@ -118,6 +122,25 @@ public final class Simulator {
         checkAchievements(world, day0 != day1);
 
         world.scripting.onTime();
+        return result;
+    }
+    /**
+     * Release fleets whose move or attack task has no remaining destination.
+     * Such a state may be left behind when another fleet removes their target.
+     * @param world the world to inspect
+     * @return the number of repaired fleets
+     */
+    static int cleanupInvalidFleetTasks(World world) {
+        int result = 0;
+        for (Fleet fleet : world.fleets.values()) {
+            if ((fleet.task == FleetTask.ATTACK || fleet.task == FleetTask.MOVE)
+                    && fleet.targetFleet == null
+                    && fleet.targetPlanet() == null
+                    && fleet.waypoints.isEmpty()) {
+                fleet.stop();
+                result++;
+            }
+        }
         return result;
     }
     /**

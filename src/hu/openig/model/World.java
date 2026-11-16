@@ -2752,6 +2752,9 @@ public class World implements ModelLookup {
                         // change it to move to its last known location
                         f.targetFleet = null;
                         f.mode = FleetMode.MOVE;
+                        if (f.task == FleetTask.ATTACK) {
+                            f.task = FleetTask.MOVE;
+                        }
                         f.waypoints.clear();
                         f.waypoints.add(new Point2D.Double(fleet.x, fleet.y));
                     }
