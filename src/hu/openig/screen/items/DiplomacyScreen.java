@@ -1329,7 +1329,7 @@ public class DiplomacyScreen extends WalkableScreen {
 
                     a.second);
 
-            if (m == ResponseMode.YES && a.second >= player().money()) {
+            if (m == ResponseMode.YES && a.second <= player().money()) {
                 player().addMoney(-a.second);
                 player().statistics.moneySpent.value += a.second;
 
