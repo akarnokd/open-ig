@@ -36,8 +36,8 @@ import java.util.function.BiConsumer;
  * <p>
  * Structure:
  * <ul>
- * <li>{@link #groupBar} — fixed top strip of group recall buttons</li>
- * <li>{@link #content} — layout, caching, and atomic offscreen painting of cells</li>
+ * <li>groupBar — fixed top strip of group recall buttons</li>
+ * <li>content  — layout, caching, and atomic offscreen painting of cells</li>
  * </ul>
  * Layout runs only when the selection set, loadout sizes, or panel width change.
  * The visible page is composed into a buffer then blitted once so icons and
@@ -214,6 +214,7 @@ public class SpacewarSelectionPanel extends UIPanel {
      * Clear selection view state (keeps group buttons).
      * Does not remove child components.
      */
+    @Override
     public void clear() {
         content.clearContents();
     }

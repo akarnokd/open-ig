@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.266'>
+  <module id='Game' version='0.95.267'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,12 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.267' date='2026-11-16'>
+        <item category='Planet' issues='1291'>Fix occupied surface cells after colony dies by @Coding-gonzo</item>
+        <item category='Diplomacy,Translation' issues='1292'>Fix Free Nations alliance dialogue text by @Coding-gonzo</item>
+        <item category='Diplomacy' issues='1293'>Fix diplomacy money offer balance check by @Coding-gonzo</item>
+        <item category='Diplomacy' issues='1294'>Make incoming peace offers functional by @Coding-gonzo</item>
+      </entry>
       <entry version='0.95.266' date='2026-08-10'>
         <item category='UI,Graphics' issues='1256,1259,1262,1263,1264,1261,1268,1269,1270,1271,1281'>Graphics performance improvements across. by @janosgy</item>
         <item category='UI' issues='1258,1276'>Fix for vector font rendering anomalies. by @janosgy</item>
@@ -374,8 +380,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.266.jar' sha1='39E61EA39FF1330440ACE8D482D31473317FDE93'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20260810a2.zip' sha1='C74A03D42BF7E82A00460F9A4CF0FDB024A87F2F'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.267.jar' sha1='B4A9DE2EC73C0589141240CC237AEDDD067B0488'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20261116a2.zip' sha1='06515460A222841996215DD6D3583D798A79F333'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20260810a.zip' sha1='AA1EB5258C2EEEAE8F58E962BB2C8BDB55AE2A12'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
