@@ -560,6 +560,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         radar = 0;
         surface.buildings.clear();
         surface.buildingmap.clear();
+        surface.surfaceCells.clearAllNonSurfaceElements();
     }
     /**
      * Test if the given planet contains anything from the
